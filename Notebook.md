@@ -55,6 +55,9 @@
 -  `Favicon`：网站图标，使用`<link rel="icon" href="favicon.ico">`定义网站的图标。ico文件放在网站的根目录即可。
 
 
+- `form`表单属性之`autocomplete`：可以设置历史记录自动填充，填入`off`以关闭
+
+
 #### CSS小技巧
 
 - `vertical-align`: 用于行内元素或表格单元格的垂直对齐方式（如`top`、`middle`、`bottom`）。
@@ -94,6 +97,24 @@ li[i].classList.add('active')
 使用`scroll-behavior: smooth;`可以让页面滚动更加平滑。
 ```javascript
 document.documentElement.style.scrollBehavior = 'smooth';
+```
+
+##### confirm方法
+- `confirm`方法用于显示一个确认对话框，用户可以选择“确定”或“取消”。返回值为布尔类型，`true`表示用户点击“确定”，`false`表示用户点击“取消”。
+```javascript
+if (confirm("确定要删除吗？")) {
+    // 用户点击了“确定”
+    console.log("已删除");
+} else {
+    // 用户点击了“取消”
+    console.log("取消删除");
+}
+```
+
+##### 表单value判空
+对于表单value判空，H5新增了required属性，可以实现基础的表单判空，但空字符串可以跳过这一点，所以JS中可以用trim()方法进一步优化 e.g. 
+```javascript
+if (String(form_items[i].value).trim() === '') {return alert('请填入完整字段')}`
 ```
 
 </details>
@@ -821,6 +842,8 @@ while (条件) {
 
 #### 数组
 
+##### 数组基础知识
+
 - **数组**：使用方括号`[]`定义的有序数据集合。
 ```javascript
 let array = [data1, data2, 'data3', 4, true]; // 数组可以包含不同类型的数据，甚至嵌套数组。
@@ -844,6 +867,25 @@ console.log(array.length); // 输出数组长度
     - `splice(位置, 数量)`：从指定位置删除指定数量的元素。`数量`无参时，删除到末尾。
   - 改：即修改数组元素的值，直接使用索引访问并赋值。
     - `array[index] = newValue;`：将指定索引的元素修改为新值。
+
+##### 常用数组方法
+
+- **map()**：对数组中的每个元素执行指定函数(遍历+处理)，**返回新数组**。
+```javascript
+const newArr = arr.map(function (ele, index) {
+  console.log(ele) // 数组元素
+  console.log(index) // 索引号
+  return ele + 'Color' // 处理数据并返回新数组
+})
+console.log(newArr) // ['redColor', 'blueColor', 'greenColor']
+```
+
+- **join()**：把数组中所有元素拼接起来，并且通过参数(分隔符)可以定义拼接方式，**常用空字符串使所有字符串相接为一个长串**，以及：
+```javascript
+console.log(newArr.join()) // redColor,blueColor,greenColor 参数为空，逗号分割（默认）
+console.log(newArr.join('')) // redColorblueColorgreenColor 参数为空字符串，则分割消失
+console.log(newArr.join('|')) // redColor|blueColor|greenColor
+```
 
 
 #### 函数
@@ -929,7 +971,15 @@ console.log(re) // 30
 }(1, 2)); // 调用函数的括号写在里外都可以
 ```
 
+*立即执行函数，一般用括号封住; 但有时，也可以用`!``+`等符号防止报错（要能看懂别人的代码）*
+```javascript
+(function() {...} )() // OK
+!function(){...} () // 也OK
+```
+
 #### 对象
+
+##### 对象基础知识
 
 - **对象**：使用花括号`{}`定义的无序数据集合，包含键值对（属性和方法）。
 
@@ -981,20 +1031,40 @@ for (let key in obj) {
 }
 ```
 
+- ** 对象常用方法**：
+    - `Object.keys(obj)`：返回对象的所有属性名组成的数组。
+    - `Object.values(obj)`：返回对象的所有属性值组成的数组。
+    - `Object.entries(obj)`：返回对象的所有键值对组成的二维数组。
+    - `Object.assign(target, ...sources)`：将源对象的属性复制到目标对象，返回目标对象。
+
+
+##### 常用对象
+
 - ** 内置数学对象**：JavaScript提供了内置的`Math`对象，包含常用的数学常量和函数。
   - 常用属性：`Math.PI`（圆周率），`Math.E`（自然对数的底数）。
   - 常用方法：`Math.abs(x)`（绝对值），`Math.max(a, b, ...)`（返回最大值），`Math.min(a, b, ...)`（返回最小值），`Math.round(x)`（四舍五入），`Math.random()`（生成[0,1)之间的随机小数）。
     - Math.random()生成的随机数是[0,1)之间的浮点数，若需要生成[min, max]范围内的随机整数，可以使用`Math.floor(Math.random() * (max - min + 1)) + min`。
 
-- ** 对象常用方法**：
-  - `Object.keys(obj)`：返回对象的所有属性名组成的数组。
-  - `Object.values(obj)`：返回对象的所有属性值组成的数组。
-  - `Object.entries(obj)`：返回对象的所有键值对组成的二维数组。
-  - `Object.assign(target, ...sources)`：将源对象的属性复制到目标对象，返回目标对象。
-
-- **JSON对象**：JavaScript对象表示法（JSON）是一种轻量级的数据交换格式。
+- **JSON对象**：JavaScript对象表示法（JSON）是一种轻量级的数据交换格式。属性和值有引号，而且引号统一是双引号。
   - `JSON.stringify(obj)`：将JavaScript对象转换为JSON字符串。
   - `JSON.parse(jsonString)`：将JSON字符串转换为JavaScript对象。
+
+- **日期对象**：JavaScript提供了`Date`对象，用于处理日期和时间。
+  - 创建日期对象：`new Date()`（当前时间），`new Date(时间戳)`（指定时间戳），`new Date(年, 月, 日, 时, 分, 秒)`（指定具体时间）。
+  - 时间戳：自1970年1月1日以来的毫秒数，三种获取方式：
+    - `Date.now()`：返回当前时间的时间戳。
+    - `new Date().getTime()`：返回当前时间的时间戳。
+    - `+new Date()`：将当前时间转换为时间戳。
+  - 格式化：`toLocaleString()`（本地化字符串）。
+  - 常用方法：包括但不限于以下例子，注意`getMonth`和`getDay`的返回值是从0开始的。
+```javascript
+console.log(date.getFullYear()) // 2025 年 数字型
+console.log(date.getMonth() + 1) // 0 ~ 11, +1为实际月份
+console.log(date.getDate()) // 16 号
+console.log(date.getDay() + 1) // 0 ~ 6, +1为实际星期几
+```
+
+
 
 ### Web API
 
@@ -1007,8 +1077,147 @@ for (let key in obj) {
 
 #### DOM树和DOM对象
 
-- DOM树是HTML文档的结构化表示，DOM对象是JavaScript对DOM树的抽象表示。可以通过`document`对象访问和操作DOM树。
+DOM树是HTML文档的结构化表示，DOM对象是JavaScript对DOM树的抽象表示。可以通过`document`对象访问和操作DOM树。
 *p.s. DOM树的根节点是`document`对象（最大的DOM对象），所有其他节点都是其子节点。*
+
+##### DOM结点
+
+- **节点类型**：DOM树中的每个节点都有一个类型，常见的节点类型包括：
+  - `Element`：元素节点，表示HTML标签。**（重点关注）**
+  - `Text`：文本节点，表示元素内的文本内容。
+  - `Comment`：注释节点，表示HTML注释。
+  - `Document`：文档节点，表示整个HTML文档。
+
+- **查找结点**：
+  - **查找父结点**：使用`parentNode`属性获取当前节点的父节点（只能得到最近一级的亲父亲）
+  - **查找子结点**：
+    - 使用`childNodes`属性获取当前节点的所有子节点（返回NodeList对象，包含所有类型的子节点，包括文本节点和注释节点）。
+    - 使用`children`属性获取当前节点的所有子元素节点（返回HTMLCollection对象，伪数组，只包含元素节点）。
+  - ** 查找兄弟结点**：
+    - 使用`nextElementSibling`属性获取当前节点的下一个兄弟节点。
+    - 使用`prevoiusElementSibling`属性获取当前节点的上一个兄弟节点。
+```javascript
+console.log(son.parentNode)  // father
+console.log(son.parentNode.parentNode) // grandfather // 都返回dom对象
+
+const ul = document.querySelector('ul')
+console.log(ul.children)
+
+li.nextElementSibling // 获取下一个兄弟元素节点
+li.prevoiusElementSibling // 获取上一个兄弟元素节点
+```
+
+- **增加结点（重点）**：先创建，后追加
+  - 使用`createElement(tagName)`方法创建一个新的元素节点。
+  - 使用`createTextNode(text)`方法创建一个新的文本节点。
+  - 使用`appendChild(node)`方法将新节点添加到父节点的子节点列表中。
+  - 使用`insertBefore(newNode, referenceNode)`方法在指定的参考节点之前插入新节点。
+
+```javascript
+let newLi = document.createElement('li'); // 创建一个新的li元素
+newLi.textContent = '新列表项'; // 设置文本内容
+let ul = document.querySelector('ul'); // 获取ul元素
+ul.appendChild(newLi); // 将新li元素添加到ul的末尾
+ul.insertBefore(newLi, ul.children[0]); // 在ul的第一个子元素之前插入新li元素
+```
+
+
+- **克隆结点**：使用`cloneNode(deep)`方法克隆节点。
+  - `deep`参数决定是否深度克隆（包括子节点）。`true`表示深度克隆，克隆时会包含后代节点；`false`表示浅克隆，默认（只克隆当前节点，且只克隆标签，内容不管）。
+```javascript
+ul.insertBefore(ul.children[0].cloneNode(true), ul.children[0]) // 克隆第一个子元素并插入到第一个子元素之前
+```
+
+- **删除结点**：使用`removeChild(node)`方法从父节点中删除子节点。
+```javascript
+ul.removeChild(ul.children[0]) // 删除ul的第一个子元素
+```
+
+
+#### BOM
+
+BOM（Browser Object Model）是浏览器对象模型，提供了与浏览器窗口和浏览器相关的对象和方法。`window`是其中最大的对象，其子级包括`document`、`location`、`history`、`navigator`、`screen`等。
+
+*p.s. `window`对象是JS中的顶级对象、全局对象；`window`对象下的属性和和方法调用时可以省略`window`前缀。*
+
+##### location对象
+
+`location`对象表示当前文档的URL信息，提供了获取和修改浏览器地址栏的功能。关注以下4个属性/方法：
+
+- `location.href`：获取或设置当前文档的完整URL。可以通过修改以实现页面跳转。
+```javascript
+location.href = 'https://www.example.com'; // 跳转到指定URL
+```
+
+- `location.search`: 提交表单后，获取表单信息问号后的内容，要求表单标签都有`name`属性。
+```javascript
+console.log(location.search); // 输出查询字符串，如 ?name=Alice&age=30
+```
+
+- `location.hash`：获取或设置URL中的锚点部分（#后面的内容），用于页面内跳转。
+```javascript
+location.hash = '#section1'; // 跳转到页面内的锚点
+```
+
+- `location.reload()`：重新加载当前文档。可带参数`true`强制从服务器重新加载，而不是从缓存中加载。
+```javascript
+location.reload(); // 刷新页面
+```
+
+##### navigator对象
+
+**`navigator`对象**提供了浏览器的相关信息，如浏览器类型、版本、操作系统等。可用于检测是否为移动端设备（安卓/iOS）而进行网页跳转。
+
+##### history对象
+
+`history`对象表示浏览器的历史记录，提供了访问和操作浏览器历史记录的方法。
+
+管理历史记录，控制后退/前进，包括`forward()`,` back()`, `go()`; `go()`带参数，`1`前进，`-1`后退
+
+##### 本地存储localStorage
+
+`localStorage`是浏览器提供的本地存储机制，用于在用户浏览器中存储数据。数据**以键值对的形式**存储，将数据永久存储在本地，除非手动删除，否则即使页面关闭，数据也存在。
+
+- **特性**：
+  - 数据存储在浏览器中，跨页面共享。
+  - 数据以字符串形式存储，非字符串类型需要转换。
+  - 存储容量通常为5MB（不同浏览器可能有所不同）。
+  - 数据不会过期，除非手动删除。
+
+- **常用方法**：
+- `setItem(key, value)`：设置键值对，存储数据。没有`key`就是增，有`key`就是覆盖原来的`key`，也即**改**
+```javascript
+localStorage.setItem('username', 'Alice'); // 存储用户名
+```
+- `getItem(key)`：获取指定键的值，若不存在则返回`null`。
+```javascript
+localStorage.getItem('username'); // 获取用户名
+```
+- `removeItem(key)`：删除指定键的值。
+```javascript
+localStorage.removeItem('username'); // 删除用户名
+```
+- `clear()`：清空所有本地存储的数据。
+```javascript
+localStorage.clear(); // 清空所有数据
+```
+
+*p.s. `sessionStorage`与`localStorage`类似，但数据仅在当前会话中有效，关闭浏览器窗口后数据会被清除。*
+
+- **存入复杂数据类型**：
+
+复杂数据类型（如对象、数组）无法直接存储到`localStorage`中，需要先将其转换为**JSON字符串**。
+- 使用`JSON.stringify()`将对象或数组转换为字符串存储，使用`JSON.parse()`将字符串转换回对象或数组。
+```javascript
+localStorage.setItem('obj', JSON.stringify({ name: 'Alice', age: 30 })); // 存储对象
+
+console.log(typeof localStorage.getItem('obj')) // string
+console.log(localStorage.getItem('obj')) // {"name":"Alice","age":30}
+
+let obj = JSON.parse(localStorage.getItem('obj')); // 获取对象
+console.log(obj.name); // 输出：Alice
+```
+
 
 #### 选择器
 
@@ -1137,6 +1346,19 @@ let timer = setInterval(myFunction, 1000); // 每1000毫秒（1秒）执行一�
 ```javascript
 clearInterval(timer); // 停止间隔函数
 ```
+
+##### 延时函数
+
+**setTimeout(f(), delay time)**：设置一个延时执行的函数。返回值：定时器ID。和`setInterval`相近，不同点在于，延时函数的意义是「多久后」开始，所以只会执行一次
+```javascript
+let timer = setTimeout(() => {
+    console.log('延时1秒执行一次');
+}, 1000); // 延时1000毫秒（1秒）执行一次
+
+// 清除延时函数
+clearTimeout(timer); // 停止延时函数
+```
+
 
 #### 事件
 
@@ -1292,9 +1514,20 @@ chlid.addEventListener('click', function (event) {
 **阻止默认行为**：有些事件会触发浏览器的默认行为，如链接点击、表单提交等。可以使用`event.preventDefault()`方法阻止默认行为。
 
 
+#### JS单线程、异步和事件循环
+
+- JS是单线程的；但HTML5 Web Worker标准允许JS脚本创建多个线程
+- 同步：程序执行顺序与任务排列顺序一致；异步则是可以在做一件事的同时去做另一件事；本质：流水线上各个流程的执行顺序不同
+- 同步任务：都在主线程执行，形成执行栈；
+- **异步任务**，通过回调函数实现，被添加到任务队列中，包括：
+    - 普通事件（click、resize）
+    - 资源加载（load、error）
+    - 定时器（setInterval、setTimeout）
+- 事件循环机制：1.先执行执行栈的同步任务；2.异步任务放到任务队列（先放入Web
+  API或者说浏览器API，处理后再加入到任务队列）3.执行栈同步任务处理完毕，系统读取任务队列的异步任务，按顺序执行
 
 
-
+  
 
 </details>
 
@@ -1303,4 +1536,6 @@ chlid.addEventListener('click', function (event) {
 <summary>AJAX</summary>
 
 </details>
+
+
 
