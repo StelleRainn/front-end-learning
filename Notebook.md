@@ -89,6 +89,13 @@ document.querySelector('.slider-indicator .active').classList.remove('active')
 li[i].classList.add('active')
  ```
 
+
+##### 让页面滚动更加丝滑
+使用`scroll-behavior: smooth;`可以让页面滚动更加平滑。
+```javascript
+document.documentElement.style.scrollBehavior = 'smooth';
+```
+
 </details>
 
 
@@ -1131,7 +1138,158 @@ let timer = setInterval(myFunction, 1000); // 每1000毫秒（1秒）执行一�
 clearInterval(timer); // 停止间隔函数
 ```
 
+#### 事件
 
+##### 事件
+
+用户与网页交互时触发的动作，如点击、键盘输入、鼠标移动等。
+
+##### 事件监听
+
+使用`addEventListener(event, handler)`方法为元素添加事件监听器。`event`是事件类型，`handler`是事件处理函数。
+
+**三要素**：
+
+1. **事件源**：触发事件的元素。
+2. **事件类型**：事件的种类，如`click`、`mouseover`、`keydown`等。
+3. **事件处理函数**：当事件发生时执行的代码块。
+
+```javascript
+// 关闭广告
+let closeButton = document.querySelector('.close-button');
+closeButtion.addEventListener('click', function() {
+    AD.style.display = 'none'; // 隐藏广告
+});
+```
+
+**其他版本的事件监听**：（了解）
+- `element.onclick = function() { ... }`：直接设置事件处理函数。缺点是只能绑定一个事件处理函数，后续设置会覆盖之前的处理函数。
+
+##### 事件类型
+
+常用事件类型包括：
+
+- 鼠标事件：`click`、`mouseover`（鼠标悬停）、`mouseout`（鼠标移出）、`mouseenter`（鼠标进入）、`mousemove`（鼠标移动）。
+- 键盘事件：`keydown`（按下键盘）、`keyup`（松开键盘）、`keypress`（按下或松开键盘）。
+- 表单事件：`submit`（提交表单）、`change`（表单元素值改变）、`input`（输入内容变化）。
+- 焦点事件：`focus`（元素获得焦点）、`blur`（元素失去焦点）。
+- 页面加载事件：
+  - `load`（页面加载完成，一般用于window或某些特定资源，如图片）
+  - `DOMContentLoaded`（DOM内容加载完成，HTML结构加载完即触发，无需等待样式表、图片等，速度更快）。
+- 页面滚动事件：`scroll`（页面滚动时触发）。
+  - 两个重要属性：`scrollTop`（元素顶部到可视区域顶部的距离）和`scrollLeft`（元素左侧到可视区域左侧的距离）；可读可写，数字型，无单位。
+  - 又分别通俗理解为：**被卷去的头部**、**被卷去的左侧**。
+  - 想知道整个页面被卷去多少，需要获取最大元素`HTML`；方式：`doucment.documentElement.scrollTop` （返回HTML标签）或 `document.body.scrollTop`（兼容性更好）。
+```javascript
+window.addEventListener('scroll', function() {
+  console.log('页面滚动了');
+  console.log('被卷去的头部：', document.documentElement.scrollTop);
+  console.log('被卷去的左侧：', document.documentElement.scrollLeft);
+  
+  // （在滚动事件中）可以将页面滚动距离作为固定值
+  const distance = document.documentElement.scrollTop;
+});
+```
+- 窗口事件：`resize`（窗口大小改变时触发）。
+  - 元素属性：`clientWidth`（获取元素的可见宽度，包括内边距`padding`，但不包括滚动条和外边距`border`和`margin`）和`clientHeight`（元素的可见高度）。
+  - `offsetWidth`（元素的宽度，包括边框和内边距，但不包括外边距）和`offsetHeight`（元素的高度，包括边框和内边距，但不包括外边距）。
+
+
+##### 事件对象event
+
+事件发生时，浏览器会创建一个事件对象，包含有关事件的信息。可以在事件处理函数中访问该对象。
+
+- **回调函数**：将函数f(n)作为参数，传递给函数g(n), 称f(n)为回调函数。 e.g.
+```javascript
+setInterval(fn, 1000); // fn是回调函数
+```
+
+- 事件绑定的回调函数的第一个参数就是事件对象`event`，包含事件的相关信息。例如：
+```javascript
+element.addEventListener('click', function(event) {
+  console.log(event) // 输出事件对象 PointerEvent对象
+  console.log(event.type); // 输出事件类型
+  console.log(event.target); // 输出触发事件的元素
+  console.log(event.clientX, event.clientY); // 输出鼠标点击位置的坐标
+  console.log(event.offsetX, event.offsetY); // 输出鼠标点击位置相对于元素的坐标
+});
+```
+
+##### 环境对象this
+
+每个「函数内部」都有一个`this`对象，指向当前函数的执行环境。普通函数中，`this`指向`window`，事件处理函数（回调函数）中的`this`通常指向触发**事件的元素（调用者）**。
+
+*p.s. 函数的调用方式不同，`this`的指代对象也不同。粗略规则：**谁调用，this就指向谁**。*
+
+```javascript
+btn.addEventListener('click', function() {
+  console.log(this); // <button>button</button> btn对象
+  this.style.backgroundColor = 'red'; // 修改按钮背景色, this指向btn对象
+});
+```
+
+##### 事件流
+
+事件流是指事件在DOM树中传播的过程，事件完整执行过程中的流动路径，分为三个阶段：
+1. **捕获阶段**：事件从根节点向目标节点传播。
+2. **目标阶段**：事件到达目标节点。
+3. **冒泡阶段**：事件从目标节点向根节点传播。
+
+**事件捕获**：在事件流的捕获阶段，可以使用`addEventListener(event, handler, true)`来监听事件。第三个参数为`true`表示启用捕获。
+
+**事件冒泡**：在事件流的冒泡阶段，可以使用`addEventListener(event, handler, false)`或省略第三个参数来监听事件。第三个参数为`false`表示启用冒泡。
+
+*p.s. onclick方法只有冒泡阶段，没有捕获阶段。*
+
+**阻止事件流**：可以使用`event.stopPropagation()`方法阻止事件继续传播。在冒泡或捕获阶段都可以使用。
+
+**mouseover / mouseout 和 mouseenter / mouseleave的区别**:
+- `over/out` 组会有冒泡效果，例如内嵌在`father`中的`son`，即使没有给`son`设置事件，鼠标经过`son`时会认为离开了`father`；而`son`并没有事件，又冒泡回来执行`father`的经过事件
+- 同样的例子，在 `enter/leave` 组中就不会发生，经不经过`son`都不会影响
+
+##### 事件解绑
+
+**L0事件解绑**：直接将事件处理函数设置为`null`或`undefined`。
+```javascript
+element.onclick = null; // 解绑事件
+```
+
+**L2事件解绑**：使用`removeEventListener(event, handler)`方法解绑事件监听器。需要传入相同的事件类型和处理函数。
+
+*p.s. 匿名函数无法解绑，因为没有引用。* 
+
+```javascript
+element.removeEventListener('click', handler); // 解绑事件监听器
+```
+
+**总结对比**：
+
+- L0：同一对象，后者覆盖前者；`null`覆盖可以解绑；都是冒泡阶段执行
+- L2：注册不会向前覆盖；使用`removeEventListener`解绑；通过第三个参数决定冒泡
+
+
+##### 事件委托
+
+事件委托是将事件监听器添加到父元素上，而不是每个子元素上。这样可以减少内存使用和提高性能，尤其是当子元素动态添加或删除时。
+
+利用冒泡特点，只需为父元素注册事件，当子元素被触发，就必然冒泡回父元素并执行相应事件。
+
+使用`event.target`获取触发事件的子元素。
+
+*p.s. 可以使用`console.dir(event.target)`查看事件目标的详细信息。*
+
+```javascript
+// 筛选标签
+let chlid = document.querySelector('.child');
+chlid.addEventListener('click', function (event) {
+  console.log(event.target); // 输出触发事件的子元素
+  if (event.target.tagName === 'BUTTON') {
+    console.log('按钮被点击了');
+  }
+})
+```
+
+**阻止默认行为**：有些事件会触发浏览器的默认行为，如链接点击、表单提交等。可以使用`event.preventDefault()`方法阻止默认行为。
 
 
 
