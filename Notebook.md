@@ -608,7 +608,7 @@ P.S. `transition`过渡效果加在原元素，不要加在伪元素上（否则
 
 ## JavaScript
 
-### JavaScript基础语法
+### JavaScript语法和基础
 
 #### 基础规则
 
@@ -871,6 +871,7 @@ console.log(array.length); // 输出数组长度
 ##### 常用数组方法
 
 - **map()**：对数组中的每个元素执行指定函数(遍历+处理)，**返回新数组**。
+
 ```javascript
 const newArr = arr.map(function (ele, index) {
   console.log(ele) // 数组元素
@@ -881,12 +882,26 @@ console.log(newArr) // ['redColor', 'blueColor', 'greenColor']
 ```
 
 - **join()**：把数组中所有元素拼接起来，并且通过参数(分隔符)可以定义拼接方式，**常用空字符串使所有字符串相接为一个长串**，以及：
+
 ```javascript
 console.log(newArr.join()) // redColor,blueColor,greenColor 参数为空，逗号分割（默认）
 console.log(newArr.join('')) // redColorblueColorgreenColor 参数为空字符串，则分割消失
 console.log(newArr.join('|')) // redColor|blueColor|greenColor
 ```
 
+- **forEach()**：遍历数组中的每个元素，执行指定函数，但**不返回新数组**。
+
+```javascript
+const arr = ['red', 'blue', 'green'];
+arr.forEach((element, index) => console.log(element, index)) // 输出每个元素和索引
+```
+
+- **filter()**：过滤数组中的元素，筛选数组符合条件的元素，并加入到新数组中，返回这个数组。
+
+```javascript
+const arr = [1, 2, 3, 4, 5];
+const filteredArr = arr.filter((element, index, array) => element > 2); // 筛选大于2的元素
+```
 
 #### 函数
 
@@ -977,6 +992,139 @@ console.log(re) // 30
 !function(){...} () // 也OK
 ```
 
+##### 函数动态参数 arguments
+
+**本质：伪数组，并且只能存在于函数中**。可以接受多个参数。
+- **访问方式**：使用`arguments[index]`访问参数，`arguments.length`获取参数个数。
+```javascript
+function getSum() {
+  let sum = 0
+  for (let i = 0; i < arguments.length; i++) {
+  sum += arguments[i]
+  }
+  return sum
+  }
+
+getSum(2, 3) // Arguments(2)
+getSum(1, 2, 3, 4, 5, 6, 7) // Arguments(7)
+```
+
+##### 剩余参数 ...args
+
+**本质：真数组，也能接受多个参数，同样只能存在于函数中**。开发中推荐使用。
+
+- **定义方式**：在函数参数前加`...`，表示接收剩余的参数，并将其存储为一个数组。
+
+```javascript
+function getSum(a, b, ...arr) {
+  let sum = 0
+  sum += a + b
+  for (let i = 0; i < arr.length; i++) {
+    sum += arr[i]
+  }
+  return sum
+}
+
+console.log(getSum(2, 3)) // 5
+console.log(getSum(2, 3, 4, 5, 6)) // 20
+```
+
+##### 展开运算符
+
+可以将数组展开；注意区分剩余参数。典型应用场景包括数组求最值、合并数组等：
+
+```javascript
+const arr1 = [1, 2, 3]
+console.log(Math.max(...arr1)) // 3 // Math.max()本身不接受数组参数
+
+const arr2 = [4, 5, 6]
+console.log([...arr1, ...arr2]) // [1, 2, 3, 4, 5, 6] // 合并数组
+```
+
+##### 箭头函数
+
+箭头函数是ES6新增的简洁函数语法，使用`=>`符号定义。
+
+**语法**：`(参数1, 参数2) => { 函数体 }`。若只有一个参数，可以省略括号；若函数体只有一行代码，可以省略大括号和`return`关键字。
+
+适用于那些需要匿名函数的地方；不绑定this；属于表达式函数，不存在变量提升。
+
+*p.s. 箭头函数没有动态参数，只有剩余参数...args*
+
+```javascript
+const fun = () => {
+  console.log(123)
+}
+```
+
+```javascript
+const f = (x, y) => {
+  console.log(x, y)
+}
+```
+
+```javascript
+// 简化写法：只有一个形参，可以省略小括号；函数执行体只有一行代码，可以省略大括号
+const f1 = x => console.log(x)
+
+// 一行return可以省略return
+const f2 = (x, y) => x + y
+```
+
+```javascript
+// 箭头函数可以直接返回一个对象
+// 用小括号是因为函数体的花括号和对象的花括号冲突
+const f3 = uname => ({ uname: uname })
+console.log(f3('Rainn')) // {uname: 'Rainn'}
+```
+
+**箭头函数中的this**
+
+箭头函数没有自己的`this`，它会捕获定义时的`this`值，作为自己的`this`。因此，箭头函数不能用作构造函数，也不能使用`arguments`对象。
+
+简单来说：箭头函数本身不生成`this`；如果在内部使用了`this`关键字，它会沿着「作用域链」在上一级寻找`this`。 e.g. 
+
+```javascript
+const obj = {
+  name: 'Rainn',
+  sayHi: function () {
+    console.log(this)
+  }
+}
+obj.sayHi() // obj, sayHi函数自带this
+
+const obj1 = {
+  name: 'Rainn',
+  sayHi: () => console.log(this)
+}
+obj1.sayHi() // window，sayHi函数没有this，且上一级作用域直接到了window
+
+const obj2 = {
+  name: 'Rainn',
+  sayHi: function () {
+    const fn = () => {
+      console.log(this)
+    }
+    fn()
+  }
+}
+obj2.sayHi() // obj, fn上一级作用域（obj的sayHi函数中）有this，所以按作用域链理解即可
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #### 对象
 
 ##### 对象基础知识
@@ -984,6 +1132,9 @@ console.log(re) // 30
 - **对象**：使用花括号`{}`定义的无序数据集合，包含键值对（属性和方法）。
 
 - **对象的声明**：
+
+1. 使用花括号字面量创建对象，键值对用逗号分隔。键名可以是字符串或符号，若是字符串，则可以不加引号，但不推荐这么做。
+
 ```javascript
 let obj = {
     属性1: 值1,
@@ -995,9 +1146,37 @@ let obj = {
         // 方法体
     }
 };
-
-let obj2 = new Object(); // 另一种创建对象的方式
 ```
+
+2. 使用`new Object()`创建对象，通常不推荐这种方式。
+
+```javascript
+const obj = new Object({name: 'rainn', age: 18});
+```
+
+3. **构造函数**：
+   1. 是一种特殊的函数，用来初始化对象、快速创建多个类似的对象； *类似于Java中的类*；
+   2. 约定：函数命名以大写字母开头；并且只能由new关键字执行；
+   3. 构造函数内部不写return（写了也无效）；其返回值就是新创建的对象。
+   4. 实例化过程中，new关键字执行之后，经过以下四步：
+       1. 立即创造一个新的空对象；
+       2. 构造函数中的this指向这个新对象；
+       3. 执行构造函数的代码，修改this，添加属性；
+       4. 返回对象。
+```javascript
+function Student(name, age, gender) {
+  this.name = name
+  this.age = age
+  this.gender = gender
+  this.sayHi = function () {
+    console.log('Singing.')
+  }
+}
+
+// 实例化
+console.log(new Student('rainn', '21', 'male'))
+```
+
 
 - **对象的构成**：
   - **属性**：键值对中的键，表示对象的特征或状态。**属性名：属性值**
@@ -1029,6 +1208,41 @@ let person = {
 for (let key in obj) {
     console.log(key + ': ' + obj[key]); // 输出属性名和属性值，属性名带引号，如'name'
 }
+```
+
+
+- **实例成员 & 静态成员**
+
+1. **实例成员**
+
+实例成员即「实例对象」中的属性和方法（实例属性、实例方法）。
+
+为构造函数传入不同的参数，创建结构相同但值不同的对象；实例对象彼此互不影响。
+
+```javascript
+function Stu(name) {
+  this.name = name
+}
+
+const rainn = new Stu('rainn')
+const stelle = new Stu('stelle')
+
+rainn.name = 'Rainn' // 实例属性
+rainn.sayHi = () => console.log('Hi') // 实例方法
+```
+
+2. **静态成员**
+
+「构造函数」中的属性和方法就是静态成员。
+
+只能通过构造函数访问，例如`Math.PI`，`Math.random()`；静态方法中的`this`指向构造函数。
+
+```javascript
+Stu.school = 'GDUFS' // 静态属性
+Stu.sayHi = function () { // 静态方法
+  console.log(this)
+}
+Stu.sayHi() // 指向Stu函数
 ```
 
 - ** 对象常用方法**：
@@ -1064,6 +1278,223 @@ console.log(date.getDate()) // 16 号
 console.log(date.getDay() + 1) // 0 ~ 6, +1为实际星期几
 ```
 
+#### 基本包装类型
+
+简单的数据类型（如字符串）也有自己的属性和方法，这实际上是因为JS在底层自动进行了包装；字符串、数值、布尔等基本类型都有专门的构造函数，称为包装类型。
+
+``````javascript
+const str = 'rainn'
+console.log(str.length)
+
+// 实际上相当于
+const string = new String('rainn')
+``````
+
+#### 作用域和作用域链
+
+作用域是变量和函数的可访问范围。JavaScript有全局作用域和局部作用域（函数作用域）。作用域链是指在嵌套函数中，内部函数可以访问外部函数的变量。
+
+- **全局作用域**：在脚本的最外层定义的变量和函数，任何地方都可以访问。
+  - 写在script标签和.js文件中的代码
+  - 函数中未使用任何关键字声明的变量为全局变量，不推荐
+  - 尽可能少的声明全局变量，防止变量被污染
+
+- **局部作用域**： 又分为**函数作用域**和**块级作用域**。
+  - **函数作用域**：在函数内部定义的变量和函数，只能在该函数内部访问。
+  - **块级作用域**：使用{}包含的代码块，在其内部声明的变量几乎不能被外面访问；使用`let`和`const`声明的变量具有块级作用域，只能在所在的代码块内访问。var没有块作用域。
+
+- **作用域链**：当访问变量时，JavaScript会从当前作用域开始查找，如果找不到，则向上查找父作用域，直到全局作用域为止。
+  - **本质**：底层的「变量查找机制」
+  - 函数被执行，优先查找当前函数作用域中的变量；当前作用域查找不到则「依次、逐级」查找父级作用域，直到全局作用域
+
+*p.s. 子作用域能访问父作用域，父作用域无法访问子作用域*
+
+#### JS垃圾回收机制
+
+**内存生命周期**
+
+1. **内存分配**（声明变量）、**内存使用**（读写）、**内存回收**（使用完毕，由垃圾回收器处理）
+
+2. 全局变量在关闭页面时回收（一般），局部变量在使用完毕后自动被回收；
+
+**垃圾回收机制的两种办法**
+
+1. **引用计数算法**。核心：定义“内存不再使用”。原理是：多一次引用，次数加1；减少一次引用，次数-1；若引用为0，回收堆空间。但存在一个缺陷，若存在相互引用，则引用永远不会为0，无法回收而造成内存泄露。
+2. **标记清除法**。核心：定时从根部出发扫描对象，如果是可达（reachable）则保留，否则被标记为不再使用，回收内存。
+
+
+#### 闭包
+
+一个函数对周围状态的引用捆绑在一起，内部函数可以访问其外层函数的作用域。简单理解：**闭包 = 内层函数 + 外层函数的变量**。
+
+闭包的应用：使数据私有，同时让外部也可以访问函数内部的变量。
+
+```javascript
+// 将counter闭包
+function count() {
+  let counter = 0
+
+  function f() {
+    counter++
+    console.log(`函数被调用了${counter}次`)
+  }
+
+  return f
+}
+
+const ff = count()
+// 当调用ff()时，counter是私有的，即使修改外部的counter，也不会影响到闭包中的counter
+// 同时，ff引用count里面的counter，所以局部变量不会被垃圾机制回收，可能会造成内存泄露（潜在风险）
+```
+
+#### 变量提升和函数提升
+
+1. var声明的变量，会存在函数提升现象（先使用再声明）。原理是：代码在执行之前，预解析，把所有var声明的变量提升到「当前」作用域的最前面。p.s.
+   提升的是声明，但赋值不会提升。
+2. let / const 声明的变量不存在函数提升
+
+```javascript
+console.log(num) // undefined
+var num = 10
+console.log(num) // 10
+```
+
+3. 函数的声明接近，之所以可以先调用再声明，也是因为预解析而将函数的声明提前到了「当前作用域」的最前面。同样地，提升的只是函数的声明，不提升调用。
+
+
+
+#### 数组解构
+
+将数组元素值「快速、批量」赋值给变量的简洁语法。
+
+```javascript
+const [max, min, avg] = [100, 60, 80]
+// 然后，直接用这个变量
+console.log(max)
+```
+
+可以方便地交换两个变量：
+
+```javascript
+;[b, a] = [a, b] // 此处的分号必须要加
+```
+
+p.s. 关于分号：
+
+```javascript
+// 分号拓展：前面有代码，后面用数组开头的，用分号隔开；当然，立即执行函数开头也要加
+;[1, 2, 3].map(function (item) { // 不加分号就报错
+  console.log(item)
+})
+```
+
+一些特殊情况：
+
+```javascript
+// 1.单元值少而变量多
+const [i, j, k, l] = [1, 2, 3]
+console.log(i, j, k, l) // 1, 2, 3, undefined
+
+// 2.变量少而单元值多
+const [x, y] = [1, 2, 3]
+console.log(x, y) // 1, 2
+
+// 3.利用「剩余参数」解决变量少的问题
+const [v, w, ...args] = [1, 2, 3, 4, 5]
+console.log(v, w, args) // 1, 2, [3, 4, 5]
+
+// 4.防止undefined传递
+const [f = 0, g = 0] = [1]
+console.log(f, g) // 1, 0
+
+// 5.按需导入赋值（即有意地忽视某些单元值）（重）
+const [m, n, , o] = [1, 2, 3, 4]
+console.log(m, n, o) // 1, 2, 4
+
+// 6. 多维数组解构
+const [r, t, p] = [1, 2, [3, 4]]
+console.log(p[0]) // 3
+const [q, e, [h, s]] = [1, 2, [3, 4]]
+console.log(h, s) // 3 ,4
+```
+
+#### 对象解构
+
+和数组解构接近，但有几个注意点：
+
+1. **变量名要和对象属性/方法相同**，因为数组是**无序**的，需要一致才能赋值；否则，变量名输出undefined；
+2. 解构中的变量名不要与其他、外部的变量名冲突。
+
+```javascript
+const obj = {
+  name: 'rainn',
+  age: 18,
+  sayHi: function () {
+    console.log('Hi')
+  }
+}
+
+const {name, age, sayHi} = obj
+```
+
+```javascript
+// 对象解构的变量名的重新改名，语法：旧变量名: 新变量名
+const {name: username} = obj
+console.log(username) // rainn
+```
+
+对于一些嵌套关系，如对象数组，对象嵌套对象，甚至嵌套对象数组，只需记住：**解构体的结构要和被解构体相同**，例如数组被解构，那就
+`const [...] = [...]`；对象被解构，就是`const {...} = {...}`；内部的结构（按需求）保持一致即可。一些例子:
+
+```javascript
+// 2.解构对象数组
+const stu = [
+  {
+    name: 'Charlotte',
+    gender: 'female',
+  },
+  {
+    name: 'Rainn',
+    gender: 'male',
+  }
+]
+const [{name: name1, gender: gender1}, {name: name2, gender: gender2}] = stu // 解构体是数组
+console.log(name1, gender1, name2, gender2) // Charlotte female Rainn male
+```
+
+```javascript
+// 3.对象嵌套对象
+const pig = {
+  name: '佩奇',
+  family: {
+    mother: '猪妈妈',
+    father: '猪爸爸',
+    sister: '乔治',
+  },
+  age: 6
+}
+// 在其中说明是哪个对象
+const {name: pigName, family: {mother, father, sister}, age: pigAge} = pig // 解构体是对象
+```
+
+```javascript
+// 对象嵌套对象，并内嵌在数组
+const pigs = [
+  {
+    name: '佩奇',
+    family: {
+      mother: '猪妈妈',
+      father: '猪爸爸',
+      sister: '乔治',
+    },
+    age: 6
+  }
+]
+
+// 解构体是数组
+const [{name: theName, family: {mother: mo, father: fa, sister: sis}, age: theAge}] = pigs
+console.log(theName, mo, fa, sis, theAge) // 佩奇 猪妈妈 猪爸爸 乔治 6
+```
 
 
 ### Web API
@@ -1450,7 +1881,7 @@ btn.addEventListener('click', function() {
 });
 ```
 
-##### 事件流
+##### 事件流 
 
 事件流是指事件在DOM树中传播的过程，事件完整执行过程中的流动路径，分为三个阶段：
 1. **捕获阶段**：事件从根节点向目标节点传播。
@@ -1509,7 +1940,7 @@ chlid.addEventListener('click', function (event) {
     console.log('按钮被点击了');
   }
 })
-```
+``` 
 
 **阻止默认行为**：有些事件会触发浏览器的默认行为，如链接点击、表单提交等。可以使用`event.preventDefault()`方法阻止默认行为。
 
@@ -1517,8 +1948,10 @@ chlid.addEventListener('click', function (event) {
 #### JS单线程、异步和事件循环
 
 - JS是单线程的；但HTML5 Web Worker标准允许JS脚本创建多个线程
-- 同步：程序执行顺序与任务排列顺序一致；异步则是可以在做一件事的同时去做另一件事；本质：流水线上各个流程的执行顺序不同
-- 同步任务：都在主线程执行，形成执行栈；
+- 同步：程序执行顺序与任务排列顺序一致；逐行执行，需原地等待结果后，才继续向下执行。
+- 异步则是可以在做一件事的同时去做另一件事；调用后耗时，不阻塞代码继续执行（不必原地等待），在将来完成后触发一个回调函数来处理结果。
+- 本质：流水线上各个流程的执行顺序不同
+- **同步任务**：都在主线程执行，形成执行栈；
 - **异步任务**，通过回调函数实现，被添加到任务队列中，包括：
     - 普通事件（click、resize）
     - 资源加载（load、error）

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<form>
+  <span>省份：</span>
+  <select>
+    <option class="province"></option>
+  </select>
+  <span>城市：</span>
+  <select>
+    <option class="city"></option>
+  </select>
+  <span>地区：</span>
+  <select>
+    <option class="area"></option>
+  </select>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/axios@1.10.0/dist/axios.min.js"></script>
+<script>
+  /**
+   * 概念：在回调函数中嵌套回调函数，一直嵌套下去就形成了回调函数地狱
+   * 缺点：可读性差；耦合性严重；异常无法获取
+   */
+
+axios({url: 'https://hmajax.itheima.net/api/province'}).then(result => {
+  const pname = result.data.list[0]
+  console.log(pname)
+  document.querySelector('.province').innerHTML = pname
+
+  axios({url: 'https://hmajax.itheima.net/api/city', params: { pname} }).then(result => {
+    const cname = result.data.list[0]
+    document.querySelector('.city').innerHTML = cname
+
+    axios({url: 'https://hmajax.itheima.net/api/area1', params: { pname, cname}}).then(result => {
+      const area = result.data.list[0]
+      document.querySelector('.area').innerHTML = area
+    })
+  })
+}).catch(error => {
+  console.dir(error) // 没有被此catch所捕获
+})
+
+</script>
+</body>
+</html>
