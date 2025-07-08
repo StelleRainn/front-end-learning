@@ -4,12 +4,18 @@
 *我希望，在这急功近利的时代，依然可以沉下心来，享受技术的愉悦，感受自我的提升；这当然奢侈，但我从不后悔，成长是最好的收获。*
 
 ## 规划
+
 - 开始日期：2025年3月21日
 - 目标：掌握**HTML5/CSS3 + JS + AJAX/Node.js/Webpack/Git + Vue2/3**。
-- 点击[这里](StudyDiary.md)查看[学习日志](StudyDiary.md)，持续追踪每天的学习内容与进度
-- 点击[这里](https://stellerainn.github.io/CodeSprint40/)查看[个人主页](https://stellerainn.github.io/CodeSprint40/)，借助 Github Pages 而托管，可以访问我的更多作品集
+
+## 资源
+
+- [Diary.md](Diary.md)，追踪每天的学习进度与心得
+- [Notebook.md](Notebook.md)，记录学习笔记
+- [个人主页](https://stellerainn.github.io/CodeSprint40/)，借助 Github Pages 而托管，可以访问我的更多作品集
 
 ## 一些鼓励自己的话
+
 - **Break free.**
 - **巡征追猎，对抗拖延。**
 - 大家赛道不同，「时区」不同；将目标放远，去关注自己的目标与动机往前冲，从不必自找焦虑。
@@ -18,7 +24,8 @@
 - 确保每天都能投入5到6小时；**不积小流无以成江海，不积跬步无以至千里。**
 - 每天都向那个清醒而热爱的自己再靠近一点。
 
-## 里程碑
+## 里程碑与大事纪
+
 - 4月7日，上午11:09，完成视频课HTML5+CSS3（44小时）。
 - 4月26日，下午14:34，完成视频课JavaScript（60小时）。
 - 6月23日，将项目由`CodeSprint40`更名为`front-end-learning`，以热情取代冲动。
