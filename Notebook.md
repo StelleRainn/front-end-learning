@@ -118,6 +118,13 @@ if (confirm("确定要删除吗？")) {
 if (String(form_items[i].value).trim() === '') {return alert('请填入完整字段')}`
 ```
 
+##### 使用逻辑中断避免localstorage初次加载报错
+
+```js
+//使用逻辑中断避免初次加载因没有本地存储而报错
+bgUrl && (document.body.style.backgroundImage = `url(${bgUrl})`)
+```
+
 </details>
 
 
@@ -554,6 +561,31 @@ P.S. `transition`过渡效果加在原元素, 不要加在伪元素上（否则�
      - 注意: 部分CSS含`!important`最高优先级, 所以修改时, 自己也要加, 确保层叠有效
    - **字体图标**: 如前面所言, 下载后引入css文件, 写类名即可, 和iconfont相似。
       - p.s.官方文档中, 需要写两个类名, 但其实写一个也可以;例如: `<span class="bi-apple"></span>`
+   
+1. **Bootstrap弹框**：
+   
+   1. 创建弹框对象
+   2. 调用弹框对象内置方法：`.show()`显示，`.hide()`隐藏。 e.g. 
+   
+
+```javascript
+  // 创建弹框对象
+  const modalDom = document.querySelector('.name-box')
+  const modal = new bootstrap.Modal(modalDom)
+
+  // 利用事件，控制显隐
+  const editName = document.querySelector('.edit-btn')
+  editName.addEventListener('click', () => {
+    modal.show()
+  })
+
+  const saveChanges = document.querySelector('.save-btn')
+  saveChanges.addEventListener('click', () => {
+    modal.hide()
+  })
+```
+
+
 
 ### CSS预处理器-less
 
@@ -2605,7 +2637,7 @@ chlid.addEventListener('click', function (event) {
 
 #### axios基本使用
 
-基础三步走：引入js；传入**配置对象**；用then接受结果并作后续处理
+基础三步走：引入js；传入**配置对象**；用`then`接受结果并作后续处理
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -2629,13 +2661,13 @@ URL，即统一资源定位符，主要构成：**协议，域名，资源路径
 资源路径：标记资源在服务器下的具体位置。
 
 
-#### 查询参数
+#### 查询参数 params
 
 浏览器提供给服务器的**额外参数**，让服务器返回浏览器想要的信息。
 
 语法 `url?params1=value1&params2=value2`
 
-axios中，可以在配置对象中加入 **params对象**以使用查询参数：
+axios中，可以在配置对象中加入**params对象**以使用查询参数：
 
 ```javascript
 axios({
@@ -2650,7 +2682,7 @@ axios({
 ```
 
 
-#### 常用请求方法：method
+#### 请求方法 method
 
 指`axios`配置对象中的`method`，参数包括：**GET（获取数据，可以省略），POST（提交数据），PUT，DELETE，PATCH**。
 
@@ -2670,7 +2702,7 @@ axios({
 })
 ```
 
-#### axios错误处理：catch方法
+#### 错误处理 catch方法
 
 在利用then方法接受结果后，可以用catch方法处理可能出现的错误。
 
@@ -2705,9 +2737,9 @@ axios({
 
 由后端工程师完成的，描述接口的文档，包括与服务器通信时使用的URL，请求方法，参数类型等。
 
-#### form-serialize插件：快速获取表单控件的value
+#### form-serialize插件
 
-一个js脚本，引入后可通过serialize()函数快速获取指定表单中所有控件的value值。
+`form-serialize`是一个js脚本，可以**快速获取表单控件的`value`**引入后可通过`serialize()`函数快速获取指定表单中所有控件的`value`值。
 
 ```html
 <script src="lib/form-serialize.js"></script>
@@ -2731,6 +2763,139 @@ axios({
   })
 </script>
 ```
+
+#### FormData
+
+在`axios`中，有时接口文档的参数类型可能为`FormData`，通过这种方式上传图片到服务器。
+
+```js
+  /**
+   * 目标：图片上传，显示到网页上
+   *  1. 获取图片文件
+   *  2. 使用 FormData 携带图片文件
+   *  3. 提交到服务器，获取图片url网址使用
+  */
+
+  // 文件选择：change改变事件
+  document.querySelector('.upload').addEventListener('change', e => {
+    console.log(e.target.files[0])
+    // File {name: 'C51D4E94-908E-4DEA-88E0-A26BC414CE94_1_105_c.jpeg', lastModified: 1750349978690, ...}
+
+    // FormData(重点)
+    const fd = new FormData()
+    fd.append('img', e.target.files[0])
+
+    axios({
+      url: 'https://hmajax.itheima.net/api/uploadimg',
+      method: 'POST',
+      data: fd,
+    }).then(result => {
+      console.log(result)
+      console.log(result.data.data.url)
+      document.querySelector('.my-img').src = result.data.data.url
+    })
+  })
+```
+
+### AJAX原理
+
+#### XMLHttpRequest
+
+`XMLHttpRequest`是浏览器提供的一个API，用于在不重新加载页面的情况下与服务器进行异步通信。它可以发送HTTP请求并接收响应。
+
+##### 基本使用
+
+```js
+  /**
+   * 目标：使用XMLHttpRequest对象与服务器通信
+   *  1. 创建 XMLHttpRequest 对象
+   *  2. 配置请求方法和请求 url 地址
+   *  3. 监听 loadend 事件，接收响应结果
+   *  4. 发起请求
+   */
+
+  let xhr = new XMLHttpRequest()
+  xhr.open('GET', 'https://hmajax.itheima.net/api/province')
+  xhr.addEventListener('loadend', () => {
+    const result = xhr.response // 获取的是JSON字符串
+    // console.log(JSON.parse((result)))
+    document.querySelector('.my-p').innerHTML = JSON.parse(result).list.join('<br>')
+  })
+  xhr.send()
+```
+
+##### XHR查询参数
+
+可以在`open`方法中添加查询参数，格式为`url?key1=value1&key2=value2`。
+
+```js
+  xhr.open('GET', 'https://hmajax.itheima.net/api/city?pname=广西壮族自治区')
+```
+
+*使用`URLSearchParams`可以更方便地构建查询参数：*
+
+```js
+/**
+ * 目标: 根据省份和城市名字, 查询对应的地区列表
+ */
+document.querySelector('.sel-btn').addEventListener('click', () => {
+    const pname = document.querySelector('.province').value
+    const cname = document.querySelector('.city').value
+
+    // 使用URLSearchParams制作查询参数
+    const queryObj = {pname, cname}
+    const paramsObj = new URLSearchParams(queryObj)
+    const queryString = paramsObj.toString() // pname=%E5%8C%97%E4%BA%AC&cname=%E5%8C%97%E4%BA%AC%E5%B8%82
+
+
+    // 插入查询参数进行查询
+    const xhr = new XMLHttpRequest()
+    xhr.open('GET', `https://hmajax.itheima.net/api/area?${queryString}`)
+    xhr.addEventListener('loadend', ()=> {
+      console.log(xhr.response)
+
+      const data = JSON.parse(xhr.response).list
+      console.log(data)
+
+      const htmlStr = data.map( item => `<li class="list-group-item">${item}</li>` ).join('')
+      console.log(htmlStr)
+
+      document.querySelector('.list-group').innerHTML = htmlStr
+    })
+    xhr.send()
+  }
+)
+```
+
+##### XHR数据提交
+
+核心：在`send()`方法中传入数据。
+
+*在准备数据时，记得使用`setRequestHeader()`设置标头*
+
+```js
+/**
+ * 目标：使用xhr进行数据提交-完成注册功能
+ */
+document.querySelector('.reg-btn').addEventListener('click', () => {
+  const xhr = new XMLHttpRequest()
+  xhr.open('POST', 'https://hmajax.itheima.net/api/register')
+  xhr.addEventListener('loadend', () => { console.log(xhr.response) })
+
+  // 准备要提交的数据
+  xhr.setRequestHeader('Content-Type', 'application/json')
+  const user = {username: 'StelleRainn', password: '512451'}
+  const userStr = JSON.stringify(user)
+
+  // 提交数据
+  xhr.send(userStr)
+})
+
+/**
+ * 在“网络 - Fetch/XHR - 标头“中查看标头，在”载荷“中查看请求体。
+ */
+```
+
 
 
 </details>
