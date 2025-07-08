@@ -10,9 +10,9 @@
 
 ## 资源
 
-- [Diary.md](Diary.md)，追踪每天的学习进度与心得
-- [Notebook.md](Notebook.md)，记录学习笔记
 - [个人主页](https://stellerainn.github.io/CodeSprint40/)，借助 Github Pages 而托管，可以访问我的更多作品集
+- [Notebook.md](Notebook.md)，记录学习笔记
+- [Diary.md](Diary.md)，追踪每天的学习心得
 
 ## 一些鼓励自己的话
 
@@ -29,3 +29,4 @@
 - 4月7日，上午11:09，完成视频课HTML5+CSS3（44小时）。
 - 4月26日，下午14:34，完成视频课JavaScript（60小时）。
 - 6月23日，将项目由`CodeSprint40`更名为`front-end-learning`，以热情取代冲动。
+- 7月3日，将`StudyDiary.md`拆分为`Diary.md`和`Notebook.md`，各司其职。
