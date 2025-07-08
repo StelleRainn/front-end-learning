@@ -2592,12 +2592,145 @@ chlid.addEventListener('click', function (event) {
 
 **阻止默认行为**: 有些事件会触发浏览器的默认行为, 如链接点击、表单提交等。可以使用`event.preventDefault()`方法阻止默认行为。
 
-
 </details>
 
 
 <details>
 <summary>AJAX</summary>
+
+## AJAX
+
+### axios
+
+#### axios基本使用
+
+基础三步走：引入js；传入**配置对象**；用then接受结果并作后续处理
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+  axios({
+    url: 'http://hmajax.itheima.net/api/province' // 告诉axios服务器地址
+  }).then(result => {
+    console.log(result) // 看输出中的data{}，包括list和message
+    console.log(result.data.list) // 数组
+  })
+</script>
+```
+
+#### URL的基本了解
+
+URL，即统一资源定位符，主要构成：**协议，域名，资源路径**。
+
+协议：`http://` & `https://` 。规定数据传输的格式 。
+域名：必须要写的。标记服务器在互联网中的方位。
+资源路径：标记资源在服务器下的具体位置。
+
+
+#### 查询参数
+
+浏览器提供给服务器的**额外参数**，让服务器返回浏览器想要的信息。
+
+语法 `url?params1=value1&params2=value2`
+
+axios中，可以在配置对象中加入 **params对象**以使用查询参数：
+
+```javascript
+axios({
+  url: 'http://hmajax.itheima.net/api/city',
+
+  params: {
+    pname: '广西壮族自治区'
+  }
+}).then(re => {
+  console.log(re.data.list)
+})
+```
+
+
+#### 常用请求方法：method
+
+指`axios`配置对象中的`method`，参数包括：**GET（获取数据，可以省略），POST（提交数据），PUT，DELETE，PATCH**。
+
+通常一起出现的，还有**data**对象，也就是要处理的数据对象。
+
+```javascript
+axios({
+    url: 'http://hmajax.itheima.net/api/register',
+    method: 'POST', // 指定请求的方法
+    data: {
+      username: 'Rainn0311',
+      password: '512451',
+    }
+  }).then(result => {
+    console.log(result.data.message) // confirm whether it's succeed
+  })
+})
+```
+
+#### axios错误处理：catch方法
+
+在利用then方法接受结果后，可以用catch方法处理可能出现的错误。
+
+```javascript
+axios({
+    url: 'http://hmajax.itheima.net/api/register',
+    method: 'POST', // 指定请求的方法
+    data: {
+      username: 'StelleRainn',
+      password: '512451',
+    }
+  }).then(result => {
+    console.log(result.data.message) // confirm whether it's succeed
+  }).catch(error => {
+    console.log(error)
+    console.log(error.response.data.message) // error message
+    alert(error.response.data.message) // 弹窗处理
+  })
+})
+```
+
+#### HTTP协议之请求报文与响应报文
+
+指基于HTTP协议，发给服务器（即：请求）或返回给浏览器（即：响应）的内容
+
+请求报文包括请求头、请求行、请求体，在浏览器中，通过“网络”-“Fetch/XHR”可以查看，包括标头（Headers），载荷（Payload）
+
+响应报文基本一致。关注HTTP响应状态码：用来表明请求是否成功完成：
+**2xx：成功 4xx：客户端错误 5xx：服务端错误 （404：找不到资源）**
+
+#### 接口文档
+
+由后端工程师完成的，描述接口的文档，包括与服务器通信时使用的URL，请求方法，参数类型等。
+
+#### form-serialize插件：快速获取表单控件的value
+
+一个js脚本，引入后可通过serialize()函数快速获取指定表单中所有控件的value值。
+
+```html
+<script src="lib/form-serialize.js"></script>
+<script>
+  const form = document.querySelector('.example-form')
+  /**
+   * serialize函数，一次性获取某个表单全部控件的值（value）
+   * @param {form} 要获取哪个表单的值
+   * @param {Object} 配置对象，主要包括hash和empty
+   *  hash 设置数据结构，这决定了返回值类型
+   *    - true：JS对象
+   *    - false：查询字符串
+   *  empty 是否获取空值
+   *    - true：取空值
+   *    - false：不获取空值
+   */
+  document.querySelector('#btn').addEventListener('click', () => {
+    const data = serialize(form, {hash: true, empty: true})
+    console.log(data)
+    console.log(document.querySelector('#name').value)
+  })
+</script>
+```
+
 
 </details>
 
