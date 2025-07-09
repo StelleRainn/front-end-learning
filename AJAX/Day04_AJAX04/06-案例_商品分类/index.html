@@ -47,6 +47,44 @@
      *  3. 合并所有二级分类Promise对象
      *  4. 等待同时成功后，渲染页面
     */
+
+    async function fetchData () {
+      try {
+        const topObj = await axios({url: 'https://hmajax.itheima.net/api/category/top'})
+        const topIDs = topObj.data.data.map(ele => ele.id)
+
+        const subObj = topIDs.map(ele => {
+          return axios({url: 'https://hmajax.itheima.net/api/category/sub', params: {id: ele}})
+        })
+
+        const sub = Promise.all(subObj)
+
+        // 利用循环，对每一个result对象制作HTML代码
+        document.querySelector('.item').innerHTML = ''
+        sub.then(result => {
+          result.forEach(currentResult => {
+            const currentTopName = currentResult.data.data.name
+            const liStr = currentResult.data.data.children.map(e => {
+              return `<li>
+                       <a href="javascript:;">
+                        <img src="${e.picture}" />
+                        <p>${e.name}</p>
+                       </a>
+              </li>`
+            }).join('')
+            document.querySelector('.item').innerHTML +=
+              `
+              <h3>${currentTopName}</h3>
+              <ul>${liStr}</ul>
+              `
+          })
+        })
+      } catch (e) {
+        throw new Error(e.response.data.message)
+      }
+    }
+
+    fetchData()
   </script>
 </body>
 
