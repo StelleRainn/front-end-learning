@@ -2845,7 +2845,8 @@ document.querySelector('.sel-btn').addEventListener('click', () => {
     // 使用URLSearchParams制作查询参数
     const queryObj = {pname, cname}
     const paramsObj = new URLSearchParams(queryObj)
-    const queryString = paramsObj.toString() // pname=%E5%8C%97%E4%BA%AC&cname=%E5%8C%97%E4%BA%AC%E5%B8%82
+    const queryString = paramsObj.toString() 
+    // pname=%E5%8C%97%E4%BA%AC&cname=%E5%8C%97%E4%BA%AC%E5%B8%82
 
 
     // 插入查询参数进行查询
@@ -2895,6 +2896,225 @@ document.querySelector('.reg-btn').addEventListener('click', () => {
  * 在“网络 - Fetch/XHR - 标头“中查看标头，在”载荷“中查看请求体。
  */
 ```
+
+#### Promise 对象（重点）
+
+`Promise`是JavaScript中的一个对象，用于表示异步操作的最终完成（或失败）及其结果值。它可以让我们更方便地处理异步操作，避免回调地狱。
+
+##### Promise的基本使用
+
+```js
+// 创建Promise对象，resolve和reject分别是两个回调函数
+const promise = new Promise((resolve, reject) => {
+  // 异步操作,resolve函数触发后续then执行，reject函数触发catch执行
+  setTimeout(() => {
+    const success = true // 模拟操作成功或失败
+    if (success) {
+      resolve('操作成功') // 成功时调用 resolve
+    } else {
+      reject('操作失败') // 失败时调用 reject
+    }
+  }, 1000)
+})
+
+// 使用then方法处理成功结果，catch方法处理失败结果
+promise.then(result => {
+  console.log(result) // 输出: 操作成功
+}).catch(error => {
+  console.error(error) // 输出: 操作失败
+})
+```
+
+##### Promise的三种状态
+
+`Promise`有三种状态：**pending（等待中）**、**fulfilled（已完成）**和**rejected（已拒绝）**。
+
+1. **pending**: `new Promise()`的初始状态；表示待定，异步操作尚未完成。
+2. **fulfilled**: 异步操作成功完成，调用`resolve()`方法后进入该状态。
+3. **rejected**: 异步操作失败，调用`reject()`方法后进入该状态。
+
+**NOTE**：一旦由`pending`变为`fulfilled`或`rejected`状态，就不能再改变状态了。
+
+```js
+const p = new Promise((resolve, reject) => {
+  console.log('pending状态中的函数会立即执行')
+
+  setTimeout(() => {
+    // resolve('模拟执行成功')
+    reject(new Error('模拟失败结果'))
+  }, 2000)
+})
+
+console.log(p)
+// 在页面刷新后的2s内展开，可以看见 PromiseState: "pending"。2s后展开则为fulfilled或rejected
+
+p.then(result => {
+  console.log(result)
+}).catch(error => {
+  console.log(error)
+})
+```
+
+##### Promise的链式调用
+
+1. **回调函数地狱**
+
+回调函数地狱，指的是当多个异步操作需要依赖前一个操作的结果时，嵌套的回调函数会导致代码难以阅读和维护。
+
+**可读性差；耦合性严重；异常无法获取。**
+
+2. **Promise的链式调用**
+
+`Promise`通过`then()`方法支持链式调用，可以将多个异步操作串联起来，使代码更清晰易读。
+
+**原理**：每个`then()`方法返回一个新的`Promise`对象，从而可以继续使用`then()`方法进行后续操作。
+
+```js
+// new Promise() -> .then(回调函数) -> 新的Promise对象(回调函数中的return结果)
+const p = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('第一个异步操作完成')
+  }, 1000)
+})
+
+// 在第一个Promise的then中返回一个新的Promise
+const p2 = p.then(result => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(`${result}的基础上，第二个异步操作完成`)
+    }, 1000)
+  })
+})
+
+p2.then(result => {
+  console.log(result) // 输出: 第一个异步操作完成的基础上，第二个异步操作完成
+}).catch(error => {
+  console.error(error)
+})
+```
+
+##### Promise.all() 静态方法
+
+`Promise.all()`是一个静态方法，用于将多个`Promise`对象组合成一个新的`Promise`对象。当所有的`Promise`都成功时，返回一个包含所有结果的数组；如果有任何一个`Promise`失败，则返回失败的结果。
+
+```js
+const p1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('第一个异步操作完成')
+  }, 1000)
+})
+
+const p2 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('第二个异步操作完成')
+  }, 2000)
+})
+
+const p3 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('第三个异步操作完成')
+  }, 3000)
+})
+
+Promise.all([p1, p2, p3]).then(results => {
+  console.log(results) // 输出: ['第一个异步操作完成', '第二个异步操作完成', '第三个异步操作完成']
+}).catch(error => {
+  console.error(error)
+})
+```
+
+实践例子：
+
+```js
+const codeArray = ['110100', '310100', '440100', '440300']
+
+const promiseArray = codeArray.map((city) => {
+  // axios本身返回一个Promise对象
+  return axios({url: 'https://hmajax.itheima.net/api/weather', params: {city}})
+})
+
+const p = Promise.all(promiseArray)
+
+p.then(result => {
+  document.querySelector('.my-ul').innerHTML = result.map(element => {
+    return `<li>${element.data.data.area} --- ${element.data.data.weather}</li>`
+  }).join('')
+})
+```
+
+#### 使用XHR和Promise模拟基础axios
+
+```js
+function myAxios (config) {
+  return new Promise((resolve, reject) => {
+
+    // Pt.2 支持查询参数
+    if(config.params) {
+      const paramsObj = new URLSearchParams(config.params)
+      const paramsString = paramsObj.toString()
+      config.url += `?${paramsString}`
+    }
+
+    // Pt.1 基础部分
+    const xhr = new XMLHttpRequest()
+    xhr.open(config.method || 'GET', config.url)
+    xhr.addEventListener('loadend', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(JSON.parse(xhr.response))
+      } else {
+        reject(new Error(xhr.response))
+      }
+    })
+
+    // Pt.3 支持提交数据
+    if(config.data) {
+      xhr.setRequestHeader('Content-Type', 'application/json')
+      const data = JSON.stringify(config.data)
+      xhr.send(data)
+    } else {
+      xhr.send()
+    }
+
+  })
+}
+```
+
+***结论**：`axios`自身会返回一个`Promise`对象，可以使用`then()`和`catch()`方法处理结果和错误。*
+
+#### async/await
+
+`async/await`是ES2017引入的语法糖，用于简化`Promise`的使用，使异步代码更像同步代码。
+
+**概念**：在`async`函数内，使用`await`关键字，获取`Promise`对象"成功状态"结果值
+
+**注意**：`await`必须用在`async`修饰的函数内（`await`会阻止"异步函数内"代码继续执行，原地等待结果）
+
+使用`try-catch`捕获错误
+
+```js
+async function getData() {
+  try {
+    const pObj = await axios({url: "https://hmajax.itheima.net/api/province"})
+    const pname = pObj.data.list[0]
+
+    const cObj = await axios({url: "https://hmajax.itheima.net/api/city", params: { pname }})
+    const cname = cObj.data.list[0]
+
+    const aObj = await axios({url: "https://hmajax.itheima.net/api/area1", params: { pname, cname }})
+    const area = aObj.data.list[0]
+
+    document.querySelector('.province').innerHTML = pname
+    document.querySelector('.city').innerHTML = cname
+    document.querySelector('.area').innerHTML = area
+  } catch (e) {
+    console.dir(e.response.data.message)
+  }
+
+}
+
+getData()
+```
+
 
 
 
