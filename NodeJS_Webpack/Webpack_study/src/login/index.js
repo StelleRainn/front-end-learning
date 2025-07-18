@@ -6,9 +6,6 @@
  */
 import {checkPhone, checkCode} from '../utils/check.js'
 
-console.log(checkPhone('12345678'))
-console.log(checkCode('123456'))
-
 /**
  * 目标2: 修改 webpack 打包出口入口
  * 1. 在项目根目录下新建 webpack.config.js 配置文件
@@ -41,5 +38,22 @@ document.querySelector('.btn').addEventListener('click', () => {
   }
 
   console.log('提交成功。')
-
 })
+
+/**
+ * 目标4: 使用 html-webpack-plugin 插件，自动生成 html 网页文件，并引入打包后的其他资源
+ * 1. 下载 html-webpack-plugin 本地软件包 （npm）
+ * 2. 配置 webpack.config.js,  使 webpack 拥有插件功能
+ * 3. 重新打包，观察效果
+ */
+
+/**
+ * 目标5：打包css代码
+ * 5.1准备css代码，并引入到js中
+ * 5.2下载css-loader和style-loader本地软件包
+ * 5.3配置webpack.config.js让Webpack拥有该加载器功能
+ * 5.4打包后观察效果
+ */
+
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './index.css'
