@@ -5,7 +5,7 @@
 const fs = require('fs')
 const path = require('path')
 
-console.log(__dirname) // Output: /Users/rainn/Desktop/front-end-learning/NodeJS
+console.log(__dirname) // Output: /Users/rainn/Desktop/front-end-learning/NodeJS_Webpack
 
 fs.readFile(path.join(__dirname, '01sample.txt'), (err, data) => {
   if (err) console.log(err)
