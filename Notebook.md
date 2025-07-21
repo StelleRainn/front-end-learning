@@ -3346,9 +3346,14 @@ console.log(getArraySum([1, 4, 7]))
 ```
 
 **语法总结**:
-- **默认导出**: `export default {}`
+- **默认导出**: `export default {}` 
+
+  *p.s. { }表示一个配置对象。比如，若`config`是一个配置对象，则可以使用语句`export default config`*
+
 - **默认导入**: `import 变量名 from '模块名或路径'`
+
 - **命名导出**: `export 修饰定义语句`
+
 - **命名导入**: `import { 同名变量 } from '模块名或路径'`
 
 ### Node.js包管理
