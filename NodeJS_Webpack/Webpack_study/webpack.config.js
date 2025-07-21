@@ -34,7 +34,10 @@ const config = {
     // webpack 打包生成 html 文件
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './public/login.html'), // 模版 html
-      filename: path.resolve(__dirname, './dist/login/login.html') // 最终输出文件 html
+      filename: path.resolve(__dirname, './dist/login/login.html'), // 最终输出文件 html
+
+      // 自定义属性，在html模板中<%=htmlWebpackPlugin.options.useCdn%>访问使用
+      useCdn: process.env.NODE_ENV === 'production'
     }),
 
     // css 提取器
@@ -45,7 +48,7 @@ const config = {
 
     new webpack.DefinePlugin({
       'process.env.NODE_ENV' : JSON.stringify(process.env.NODE_ENV)
-    })
+    }),
 
 
 
@@ -89,6 +92,13 @@ const config = {
       `...`,
       new CssMinimizerPlugin(),
     ]
+  },
+
+  // 解析
+  resolve: {
+    alias: {
+      '@' : path.resolve(__dirname, 'src')
+    }
   }
 
 };
@@ -103,6 +113,15 @@ if (process.env.NODE_ENV === 'development') {
   config.devtool =  'inline-source-map'
 }
 
+if (process.env.NODE_ENV === 'production') {
+  // 外部扩展（让webpack防止import的包被打包进来）
+  config.externals = {
+    //key：代码中import from后面的模块标识字符串
+    //value：替换在原地的变量名（要和cdn暴露在全局的变量名一致）
+    'axios': 'axios',
+    'bootstrap/dist/css/bootstrap.min.css': 'bootstrap',
+  }
+}
 
 // 导出配置对象
 export default config

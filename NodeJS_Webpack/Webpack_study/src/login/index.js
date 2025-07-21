@@ -195,6 +195,31 @@ console.log('处于开发环境，log可用')
  *  15.1 在 webpack.config.js 配置 devtool 选项和值开启功能（注意：只在开发环境下使用）
  *  15.2 代码中造成错误，并在开发服务器环境下查看效果
  */
-consolee.warn('123')
+
+// consolee.warn('123')
+
+/**
+ * 目标16：路径解析别名设置
+ *  作用：让我们前端代码引入路径更简单（而且使用绝度路径）
+ *  16.1 在 webpack.config.js 中配置 resolve.alias 选项
+ *  16.2 在代码中尝试并在开发环境和生产环境测试效果
+ */
+import secAxios from '@/utils/request.js'
+
+console.log(secAxios)
+
+
+/**
+ * 目标17：第三方库使用 CDN 加载引入
+ * 需求：开发模式使用本地第三方库，生产模式下使用CDN加载引入
+ *  17.1 在 html 中引入第三方库的 CDN 地址并用模板语法判断
+ *  17.2 配置 webpack.config.js 中 externals 外部扩展选项（防止某些 import 的包被打包）
+ *  17.3 两种模式下打包观察效果
+ */
+
+
+
+
+
 
 
