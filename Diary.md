@@ -1,8 +1,40 @@
 # Diary 
 
-## June 2025
 
-<details><summary>点击展开 / 关闭<summary>
+<details><summary> July 2025 </summary>
+
+## July 2025
+
+### July 22nd, Tue, Day 124
+
+>“我将，巡征追猎！”
+
+过去的时光有些惆怅、有些纠结、也有些挣扎。但过去的已然无法改变，伤春悲秋亦无意义。
+
+*而情绪的问题，多为自找烦恼。*
+
+所以，去**密集做事**，情绪的问题，需要物理的手段作为解答的良药，需要现实的支点作为突破口。
+
+同时，应当克服诱惑与干扰，认识到**专注力**是十分宝贵的，少刷点手机，保持核心价值观中的**纯粹、专注、沉浸、热爱**，专注做事情。
+
+就从小事开始，把一件件小事**罗列、明确出来**，然后再具体地把它们完成，即**计划意识**。
+
+明日，就从`Git`开始，继续自我成长的技能学习之路吧！
+
+>Everybody gets high sometimes you know,
+what else can we do we’re feeling low,
+so take a deep breath and let it go,
+you shouldn’t be drowning on your own.
+— *Cold Water, Justin Bieber*	
+
+
+
+</details>
+
+
+<details><summary>June 2025</summary>
+
+## June 2025
 
 ### June 1st, Sun, Day 73
 
@@ -29,9 +61,11 @@
 
 </details>
 
-## May 2025
 
-<details><summary>点击展开 / 关闭</summary>
+
+<details><summary>May 2025</summary>
+
+## May 2025
 
 ### May 29, Thu, Day 70
 
@@ -54,9 +88,11 @@ Gey things done. 把事做好。
 
 </details>
 
-## April 2025
 
-<details><summary> 点击展开 / 关闭 </summary> 
+
+<details><summary> April 2025 </summary> 
+
+## April 2025
 
 ### Apr 28th, Mon, Day 39
 
@@ -255,10 +291,14 @@ APIs6-综合案例：表单验证相关知识 & APIs7-综合案例：图片的�
 
 </details>
 
-## March 2025
+
 
 <details>
-<summary> 点击展开 / 关闭 </summary>
+
+
+<summary> March 2025 </summary>
+
+## March 2025
 
 ### Mar 31st, Mon, Day 11
 
