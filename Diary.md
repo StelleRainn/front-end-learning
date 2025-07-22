@@ -21,11 +21,15 @@
 
 明日，就从`Git`开始，继续自我成长的技能学习之路吧！
 
->Everybody gets high sometimes you know,
-what else can we do we’re feeling low,
-so take a deep breath and let it go,
-you shouldn’t be drowning on your own.
-— *Cold Water, Justin Bieber*	
+> *Everybody gets high sometimes you know*
+> 
+> *What else can we do we’re feeling low*
+> 
+> *So take a deep breath and let it go*
+> 
+> *You shouldn’t be drowning on your own*
+> 
+> — *Cold Water, Justin Bieber*	
 
 
 
