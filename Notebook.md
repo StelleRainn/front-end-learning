@@ -3937,3 +3937,98 @@ if (process.env.NODE_ENV === 'production') {
    - 通过DefinePlugin注入到前端代码
 
 </details>
+
+
+
+<details><summary>Git</summary>
+
+## Git
+
+### Git简介
+
+Git是一个分布式版本控制系统，用于跟踪文件的变化，特别是源代码文件。它允许多个开发者协同工作，管理项目的历史记录。
+
+### 初次安装
+
+**配置用户名和邮箱**:
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "
+```
+
+**查看清单**:
+
+```bash
+git config --list
+git ls-files
+```
+
+### Git仓库
+
+Git仓库(repository)是一个包含项目文件和版本历史的目录。可以是本地仓库或远程仓库。
+
+#### 创建本地仓库
+
+```bash
+# 在当前目录下初始化一个新的Git仓库
+git init
+```
+
+#### 克隆远程仓库
+
+```bash
+# 克隆远程仓库到本地
+git clone
+```
+
+### Git的三个区域
+
+Git有三个主要区域：工作区、暂存区和版本库。
+1. **工作区**: 实际开发时操作的文件夹 -> `working_folder`
+2. **暂存区**: 用于临时保存修改的文件，准备提交到版本库（暂存改动过的文件）-> `.git/index`
+3. **版本库**: 存储所有提交记录的地方，包含所有版本的历史记录（产生一个版本快照） -> `.git/objects`
+
+**相关命令**:
+`git add <file>`: 将文件添加到暂存区
+`git add .`: 将所有修改的文件添加到暂存区
+`git commit -m "message"`: 将暂存区的修改提交到版本库
+
+```text
+folder ----(git add)----> .git/index -----(git commit)----> .git/objects
+```
+
+**暂存区的使用**：
+1.**暂存区 -> 覆盖 -> 工作区**: *(确认完全覆盖时才使用)*
+```bash
+git restore --staged <file>
+```
+2.**从暂存区移除文件**: *(不删除工作区文件)*
+```bash
+git rm --cached <file>
+```
+
+
+### Git文件状态
+
+Git文件有三种状态：**已跟踪（tracked**）、**未跟踪（untracked）** 和 **忽略（ignored）**。
+
+**查看文件状态**:
+
+```bash
+git status 
+git status -s
+```
+
+
+
+
+
+</details>
+
+
+
+
+
+
+
