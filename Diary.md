@@ -2,8 +2,17 @@
 
 
 <details><summary> July 2025 </summary>
-
 ## July 2025
+
+### July 25th, Fri, Day 127
+
+宿舍只有我一个了。
+
+谁也不会放过这样一个得以满足与放纵的机会吧。
+
+> 水川星霖 | StelleRainn Mizukawa | みずかわ せいりん
+>
+> *于此，我即是我，一如既往，一往无前。*
 
 ### July 24th, Thu, Day 126
 
