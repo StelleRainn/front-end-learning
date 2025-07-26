@@ -3984,7 +3984,7 @@ git clone
 
 ### Git的三个区域
 
-Git有三个主要区域：工作区、暂存区和版本库。
+Git有三个主要区域：**工作区、暂存区和版本库**。
 1. **工作区**: 实际开发时操作的文件夹 -> `working_folder`
 2. **暂存区**: 用于临时保存修改的文件，准备提交到版本库（暂存改动过的文件）-> `.git/index`
 3. **版本库**: 存储所有提交记录的地方，包含所有版本的历史记录（产生一个版本快照） -> `.git/objects`
@@ -4016,12 +4016,68 @@ Git文件有三种状态：**已跟踪（tracked**）、**未跟踪（untracked�
 **查看文件状态**:
 
 ```bash
-git status 
 git status -s
 ```
 
+### Git回退版本
 
+**查看Git提交历史**:
 
+```bash
+git log --oneline
+```
+
+输出example：
+
+```text
+bf1674d (HEAD -> main, origin/main, origin/HEAD) 水川星霖 | StelleRainn Mizukawa | みずかわ せいりん
+47a5fed git
+cd254cf git
+bd89051 Update Diary
+ccc14b7 Update Diary
+```
+
+**回退到指定版本**:
+
+1. **软回退**: 保留工作区和暂存区的修改，回退到指定版本。
+
+```bash
+git reset --soft <commit_id>
+```
+
+2. **混合回退**: 保留工作区的修改，清空暂存区，回退到指定版本。*与`git reset`等价*
+
+```bash
+git reset --mixed <commit_id>
+```
+
+3. **硬回退**: 清空工作区和暂存区，完全回退到指定版本。
+
+*hard模式下，回退内容先到暂存区，对比与工作区是否一致（有无存到暂存区），一致则直接删除工作区内容，不一致则保留工作区内容。*
+
+```bash
+git reset --hard <commit_id>
+```
+
+### Git忽略文件
+
+**忽略文件**: 在Git中，可以通过`.gitignore`文件来指定哪些文件或目录不需要被Git跟踪。**让git仓库更小更快，避免重复无意义的文件管理。**
+
+新建`.gitignore`文件，并添加需要忽略的文件或目录。 e.g.
+
+```text
+# 忽略所有的日志文件
+*.log
+# 忽略node_modules目录
+node_modules/
+# 忽略所有的临时文件
+*.tmp
+# 忽略特定文件
+config.json
+dist
+```
+
+**注意**: `.gitignore`文件本身需要被Git跟踪，否则无法生效。
 
 
 </details>
