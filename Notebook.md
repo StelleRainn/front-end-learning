@@ -4079,6 +4079,26 @@ dist
 
 **注意**: `.gitignore`文件本身需要被Git跟踪，否则无法生效。
 
+### 分支
+
+**概念**：本质上是指向提交节点的可变指针，默认名字为`master`或`main`。
+
+**HEAD指针影响工作区域/暂存区的代码状态** *HEAD -> master*
+
+**作用**：分支允许在同一代码库中并行开发不同的功能或修复bug，避免相互干扰。
+
+**常用命令**:
+```bash
+# 查看当前分支
+git branch
+
+# 创建新分支：以HEAD指针指向的当前提交记录为起点，创建一个新的分支
+git branch <branch_name>
+
+# 切换到指定分支
+git checkout <branch_name>
+
+
 
 </details>
 
