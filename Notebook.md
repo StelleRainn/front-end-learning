@@ -4088,17 +4088,65 @@ dist
 **作用**：分支允许在同一代码库中并行开发不同的功能或修复bug，避免相互干扰。
 
 **常用命令**:
+
 ```bash
 # 查看当前分支
 git branch
 
-# 创建新分支：以HEAD指针指向的当前提交记录为起点，创建一个新的分支
+# 创建新分支：以当前HEAD指针指向提交记录为起点，创建一个新的分支
 git branch <branch_name>
 
 # 切换到指定分支
 git checkout <branch_name>
 
+# 创建并切换到新分支：创建新分支并立即切换到该分支
+git checkout -b <branch_name>
 
+# 合并分支：将指定分支的修改合并到当前分支，并产生一个新的提交记录
+# 注意：合并前需要先切换到目标分支
+git merge <branch_name>
+
+# 删除分支：删除指定分支/旧分支
+git branch -d <branch_name>
+```
+
+**合并冲突**：不同分支中，对同一个文件的同一部分修改，Git无法干净的合并，产生合并冲突。 需要手动在工作区中解决冲突，然后再提交。
+
+
+### Git远程仓库
+
+**概念**：远程仓库是托管在服务器上的Git仓库，允许多个开发者协同工作。
+
+**常用命令**:
+
+```bash
+# 添加远程仓库
+git remote add <remote_name> <remote_url>
+
+# 查看远程仓库
+git remote -v
+
+# 删除远程仓库
+git remote remove <remote_name>
+
+# 推送版本记录到远程仓库
+git push -u <remote_name> <branch_name>
+
+# 完整写法
+git push --set-upstream <remote_name> <local_branch_name>:<remote_branch_name>
+
+# 拉取远程仓库的最新版本到本地
+git pull <remote_name> <branch_name>
+# 等价于：
+git fetch <remote_name> <branch_name> && git merge <remote_name>/<branch_name>
+
+# 拉取合并
+git pull --rebase <remote_name> <branch_name>
+
+# 克隆远程仓库到本地
+git clone <remote_url>
+
+```
 
 </details>
 

@@ -30,3 +30,4 @@
 - 4月26日，下午14:34，完成视频课JavaScript（60小时）。
 - 6月23日，将项目由`CodeSprint40`更名为`front-end-learning`，以热情取代冲动。
 - 7月3日，将`StudyDiary.md`拆分为`Diary.md`和`Notebook.md`，各司其职。
+- 7月27日，晚上22:16，「于忏悔时出发」的第1天，完成视频课AJAX/Node.js/Webpack/Git（26小时）。
