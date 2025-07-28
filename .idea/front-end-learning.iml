@@ -12,5 +12,6 @@
     <orderEntry type="library" name="font_3736758_vxpb728fcyh" level="application" />
     <orderEntry type="library" name="axios" level="application" />
     <orderEntry type="library" name="reset.css" level="application" />
+    <orderEntry type="library" name="vue" level="application" />
   </component>
 </module>

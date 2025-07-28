@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<div id="app">
+  {{msg}}
+  {{count}}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<script>
+  const app = new Vue({
+    el: '#app',
+
+    // 响应式数据，数据改变，视图自动更新
+    data: {
+      msg: 'hello, vue.',
+      count: 1
+    }
+  })
+
+  // data中的数据，最终会被添加到实例上
+  // 1. 访问数据：实例.属性, 如 app.msg
+  // 2. 修改数据：实例.属性 = '值', 如 app.msg = 'hallo',  app.count++
+</script>
+
+</body>
+</html>

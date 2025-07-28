@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<!--创建Vue实例，渲染数据-->
+<!--
+  1.准备容器
+  2. 引入包
+  3. 创建实例
+  4. 添加配置项 => 完成渲染
+-->
+
+
+<!--准备容器-->
+<div id="app">
+  {{msg}}
+  <h4>{{num}}</h4>
+</div>
+
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<script>
+  // new Vue() 创建Vue实例
+  const app = new Vue({
+    // el: 配置选择器，指定Vue管理的是哪个盒子
+    el: '#app',
+
+    // data：提供数据
+    data: {
+      msg: 'Hello, Vue!',
+      num: 123456
+    }
+  })
+</script>
+
+
+
+</body>
+</html>
