@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--
+    v-on 语法2: v-on:事件名 = "methods中的函数名"
+    同样可以简写为 @事件名
+-->
+
+<div id="app">
+    <button @click = "fn">控制显隐</button>
+    <h3 v-show="flag">一个消息</h3>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+
+<script>
+    const app = new Vue({
+        el: '#app',
+        data: {
+            flag: false,
+        },
+        methods: {
+            fn() {
+                this.flag = !this.flag
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

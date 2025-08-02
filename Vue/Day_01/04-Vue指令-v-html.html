@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!-- Vue指令：带有v-前缀的特殊的属性，不同属性对应不同的功能-->
+
+<!-- v-html="表达式"，动态设置元素的 innerHTML -->
+
+
+<div id="app">
+    <div v-html="msg"></div>
+    <div v-html="msg2"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<script>
+    const app = new Vue({
+        el: '#app',
+        data: {
+            msg: `<a href="https://apple.com.cn/" target="_blank">苹果官网</a>`,
+            msg2: `动态设置innerHTML元素`
+        }
+    })
+</script>
+</body>
+</html>

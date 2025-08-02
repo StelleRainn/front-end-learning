@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--
+    v-on： 注册事件： 添加监听事件 + 事件处理逻辑
+    语法1: v-on:事件名 = "内联语句"
+    其中，v-on: 可以简化为 @
+-->
+
+<div id="app">
+    <button v-on:click="count--">-</button>
+    <span>{{count}}</span>
+    <button @click="count++">+</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+
+<script>
+    const app = new Vue({
+        el: '#app',
+        data: {
+            count: 100
+        }
+    })
+</script>
+
+</body>
+</html>
