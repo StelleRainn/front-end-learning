@@ -26,6 +26,10 @@
         },
         methods: {
             fn() {
+              /**
+               * methods 函数内的this指向Vue实例
+               * 即 console.log(this === app) 的结果为 true
+               */
                 this.flag = !this.flag
             }
         }

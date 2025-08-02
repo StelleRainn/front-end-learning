@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--
+    v-for: 基于数据（包括数组、对象、数字等）循环，多次渲染整个元素
+    语法: v-for="(item, index) in 数据"
+    item: 当前遍历的元素
+    index: 当前遍历元素的索引
+
+    不需要index时，可以省略不写
+-->
+
+<div id="app">
+    <h3>Rainn的水果店</h3>
+    <ul>
+        <li v-for="(item, index) in list">
+            {{item}} - {{index}}
+        </li>
+    </ul>
+
+    <ul>
+        <li v-for="item in list">
+            {{item}}
+        </li>
+    </ul>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+
+<script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        list: ['西瓜', '苹果', '鸭梨']
+      }
+    })
+</script>
+
+</body>
+</html>
