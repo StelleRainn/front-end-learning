@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="./css/index.css" />
+<title>记事本</title>
+</head>
+<body>
+
+<!-- 主体区域 -->
+<section id="app">
+  <!-- 输入框 -->
+  <header class="header">
+    <h1>小黑记事本</h1>
+<!--      添加事项功能： 通过v-model获取表单内容，通过@click注册事件，然后在methods中编写添加逻辑-->
+    <input placeholder="请输入任务" class="new-todo" v-model="single"/>
+    <button @click="add" class="add">添加任务</button>
+  </header>
+  <!-- 列表区域 -->
+  <section class="main">
+    <ul class="todo-list">
+<!--        渲染列表功能：通过v-for渲染数组内容，注意补充:key保证唯一性-->
+<!--        删除功能：通过@click注册事件，获取事件id，使用数组filter方法更新数组-->
+      <li class="todo" v-for="(item, index) in list" :key="item.id">
+        <div class="view">
+          <span class="index">{{ index + 1 }}</span> <label>{{ item.name }}</label>
+          <button @click="remove( item.id )" class="destroy"></button>
+        </div>
+      </li>
+    </ul>
+  </section>
+  <!-- 统计和清空 -->
+<!--    v-show: 优化显示-->
+  <footer class="footer" v-show="list.length">
+    <!-- 统计: 计算数组长度 -->
+    <span class="todo-count">合 计:<strong> {{ list.length }} </strong></span>
+    <!-- 清空: 数组置空 -->
+    <button @click="empty" class="clear-completed">
+      清空任务
+    </button>
+  </footer>
+</section>
+
+<!-- 底部 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+
+  const app = new Vue({
+    el: '#app',
+    data: {
+      list: [
+        {id: 1, name: "吃饭"},
+        {id: 2, name: "睡觉"},
+        {id: 3, name: "洗澡"},
+        {id: 4, name: "代码"},
+      ],
+      single: '',
+    },
+    methods: {
+      remove(id) {
+        this.list = this.list.filter(item => item.id !== id  )
+      },
+      add() {
+        // 判空
+        if(this.single.trim() === "") {
+          alert("请输入内容")
+          return
+        }
+        // unshift方法：在最前面添加
+        this.list.unshift({
+          id: +new Date().getTime(), // 假设后端传入一个合理的id
+          name: this.single
+        })
+        this.single = ''
+      },
+      empty() {
+        this.list = []
+      }
+    }
+  })
+
+</script>
+</body>
+</html>
