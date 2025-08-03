@@ -74,7 +74,7 @@
       <!-- 条件选择框 -->
       <div class="query">
         <span>翻译成的语言：</span>
-        <select>
+        <select v-model="obj.lang">
           <option value="italy">意大利</option>
           <option value="english">英语</option>
           <option value="german">德语</option>
@@ -88,7 +88,7 @@
           <span><i>⌨️</i>文档翻译</span>
         </div>
         <div class="output-wrap">
-          <div class="transbox">mela</div>
+          <div class="transbox">{{ result }}</div>
         </div>
       </div>
     </div>
@@ -106,12 +106,70 @@
         el: '#app',
         data: {
           words: '',
-          // obj: {
-          //   words: ''
-          // }
+
+          obj: {
+            words: 'defalut',
+            lang: 'italy',
+          },
+
+          result: ''
         },
-        // 具体讲解：(1) watch语法 (2) 具体业务实现
-       
+
+       // (1) watch 语法的简单写法
+       // watch: {
+       //   //  根级别的属性直接侦听
+       //   // words (newVal, oldVal) {
+       //   //   console.log(newVal, oldVal);
+       //   // }
+       //
+       //   // 对象中的子属性，需要提供路径，注意添加引号
+       //   // 'obj.words' (newVal, oldVal) {
+       //   //   console.log(newVal, oldVal);
+       //   // }
+       //
+       //   // 包含业务逻辑：axios请求与防抖
+       //   'obj.words' (newVal) {
+       //     // 防抖：触发侦听后，检测有无定时器，有则清除，启动新的定时器
+       //     if (this.timer) clearTimeout(this.timer);
+       //     this.timer = setTimeout( async () => {
+       //       const res = await axios({
+       //         method: 'get',
+       //         url: 'https://applet-base-api-t.itheima.net/api/translate',
+       //         params: {
+       //           words: newVal
+       //         }
+       //       })
+       //       console.log(res.data.data)
+       //       this.result = res.data.data
+       //     }, 300)
+       //   }
+       // }
+
+      //  (2) watch 完整语法
+      //   业务逻辑：只要 words 或 lang 之中的任何一个发生变化，就被侦听
+        watch: {
+          obj: {
+            // deep: true → 针对复杂数据类型进行深度监视；只要对象中任意一个发生变化，都会被侦听
+            deep: true,
+
+            // immediate: true → 立刻执行一次 handler
+            immediate: true,
+
+            // handler 事件处理函数
+            handler(newVal, oldVal) {
+              if (this.timer) clearTimeout(this.timer);
+              this.timer = setTimeout( async () => {
+                const res = await axios({
+                  url: 'https://applet-base-api-t.itheima.net/api/translate',
+                  method: 'get',
+                  params: newVal,
+                })
+
+                this.result = res.data.data
+              }, 300)
+            }
+          }
+        }
       })
     </script>
   </body>
