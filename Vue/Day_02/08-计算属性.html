@@ -21,6 +21,13 @@
 </head>
 <body>
 
+<!--
+    概念：基于现有的数据，计算出来的新的属性。当被依赖的数据发生变化，将自动重新计算。
+    语法：
+    1. 声明在 computed 配置项中，一个计算属性对应一个函数，在该函数中编写求值的逻辑
+    2. 使用时，同样是插值表达式 {{ 计算属性名 }}
+-->
+
   <div id="app">
     <h3>小黑的礼物清单</h3>
     <table>
@@ -35,7 +42,7 @@
     </table>
 
     <!-- 目标：统计求和，求得礼物总数 -->
-    <p>礼物总数：? 个</p>
+    <p>礼物总数：{{ totalCount }} 个</p>
   </div>
   <script src="./vue.js"></script>
   <script>
@@ -44,10 +51,19 @@
       data: {
         // 现有的数据
         list: [
-          { id: 1, name: '篮球', num: 1 },
-          { id: 2, name: '玩具', num: 2 },
+          { id: 1, name: '篮球', num: 2 },
+          { id: 2, name: '玩具', num: 4 },
           { id: 3, name: '铅笔', num: 5 },
         ]
+      },
+      computed: {
+        totalCount() {
+          // 基于现有数据，编写求值逻辑
+          // 计算属性函数内部，可以直接通过 this 访问到 Vue app 示例
+
+          // 这里，使用数组 reduce 方法进行累加求和
+          return this.list.reduce((prev, curr) => prev + curr.num, 0);
+        }
       }
     })
   </script>

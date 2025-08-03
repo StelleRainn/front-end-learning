@@ -9,23 +9,41 @@
 <body>
 
   <div id="app">
-    姓：<input type="text"><br>
-    名：<input type="text"><br>
-    <p>姓名：</p>
-    <button>修改姓名</button>
+    姓：<input type="text" v-model="firstName"><br>
+    名：<input type="text" v-model="lastName"><br>
+    <p>姓名：{{ fullName }}</p>
+    <button @click="changeName">修改姓名</button>
   </div>
   <script src="./vue.js"></script>
   <script>
     const app = new Vue({
       el: '#app',
       data: {
-
+        firstName: '',
+        lastName: '',
       },
       computed: {
+        // 完整写法：包括 get 和 set 两个方法
+        fullName: {
+          // 当计算属性被访问/获取是，执行 get，且有缓存时，优先取缓存
+          // 将返回值作为求值的结果
+          get() {
+            return this.firstName + this.lastName
+          },
 
+          // 当计算属性被修改赋值时，执行 set
+          // 被修改的值传递给 set 函数的形参
+          set(val) {
+            console.log(val)
+            this.firstName = val.slice(0,1) // 假设没有复姓
+            this.lastName = val.slice(1)
+          }
+        }
       },
       methods: {
-
+        changeName() {
+          this.fullName = '克劳德'
+        }
       }
     })
   </script>

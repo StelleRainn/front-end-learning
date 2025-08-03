@@ -33,8 +33,34 @@
 </head>
 <body>
 
+<!--
+    computed 计算属性
+        作用：封装了一段对于数据的处理，求得一个结果。
+        语法：
+            写在 computed 配置项中
+            作为属性，直接使用️ → this.计算属性 {{ 计算属性 }}
+
+    methods 方法
+        作用：给实例提供一个方法，调用以处理业务逻辑
+        语法：
+            写在 methods 配置项中
+            作为方法，需要调用 → this.方法名() {{ 方法名() }} @事件名='方法名'
+
+    计算属性的特性：
+    计算属性会对计算出来的结果进行缓存，再次使用便直接读取缓存；除非依赖项变化了才自动重新计算并再次缓存
+-->
+
   <div id="app">
-    <h3>小黑的礼物清单🛒<span>?</span></h3>
+<!--    <h3>小黑的礼物清单🛒<span>{{ totalCount }}</span></h3>-->
+<!--    <h3>小黑的礼物清单🛒<span>{{ totalCount }}</span></h3>-->
+<!--    <h3>小黑的礼物清单🛒<span>{{ totalCount }}</span></h3>-->
+<!--    <h3>小黑的礼物清单🛒<span>{{ totalCount }}</span></h3>-->
+<!--    <h3>小黑的礼物清单🛒<span>{{ totalCount }}</span></h3>-->
+    <h3>小黑的礼物清单🛒<span>{{ totalCountFn() }}</span></h3>
+    <h3>小黑的礼物清单🛒<span>{{ totalCountFn() }}</span></h3>
+    <h3>小黑的礼物清单🛒<span>{{ totalCountFn() }}</span></h3>
+    <h3>小黑的礼物清单🛒<span>{{ totalCountFn() }}</span></h3>
+    <h3>小黑的礼物清单🛒<span>{{ totalCountFn() }}</span></h3>
     <table>
       <tr>
         <th>名字</th>
@@ -60,10 +86,18 @@
           { id: 3, name: '铅笔', num: 5 },
         ]
       },
+
+      methods: {
+        totalCountFn() {
+          console.log('methods 函数已执行') // 打印 5 次
+          return this.list.reduce((acc, item) =>  acc + item.num ,0)
+        }
+      },
+
       computed: {
         totalCount () {
-          let total = this.list.reduce((sum, item) => sum + item.num, 0)
-          return total
+          console.log('计算属性已执行') // 只打印一次
+          return this.list.reduce((sum, item) => sum + item.num, 0)
         }
       }
     })

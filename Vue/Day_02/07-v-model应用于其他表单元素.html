@@ -16,15 +16,21 @@
 </head>
 <body>
 
+<!--
+    v-model
+    常见的表单元素都可以用 v-model 绑定关联，从而快速获取或设置表单元素的值
+    v-model 会根据控件类型自动选取正确的方法来更新元素
+-->
+
   <div id="app">
     <h3>小黑学习网</h3>
 
     姓名：
-      <input type="text"> 
+      <input type="text" v-model="username">
       <br><br>
 
     是否单身：
-      <input type="checkbox"> 
+      <input type="checkbox" v-model="isSingle">
       <br><br>
 
     <!-- 
@@ -34,8 +40,8 @@
       结合 Vue 使用 → v-model
     -->
     性别: 
-      <input type="radio">男
-      <input type="radio">女
+      <input type="radio" name="gender" value="1" v-model="gender">男
+      <input type="radio" name="gender" value="0" v-model="gender">女
       <br><br>
 
     <!-- 
@@ -45,16 +51,16 @@
       结合 Vue 使用 → v-model
     -->
     所在城市:
-      <select>
-        <option>北京</option>
-        <option>上海</option>
-        <option>成都</option>
-        <option>南京</option>
+      <select v-model="cityID">
+        <option value="101">北京</option>
+        <option value="102">上海</option>
+        <option value="103">成都</option>
+        <option value="104">南京</option>
       </select>
       <br><br>
 
     自我描述：
-      <textarea></textarea> 
+      <textarea v-model="desc"></textarea>
 
     <button>立即注册</button>
   </div>
@@ -63,7 +69,11 @@
     const app = new Vue({
       el: '#app',
       data: {
-
+        username: 'Mizukawa',
+        isSingle: true,
+        gender: '1',
+        cityID: '102',
+        desc: 'Hello'
       }
     })
   </script>

@@ -1330,8 +1330,7 @@ arr.map(function (current) {...})
     1. 参数: 回调函数, 起始值。
     2. 回调函数中, 至少包含prev和current两个值；
     3. 如果没有起始值, 则默认以数组第一个元素作为起始值。 p.s. 注意一个细节: 第一个元素未必是个数值, 所以建议至少填入起始值0。
-    4. 注意: 每次循环（包括首次）, **当前元素**的位置都在current上；prev可以理解为**累计值**, 
-       每次循环后, 都会把当前return结果作为prev传递给下一次循环。
+    4. 注意: 每次循环（包括首次）, **当前元素**的位置都在current上；prev可以理解为**累计值**, 每次循环后, 都会把当前return结果作为prev传递给下一次循环。
 
 ``````javascript
 const total = arr.reduce(function (previousValue, currentValue) {
