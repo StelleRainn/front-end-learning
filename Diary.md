@@ -5,6 +5,14 @@
 
 ## July 2025
 
+### Aug 4nd, Mon, Day 137
+
+> A rest day.
+
+今天休息一天，在 B 站 2 刷了《哪吒2》。
+
+明天先复习一下已经学习过的内容，然后开启视频课 Day 3.
+
 ### Aug 1st, Fri, Day 134
 
 > The Vocation, last day. Return to school.

@@ -11,8 +11,9 @@
 ## 资源
 
 - [个人主页](https://stellerainn.github.io/CodeSprint40/)，借助 Github Pages 而托管，可以访问我的更多作品集
-- [Notebook.md](Notebook.md)，记录学习笔记
 - [Diary.md](Diary.md)，追踪每天的学习心得
+- [Notebook.md](Notebook.md)，记录学习笔记
+- [NotebookII.md](NotebookII.md)，知识手册第二辑
 
 ## 一些鼓励自己的话
 
