@@ -5,6 +5,20 @@
 
 ## July 2025
 
+### Aug 5nd, Tue, Day 138
+
+> Still the fucking same boring day.
+>
+> 看了《超神学院》，童年回忆拉满，蔷薇（卡特琳娜）真好看
+
+必须切断干扰源，沉浸到我的学习中去。
+
+正式定下新阶段的艺名：
+
+中：水川雨蔷薇
+日：みずかわ あめばら（Mizukawa Amebara）
+英：StelleRainn Rosa Mizukawa
+
 ### Aug 4nd, Mon, Day 137
 
 > A rest day.
