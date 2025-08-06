@@ -5,7 +5,25 @@
 
 ## July 2025
 
-### Aug 5nd, Tue, Day 138
+### Aug 6th, Wed, Day 139
+
+> 一事无成？
+> 
+> 何苦不能让自己心安理得地休息呢？
+> 
+> 但一想，似乎也休息过了。
+> 
+> 不管怎样，但，我不想挣扎；玩就当尽兴，学就当沉浸。
+>
+> 反倒是现在这样的拖延，才是最致命的。在体感上，一无所获。
+>
+> 切断媒体干扰源，好好学习；至于娱乐时间，你可以多追追剧和广播剧，欣赏有质量的内容，而非一味地刷。
+> 
+> 我要，为这个麻木不堪的时代带来破晓！
+> 
+> 忙起来，去做你热爱的事情！
+
+### Aug 5th, Tue, Day 138
 
 > Still the fucking same boring day.
 >
@@ -19,7 +37,7 @@
 日：みずかわ あめばら（Mizukawa Amebara）
 英：StelleRainn Rosa Mizukawa
 
-### Aug 4nd, Mon, Day 137
+### Aug 4th, Mon, Day 137
 
 > A rest day.
 
