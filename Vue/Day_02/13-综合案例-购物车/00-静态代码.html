@@ -45,7 +45,9 @@
 
           <!-- 身体 -->
           <div class="tbody">
+            <!-- :class 动态绑定类名 -->
             <div class="tr" :class="{ active: item.isChecked}" v-for="(item, index) in fruitList" :key="item.id" >
+              <!-- 表单数据使用 v-model 双向绑定 -->
               <div class="td"><input type="checkbox" v-model="item.isChecked"/></div>
               <div class="td"><img :src="item.icon" alt="" /></div>
               <div class="td">{{ item.price }}</div>
@@ -54,6 +56,8 @@
                   <button class="decrease" @click="item.num === 0 ? 0 : item.num-- "> - </button>
                   <!--  注意 自减运算符的优先级，如有歧义，请使用如下语句；-->
                   <!--<button class="decrease" @click="item.num = item.num === 0 ? 0 : item.num - 1 "> - </button>-->
+                  <!-- 可以不使用三元运算符，配合 :disabled 禁用按钮 -->
+                  <!-- <button class="decrease" :disabled="item.num === 0" @click="item.num-- "> - </button> -->
                   <span class="my-input__inner">{{item.num}}</span>
                   <button class="increase" @click="item.num++"> + </button>
                 </div>
@@ -133,7 +137,7 @@
         computed: {
           checkAll: {
             get() {
-              // 由所有小按钮的状态 决定 大按钮
+              // 由所有小按钮的状态动态决定大按钮的状态
               return this.fruitList.every(item => item.isChecked)
             },
             set(val) {
