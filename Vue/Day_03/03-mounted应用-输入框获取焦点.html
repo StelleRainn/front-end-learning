@@ -89,7 +89,7 @@
     mounted () {
       // 等待输入框渲染完毕
       console.log(document.querySelector('#inp'));
-      // 得到 <input type="text" id="inp"> v-model 消失，说明不再是模板，而是已经渲染完毕的 DOM
+      // 得到 <input type="text" id="inp">, v-model 消失，说明不再是模板，而是已经渲染完毕的 DOM
 
       // 让输入框获取焦点（.focus方法）
       document.querySelector('#inp').focus()

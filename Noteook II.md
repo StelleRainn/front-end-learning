@@ -848,6 +848,392 @@ watch: {
 }
 ```
 
+### Vue 实例生命周期
+
+#### 概念
+
+**概念**：Vue实例从创建到销毁的过程，每个阶段都有特定的钩子函数可以调用。Vue生命周期是指Vue实例从创建到销毁的整个过程，在这个过程中会自动执行一些函数，这些函数被称为生命周期钩子函数。
+
+**生命周期四个阶段**：① 创建 ② 挂载 ③ 更新 ④ 销毁
+
+1. **创建阶段**：创建响应式数据
+2. **挂载阶段**：渲染模板
+3. **更新阶段**：修改数据，更新视图
+4. **销毁阶段**：销毁Vue实例
+
+![vue生命周期](assets-for-notebook/1682065991013.png)
+
+#### 生命周期钩子（hook）
+
+Vue生命周期过程中，会**自动运行一些函数**，被称为【**生命周期钩子**】→ 让开发者可以在【**特定阶段**】运行**自己的代码**
+
+![vue钩子函数](assets-for-notebook/1682066040295.png)
+
+**八大生命周期钩子**：
+
+**1. 创建阶段**：
+- `beforeCreate`：实例初始化后，数据观测和事件配置之前调用，此时data和methods都不可用
+- `created`：实例创建完成，数据观测和事件配置完成，但DOM未挂载，**常用于发送初始化请求**
+
+**2. 挂载阶段**：
+- `beforeMount`：挂载开始前调用，模板编译完成但未挂载到页面
+- `mounted`：实例挂载完成，DOM已挂载，**常用于DOM操作**
+
+**3. 更新阶段**：
+- `beforeUpdate`：数据更新时调用，发生在虚拟DOM打补丁之前
+- `updated`：数据更新后调用，发生在虚拟DOM打补丁之后
+
+**4. 销毁阶段**：
+- `beforeDestroy`：实例销毁前调用，实例仍然完全可用
+- `destroyed`：实例销毁后调用，所有事件监听器被移除
+
+**模板代码**：
+```javascript
+const app = new Vue({
+  el: '#app',
+  data: {
+    count: 100,
+    title: '计数器'
+  },
+
+  // 八大钩子函数
+  // 1. 创建阶段
+  beforeCreate() {
+    console.log('beforeCreate 响应式数据未准备', this.count);
+    // this.count 输出 undefined
+  },
+
+  created() {
+    console.log('created 数据准备完毕', this.count);
+    // 常用于：发送初始化请求，获取数据
+  },
+
+  // 2. 挂载阶段
+  beforeMount() {
+    console.log('beforeMount DOM未被渲染', document.querySelector('span').innerHTML);
+    // 输出 {{ count }}
+  },
+
+  mounted() {
+    console.log('mounted DOM已渲染', document.querySelector('span').innerHTML);
+    // 常用于：DOM操作，如获取焦点、初始化图表等
+  },
+
+  // 3. 更新阶段
+  beforeUpdate() {
+    // 需要有数据更新，才会触发更新阶段
+    console.log('beforeUpdate 数据更新了，DOM未更新', document.querySelector('span').innerHTML);
+  },
+  updated() {
+    console.log('updated 数据更新了，DOM也更新了', document.querySelector('span').innerHTML);
+  },
+
+  // 4. 销毁阶段
+  // 在控制台中，使用 app.$destroy() 销毁组件
+  beforeDestroy() {
+    console.log('beforeDestroy 组件销毁前');
+  },
+  destroyed() {
+    console.log('destroyed 组件销毁后, 此时点击dom元素不再有响应');
+  }
+})
+```
+
+#### created 应用场景
+
+**概念**：created钩子在Vue实例创建完成后立即调用，此时数据观测和事件配置已完成，但DOM还未挂载。
+
+**适用场景**：
+- 发送初始化请求获取数据
+- 进行数据的初始化处理
+- 启动定时器
+- 订阅消息
+
+**模板代码**：
+```javascript
+async created() {
+  // 发送请求获取数据
+  const res = await axios.get('接口地址');
+  this.数据属性 = res.data.data;
+}
+```
+
+**实际应用 - 新闻列表**：
+```javascript
+const app = new Vue({
+  el: '#app',
+  data: {
+    newsList: []
+  },
+  async created() {
+    // 页面加载完成后立即获取新闻数据
+    const res = await axios.get('http://hmajax.itheima.net/api/news');
+    this.newsList = res.data.data;
+  }
+})
+```
+
+```html
+<ul>
+  <li class="news" v-for="(item, index) in newsList" :key="item.id">
+    <div class="left">
+      <div class="title">{{ item.title }}</div>
+      <div class="info">
+        <span>{{ item.source }}</span>
+        <span>{{ item.time }}</span>
+      </div>
+    </div>
+    <div class="right">
+      <img :src="item.img" alt="">
+    </div>
+  </li>
+</ul>
+```
+
+#### mounted 应用场景
+
+**概念**：mounted钩子在Vue实例挂载完成后调用，此时DOM已经渲染完成，可以进行DOM操作。
+
+**适用场景**：
+- DOM操作（获取焦点、获取元素尺寸等）
+- 初始化第三方库（如图表库、地图等）
+- 启动轮播图等需要DOM的功能
+
+**模板代码**：
+```javascript
+mounted() {
+  // DOM操作
+  document.querySelector('#元素id').focus();
+  
+  // 初始化第三方库
+  this.chart = echarts.init(document.querySelector('#chart'));
+}
+```
+
+**实际应用 - 输入框获取焦点**：
+```javascript
+const app = new Vue({
+  el: '#app',
+  data: {
+    words: ''
+  },
+  mounted() {
+    // 等待输入框渲染完毕后获取焦点
+    document.querySelector('#inp').focus();
+  }
+})
+```
+
+```html
+<div class="search-box">
+  <input type="text" v-model="words" id="inp">
+  <button>搜索一下</button>
+</div>
+```
+
+**实际应用 - 初始化图表**：
+```javascript
+const app = new Vue({
+  el: '#app',
+  data: {
+    list: []
+  },
+  mounted() {
+    // echarts 使用 → 3步走（前提：已经引入了 echarts 库）
+
+    //  1. 初始化echarts图表
+    // 声明变量时，由于需要在外部函数中使用 setOption 函数以动态更新图表，所以提升变量，将 myChart 挂载到 Vue 实例上
+    this.myChart = echarts.init(document.querySelector('#main'));
+    
+    // 2. 配置图表选项
+    this.option = {
+      title: {
+        text: '消费账单占比',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      series: [{
+        name: '消费账单',
+        type: 'pie',
+        radius: '50%',
+        data: []
+      }]
+    };
+    
+    // 3. 使用配置项显示图表
+    // 注意统一使用 this，因为该变量统一挂载到了实例上；没有 this 则会出现未定义报错
+    this.myChart.setOption(this.option);
+  }
+})
+```
+
+#### 生命周期综合案例 - 小黑记账清单
+
+**功能需求**：
+1. 页面加载时获取账单数据（created）
+2. DOM渲染完成后初始化图表（mounted）
+3. 添加、删除账单功能
+4. 实时更新饼图显示
+
+**完整实现**：
+```javascript
+const app = new Vue({
+  el: '#app',
+  data: {
+    list: [],
+    name: '',
+    price: ''
+  },
+  
+  computed: {
+    totalPrice() {
+      return this.list.reduce((prev, curr) => prev + curr.price, 0);
+    }
+  },
+  
+  // 1. 页面加载时获取数据
+  created() {
+    this.renderer();
+  },
+  
+  // 2. DOM渲染完成后初始化图表
+  mounted() {
+    // 初始化echarts实例
+    this.myChart = echarts.init(document.querySelector('#main'));
+    
+    // 配置图表选项
+    this.option = {
+      title: {
+        text: '消费账单占比',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left'
+      },
+      series: [{
+        name: '消费账单',
+        type: 'pie',
+        radius: '50%',
+        data: [],
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }]
+    };
+    
+    this.myChart.setOption(this.option);
+  },
+  
+  methods: {
+    // 渲染数据和图表
+    async renderer() {
+      const res = await axios.get('https://applet-base-api-t.itheima.net/bill', {
+        // get 方法需要单独的 params 对象
+        params: {
+          creator: 'StelleRainn'
+        }
+      });
+      this.list = res.data.data;
+      
+      // 更新图表数据
+      if (this.myChart) {
+        this.myChart.setOption({
+          // 需要修改什么，就修改什么
+          series: [{
+            // 注意加上括号以避免对象被识别为函数体或代码段
+            data: this.list.map(curr => ({
+              value: curr.price, 
+              name: curr.name
+            }))
+          }]
+        });
+      }
+    },
+    
+    // 添加账单
+    async addItem() {
+      // 校验表单数据
+      if (!this.name.trim() || !this.price) {
+        alert('请填写完整信息');
+        return;
+      }
+      
+      await axios.post('https://applet-base-api-t.itheima.net/bill', {
+        creator: 'StelleRainn',
+        name: this.name,
+        price: this.price
+      });
+      
+      // 重新渲染
+      this.renderer();
+      
+      // 清空表单
+      this.name = '';
+      this.price = '';
+    },
+    
+    // 删除账单
+    async delItem(id) {
+      await axios.delete('https://applet-base-api-t.itheima.net/bill/' + id);
+      this.renderer();
+    }
+  }
+})
+```
+
+```html
+<div id="app">
+  <div class="contain">
+    <!-- 左侧列表 -->
+    <div class="list-box">
+      <!-- 添加表单 -->
+      <form class="my-form">
+        <input v-model="name" type="text" placeholder="消费名称" />
+        <input v-model="price" type="text" placeholder="消费价格" />
+        <button type="button" @click="addItem">添加账单</button>
+      </form>
+      
+      <!-- 账单列表 -->
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>编号</th>
+            <th>消费名称</th>
+            <th>消费价格</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in list" :key="item.id">
+            <td>{{ index + 1 }}</td>
+            <td>{{ item.name }}</td>
+            <td :class="{ red: item.price > 178 }">{{ item.price.toFixed(2) }}</td>
+            <td><a href="javascript:;" @click="delItem(item.id)">删除</a></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4">消费总计： {{ totalPrice.toFixed(2) }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    
+    <!-- 右侧图表 -->
+    <div class="echarts-box" id="main"></div>
+  </div>
+</div>
+```
 ### 综合案例技巧
 
 #### 数组操作方法
