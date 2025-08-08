@@ -70,9 +70,9 @@
 
           <!-- 添加资产 -->
           <form class="my-form">
-            <input type="text" class="form-control" placeholder="消费名称" />
-            <input type="text" class="form-control" placeholder="消费价格" />
-            <button type="button" class="btn btn-primary">添加账单</button>
+            <input v-model="name" type="text" class="form-control" placeholder="消费名称" />
+            <input v-model="price" type="text" class="form-control" placeholder="消费价格" />
+            <button type="button" class="btn btn-primary" @click="addItem">添加账单</button>
           </form>
 
           <table class="table table-hover">
@@ -85,22 +85,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>帽子</td>
-                <td>99.00</td>
-                <td><a href="javascript:;">删除</a></td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>大衣</td>
-                <td class="red">199.00</td>
-                <td><a href="javascript:;">删除</a></td>
+              <tr v-for="(item, index) in list" :key="item.id" >
+                <td>{{ index + 1 }}</td>
+                <td>{{ item.name }}</td>
+                <td :class="{ red: item.price > 178}">{{ item.price.toFixed(2)}}</td>
+                <td><a href="javascript:;" @click="delItem(item.id)">删除</a></td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="4">消费总计： 298.00</td>
+                <td colspan="4">消费总计： {{ totalPrice.toFixed(2) }}</td>
               </tr>
             </tfoot>
           </table>
@@ -120,15 +114,151 @@
        * 
        * 功能需求：
        * 1. 基本渲染
+       *  立即发送请求，取到数据
+       *  将数据存入变量
+       *  v-for 渲染
+       *  使用计算属性完成总价计算
+       * 
        * 2. 添加功能
+       *  双向绑定获取表单数据，准备发送
+       *  按钮注册点击事件，发送添加请求
+       *  添加是后台数据完成了添加，前端并没有改动，所以需要重新渲染
+       * 
        * 3. 删除功能
+       *  按钮注册点击事件，获取要删除的 id 作为参数，发送删除请求
+       *  重新渲染
+       * 
        * 4. 饼图渲染
+       *  初始化一个 echarts → 注意要在 dom 加载完成后才渲染，所以要在 mounted 中
+       *  根据数据实时生成饼图
+       *  可以查阅 echarts 官方文档快速上手 
        */
       const app = new Vue({
         el: '#app',
         data: {
-          
+          list: [],
+          name: '',
+          price: '',
         },
+
+        computed: {
+          totalPrice() {
+            return this.list.reduce((prev, curr) => prev + curr.price, 0)
+          }
+        },
+
+        // 1. 基本渲染 → 因为要复用，将渲染函数封装到 methods 中
+        created () {
+          // const res = await axios.get('https://applet-base-api-t.itheima.net/bill', {
+          //   // get 方法需要单独的 params 对象
+          //   params: {
+          //     creator: 'StelleRainn'
+          //   }
+          // })
+          // this.list = res.data.data
+
+         this.renderer() 
+        },
+
+        // 4. 渲染饼图
+        mounted () {
+          // 基于准备好的dom，初始化echarts实例
+
+          // 声明变量时，由于需要在 renderer 函数中使用 setOption 函数以动态更新图表，所以提升变量，将 myChart 挂载到 Vue 实例上
+          this.myChart = echarts.init(document.querySelector('#main'))
+
+          // 指定图表的配置项和数据
+          this.option = {
+
+            // 标题
+            title: {
+              text: '消费账单占比',
+              // subtext: 'Fake Data',
+              left: 'center'
+            },
+
+            // 提示
+            tooltip: {
+              trigger: 'item'
+            },
+
+            // 图例
+            legend: {
+              orient: 'vertical',
+              left: 'left'
+            },
+
+            // 数据项
+            series: [
+              {
+                name: '消费账单',
+                type: 'pie',
+                radius: '50%',
+                data: [
+                  // { value: 1048, name: 'Search Engine' },
+                  // { value: 735, name: 'Direct' },
+                  // { value: 580, name: 'Email' },
+                  // { value: 484, name: 'Union Ads' },
+                  // { value: 300, name: 'Video Ads' }
+                ],
+                emphasis: {
+                  itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ]
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          // 注意统一使用 this，因为该变量统一挂载到了实例上；没有 this 则会出现未定义报错
+          this.myChart.setOption(this.option);
+        },
+
+        methods: {
+          // 复用渲染函数
+          async renderer () {
+            const res = await axios.get('https://applet-base-api-t.itheima.net/bill', {
+            // get 方法需要单独的 params 对象
+            params: {
+              creator: 'StelleRainn'
+            }
+          })
+          this.list = res.data.data
+          
+          // 需要修改什么内容，就只传什么内容
+          this.myChart.setOption({
+              series: [
+                {
+                  // data: [ { value: 1048, name: 'Search Engine' },]
+                  // 注意加上括号以避免对象别被识别为函数体或代码段
+                  data: this.list.map(curr => ({value: curr.price, name: curr.name}))
+                }
+              ]
+            })
+          },
+
+          async addItem() {
+            const res = await axios.post('https://applet-base-api-t.itheima.net/bill', {
+              creator: 'StelleRainn',
+              name: this.name,
+              price: this.price,
+            })
+            this.renderer()
+
+            // 记得清空原表单
+            this.name = ''
+            this.price = ''
+          },
+
+          async delItem(id) {
+            const res = await axios.delete('https://applet-base-api-t.itheima.net/bill/' + id)
+            console.log(res);
+            this.renderer()
+          }
+        }
       })
     </script>
   </body>
