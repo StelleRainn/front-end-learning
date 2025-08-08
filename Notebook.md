@@ -3953,7 +3953,7 @@ Git是一个分布式版本控制系统，用于跟踪文件的变化，特别�
 
 ```bash
 git config --global user.name "Your Name"
-git config --global user.email "
+git config --global user.email ""
 ```
 
 **查看清单**:

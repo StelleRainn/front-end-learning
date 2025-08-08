@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <div id="app">
+    <h3>{{ title }}</h3>
+    <div>
+      <button @click="count--">-</button>
+      <span>{{ count }}</span>
+      <button @click="count++">+</button>
+    </div>
+  </div>
+  <script src="./vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        count: 100,
+        title: '计数器'
+      },
+
+      // 八大钩子函数
+      // 1. 创建阶段
+      beforeCreate () {
+        console.log('beforeCreate 响应式数据未准备', this.count);
+        // this.count 输出 undefined
+
+      },
+
+      created () {
+        console.log('数据准备完毕', this.count);
+      },
+
+      // 2. 挂载阶段
+      beforeMount () {
+        console.log('beforeMount DOM未被渲染', document.querySelector('span').innerHTML);
+        // 输出 {{ count }}
+      },
+
+      mounted () {
+        console.log('mounted DOM已渲染', document.querySelector('span').innerHTML);
+        
+      },
+
+      // 3. 更新阶段
+      beforeUpdate () {
+        // 需要有数据更新，才会触发更新阶段
+        console.log('beforeUpdate 数据更新了，DOM未更新', document.querySelector('span').innerHTML);
+      },
+      updated () {
+        console.log('updated 数据更新了，DOM也更新了', document.querySelector('span').innerHTML);
+      },
+
+      // 4. 销毁阶段
+      // 在控制台中，使用 app.$destroy() 销毁组件
+      beforeDestroy () {
+        console.log('beforeDestroy 组件销毁前');
+      },
+      destroyed () {
+        console.log('destroyed 组件销毁后, 此时点击dom元素不再有响应');
+      }
+    })
+  </script>
+</body>
+
+</html>
