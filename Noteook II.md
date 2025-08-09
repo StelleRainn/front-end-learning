@@ -1234,6 +1234,555 @@ const app = new Vue({
   </div>
 </div>
 ```
+
+### 工程化开发与脚手架
+
+#### 开发 Vue 的两种方式
+
+- 核心包传统开发模式：基于html / css / js 文件，直接引入核心包，开发 Vue。
+- **工程化开发模式：基于构建工具（例如：webpack）的环境中开发Vue。**
+
+**工程化开发模式的优势**：
+- 提供了项目的结构和组织方式，方便开发和维护。
+- 集成了代码转换、压缩、热更新等功能，支持新语法（如ES6+，LESS，Sass，TS等）和新特性（如组件化），提高开发效率。
+- 支持模块化开发，方便代码的拆分和复用。
+- 提供了丰富的插件和工具，满足不同项目的需求。
+
+#### 脚手架 Vue CLI
+
+##### 基本介绍
+
+Vue CLI 是Vue官方提供的一个**全局命令工具**
+
+可以帮助我们**快速创建**一个开发Vue项目的**标准化基础架子**。【集成了webpack配置】
+
+##### 好处：
+
+1. 开箱即用，零配置
+2. 内置babel等工具
+3. 标准化的webpack配置
+
+##### 使用步骤：
+
+1. **全局安装**（只需安装一次即可）
+   ```bash
+   # 使用 yarn
+   yarn global add @vue/cli
+   # 或使用 npm
+   npm i @vue/cli -g
+   ```
+
+2. **查看版本**
+   ```bash
+   vue --version
+   ```
+
+3. **创建项目**
+   ```bash
+   vue create project-name
+   ```
+   > 注意：项目名不能使用中文，建议使用小写字母和连字符
+
+4. **启动项目**
+   ```bash
+   # 进入项目目录
+   cd project-name
+   # 启动开发服务器
+   yarn serve
+   # 或
+   npm run serve
+   ```
+   > 具体命令可在 package.json 的 scripts 字段中查看
+
+##### 创建项目时的配置选项
+
+- **Default ([Vue 2] babel, eslint)**：默认配置，适合快速开始
+- **Default ([Vue 3] babel, eslint)**：Vue 3 默认配置
+- **Manually select features**：手动选择功能，可自定义配置
+  - Babel：ES6+ 语法转换
+  - TypeScript：TypeScript 支持
+  - Progressive Web App (PWA) Support：PWA 支持
+  - Router：Vue Router 路由
+  - Vuex：状态管理
+  - CSS Pre-processors：CSS 预处理器（Sass/Less/Stylus）
+  - Linter / Formatter：代码检查和格式化
+  - Unit Testing：单元测试
+  - E2E Testing：端到端测试
+
+#### 项目结构与运行流程
+
+##### 项目目录结构
+
+```
+project-name/
+├── node_modules/           # 项目依赖的模块（自动生成，不需要手动修改）
+├── public/                 # 静态资源目录（不会被webpack处理）
+│   ├── index.html         # 项目的入口HTML模板文件
+│   └── favicon.ico        # 网站图标
+├── src/                   # 项目的源代码目录（开发的主要工作区域）
+│   ├── assets/            # 静态资源目录（会被webpack处理）
+│   │   ├── images/        # 图片资源
+│   │   ├── styles/        # 样式文件
+│   │   └── fonts/         # 字体文件
+│   ├── components/        # 可复用组件目录
+│   │   ├── BaseComponent.vue
+│   │   └── CommonComponent.vue
+│   ├── views/             # 页面级组件目录（路由组件）
+│   │   ├── Home.vue
+│   │   └── About.vue
+│   ├── router/            # 路由配置目录
+│   │   └── index.js
+│   ├── store/             # 状态管理目录（Vuex）
+│   │   └── index.js
+│   ├── utils/             # 工具函数目录
+│   │   └── request.js
+│   ├── App.vue            # 项目的根组件
+│   └── main.js            # 项目的入口JS文件
+├── package.json           # 项目的依赖配置文件
+├── package-lock.json      # 依赖版本锁定文件
+├── README.md              # 项目的说明文档
+├── .gitignore             # Git忽略文件配置
+├── babel.config.js        # Babel配置文件
+└── vue.config.js          # Vue CLI配置文件（可选）
+```
+
+##### 核心文件说明
+
+- **src/main.js**：项目入口文件，负责创建Vue实例并挂载到DOM
+- **src/App.vue**：根组件，所有其他组件的父组件
+- **public/index.html**：HTML模板，Vue应用最终会挂载到这里
+- **package.json**：项目配置文件，包含依赖、脚本命令等信息
+
+##### 重点文件详解
+
+1. **main.js** - 项目入口文件
+   ```javascript
+   import { createApp } from 'vue'
+   import App from './App.vue'
+   
+   createApp(App).mount('#app')
+   ```
+
+2. **App.vue** - 根组件
+   ```vue
+   <template>
+     <div id="app">
+       <!-- 应用内容 -->
+     </div>
+   </template>
+   
+   <script>
+   export default {
+     name: 'App'
+   }
+   </script>
+   
+   <style>
+   /* 全局样式 */
+   </style>
+   ```
+
+3. **index.html** - HTML模板文件
+   ```html
+   <!DOCTYPE html>
+   <html lang="">
+     <head>
+       <meta charset="utf-8">
+       <title>Vue App</title>
+     </head>
+     <body>
+       <div id="app"></div>
+       <!-- built files will be auto injected -->
+     </body>
+   </html>
+   ```
+
+##### 项目运行流程
+
+```mermaid
+graph TD
+    A[yarn serve 启动项目] --> B[Webpack 构建]
+    B --> C[加载 main.js]
+    C --> D[创建 Vue 实例]
+    D --> E[挂载 App.vue 到 #app]
+    E --> F[渲染到 index.html]
+    F --> G[浏览器显示页面]
+```
+
+**详细步骤：**
+1. 执行 `yarn serve` 启动开发服务器
+2. Webpack 开始构建项目，处理各种文件类型
+3. 自动加载 `src/main.js` 入口文件
+4. `main.js` 创建 Vue 应用实例并引入 `App.vue`
+5. Vue 将 `App.vue` 组件渲染并挂载到 `public/index.html` 中的 `#app` 元素
+6. 浏览器接收处理后的 HTML、CSS、JS 文件并显示页面
+7. 开发服务器启动热重载，文件变化时自动刷新页面
+
+
+#### 组件化开发
+
+##### 基本介绍
+
+组件化开发是指将一个复杂的应用拆分成多个组件，每个组件负责完成特定的功能，组件之间可以组合起来完成整个应用的功能。
+
+##### 好处：
+
+1. 代码复用：组件可以被多个地方使用，避免重复编写代码。
+2. 维护方便：组件化开发使得代码结构清晰，维护方便。
+3. 开发效率高：组件化开发使得开发效率高，开发周期短。
+
+##### 组件化开发的实现方式
+
+1. 全局组件：在main.js文件中注册组件，全局可用。
+2. 局部组件：在需要使用的组件中注册组件，只在当前组件可用。
+
+##### 根组件 App.vue
+
+整个应用最上层的组件，包裹所有的小组件（类似树的根节点）
+
+##### 组件的三个组成部分
+
+1. **`<template>`**：组件的模板，定义组件的结构和内容
+   ```vue
+   <template>
+     <div class="my-component">
+       <h1>{{ title }}</h1>
+       <p>{{ content }}</p>
+     </div>
+   </template>
+   ```
+
+2. **`<script>`**：JavaScript逻辑，定义组件的行为和逻辑
+   ```vue
+   <script>
+   export default {
+     name: 'MyComponent',
+     data() {
+       return {
+         title: '组件标题',
+         content: '组件内容'
+       }
+     },
+     methods: {
+       handleClick() {
+         console.log('按钮被点击')
+       }
+     }
+   }
+   </script>
+   ```
+
+3. **`<style>`**：组件的样式，定义组件的外观和布局
+   ```vue
+   <style scoped>
+   .my-component {
+     padding: 20px;
+     border: 1px solid #ccc;
+   }
+   </style>
+   ```
+
+##### 样式作用域和预处理器
+
+- **scoped 属性**：使样式只作用于当前组件
+  ```vue
+  <style scoped>
+  /* 样式只在当前组件生效 */
+  </style>
+  ```
+
+- **CSS 预处理器支持**：
+  ```bash
+  # 安装 Less
+  yarn add less less-loader -D
+  
+  # 安装 Sass
+  yarn add sass sass-loader -D
+  ```
+  
+  ```vue
+  <style lang="less" scoped>
+  @primary-color: #007bff;
+  
+  .my-component {
+    color: @primary-color;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  </style>
+  ```
+
+##### 普通组件的注册使用-局部注册
+
+顾名思义，只能在注册的组件内使用。
+
+**步骤**：
+
+1. 在components目录下创建组件文件（例如：MyComponent.vue）
+2. 在需要使用的组件中引入组件文件
+   ```javascript
+   import MyComponent from '@/components/MyComponent.vue'
+   ```
+3. 在组件中注册组件
+   ```javascript
+   export default {
+     components: {
+      <!-- 同名变量简写 -->
+       MyComponent
+     }
+   }
+   ```
+4. 在组件的模板中使用组件, 当成html标签使用即可
+   ```html
+   <MyComponent><MyComponent />
+   ```
+   *p.s. 组件命名规范：大驼峰命名法*
+
+##### 普通组件的注册使用-全局注册
+
+全局注册的组件，在项目的**任何组件**中都可以使用。
+
+**步骤**：
+
+1. 在components目录下创建组件文件（例如：GlobalComponent.vue）
+2. 在***main.js***文件中引入组件文件
+   ```javascript
+   import GlobalComponent from '@/components/GlobalComponent.vue'
+   ```
+3. 在***main.js***文件中注册组件
+   ```javascript
+   Vue.component('GlobalComponent', GlobalComponent)
+   ```
+4. 在组件的模板中使用组件, 当成html标签使用即可
+   ```html
+   <GlobalComponent><GlobalComponent />
+   ```
+
+*p.s. 通常在 IDE 内，可以先完成步骤 3，语法补全会自动引入步骤 2 中的代码*
+
+##### 组件开发最佳实践
+
+**1. 组件命名规范**
+- 使用 PascalCase（大驼峰）命名：`MyComponent.vue`
+- 组件名应该具有描述性：`UserProfile.vue`、`ProductCard.vue`
+- 避免与HTML标签冲突：不要使用 `Header.vue`，可以用 `AppHeader.vue`
+
+**2. 组件文件组织**
+```
+src/
+├── components/
+│   ├── common/           # 通用组件
+│   │   ├── BaseButton.vue
+│   │   ├── BaseInput.vue
+│   │   └── BaseModal.vue
+│   ├── layout/           # 布局组件
+│   │   ├── AppHeader.vue
+│   │   ├── AppSidebar.vue
+│   │   └── AppFooter.vue
+│   └── business/         # 业务组件
+│       ├── UserProfile.vue
+│       └── ProductList.vue
+```
+
+
+
+##### 组件化开发 综合案例 小兔鲜组件化
+
+```html
+ <!-- App.vue -->
+  <template>
+  <div id="app">
+    <!-- 快捷链接 -->
+    <XtxShortCut></XtxShortCut>
+    <!-- 顶部导航 -->
+    <XtxHeaderNav></XtxHeaderNav>
+    <!-- 轮播区域 -->
+    <XtxBanner></XtxBanner>
+    <!-- 新鲜好物 -->
+    <XtxNewGoods></XtxNewGoods>
+    <!-- 热门品牌 -->
+    <XtxHotBrand></XtxHotBrand>
+    <!-- 最新专题 -->
+    <XtxTopic></XtxTopic>
+    <!-- 版权底部 -->
+    <XtxFooter></XtxFooter>
+  </div>
+</template>
+
+<script>
+
+// 引入组件
+import XtxShortCut from './components/XtxShortCut'
+import XtxHeaderNav from './components/XtxHeaderNav'
+import XtxBanner from './components/XtxBanner'
+import XtxNewGoods from './components/XtxNewGoods'
+import XtxHotBrand from './components/XtxHotBrand'
+import XtxTopic from './components/XtxTopic'
+import XtxFooter from './components/XtxFooter'
+
+export default {
+
+  // 注册为局部组件
+  components: {
+    XtxShortCut,
+    XtxHeaderNav,
+    XtxBanner,
+    XtxNewGoods,
+    XtxHotBrand,
+    XtxTopic,
+    XtxFooter,
+  }
+}
+</script>
+
+<style></style>
+```
+举 XtxNewGoods 组件为例子
+
+```html
+<!-- XtxNewGoods.vue -->
+ <template>
+  <!-- 新鲜好物 -->
+  <div class="goods wrapper">
+    <div class="title">
+      <div class="left">
+        <h3>新鲜好物</h3>
+        <p>新鲜出炉 品质靠谱</p>
+      </div>
+      <div class="right">
+        <a href="#" class="more">查看全部<span class="iconfont icon-arrow-right-bold"></span></a>
+      </div>
+    </div>
+    <div class="bd">
+      <ul>
+        <BaseGoodsItem v-for="item in 4" :key="item"></BaseGoodsItem>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style>
+/* 新鲜好物 */
+.goods .bd ul {
+  display: flex;
+  justify-content: space-between;
+}
+</style>
+```
+
+这其中，又将`BaseGoodsItem` 抽离成子组件，且是全局组件，用于渲染商品列表中的每一项。
+
+```html
+<!-- BaseGoodsItem.vue -->
+<template>
+    <li class="base-goods-item">
+        <a href="#">
+            <div class="pic"><img src="@/assets/images/goods1.png" alt="" /></div>
+            <div class="txt">
+                <h4>KN95级莫兰迪色防护口罩</h4>
+                <p>¥ <span>79</span></p>
+            </div>
+        </a>
+    </li>
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style>
+/* 省略样式 */
+</style>
+```
+
+```js
+// main.js
+import BaseGoodsItem from '@/components/BaseGoodsItem.vue'
+
+// 全局注册
+Vue.component('BaseGoodsItem', BaseGoodsItem)
+```
+
+#### 常用开发命令与调试技巧
+
+##### package.json 脚本命令
+
+```json
+{
+  "scripts": {
+    "serve": "vue-cli-service serve",      // 启动开发服务器
+    "build": "vue-cli-service build",      // 构建生产版本
+    "lint": "vue-cli-service lint",        // 代码检查
+    "test:unit": "vue-cli-service test:unit" // 单元测试
+  }
+}
+```
+
+##### 常用开发命令
+
+```bash
+# 开发环境
+yarn serve          # 启动开发服务器
+yarn build          # 构建生产版本
+yarn lint           # 代码检查和修复
+yarn add <package>  # 安装依赖包
+yarn remove <package> # 移除依赖包
+
+# 查看项目信息
+vue --version       # 查看 Vue CLI 版本
+vue inspect         # 查看 webpack 配置
+vue ui              # 启动图形化界面
+```
+
+##### 开发调试技巧
+
+**1. Vue DevTools**
+- 浏览器扩展，用于调试 Vue 应用
+- 可以查看组件树、状态、事件等
+- 支持时间旅行调试
+
+**2. 控制台调试**
+```javascript
+// 在组件中使用
+console.log('数据:', this.data)
+console.table(this.list) // 表格形式显示数组
+debugger // 设置断点
+```
+
+**3. 热重载**
+- 修改代码后自动刷新页面
+- 保持组件状态不丢失
+- 提高开发效率
+
+**4. 错误处理**
+
+```javascript
+// 全局错误处理
+Vue.config.errorHandler = (err, vm, info) => {
+  console.error('Vue Error:', err, info)
+}
+
+// 组件内错误处理
+export default {
+  errorCaptured(err, instance, info) {
+    console.error('Component Error:', err, info)
+    return false
+  }
+}
+```
+
+
+
 ### 综合案例技巧
 
 #### 数组操作方法
