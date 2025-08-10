@@ -1294,6 +1294,10 @@ Vue CLI 是Vue官方提供的一个**全局命令工具**
    ```
    > 具体命令可在 package.json 的 scripts 字段中查看
 
+5. **备注**
+
+   `node_modules`一般不会被git所添加，在其他设备使用`git clone`同步后，需要运行`yarn install`来保证模块被安装。
+
 ##### 创建项目时的配置选项
 
 - **Default ([Vue 2] babel, eslint)**：默认配置，适合快速开始
