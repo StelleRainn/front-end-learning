@@ -790,6 +790,28 @@ data: {
 }
 ```
 
+在后期的脚手架、组件化开发模式中，一个组件的`data`选项会被提取到组件的`data`函数中，返回一个对象。
+
+**目的**：
+- 组件化开发：每个组件有自己的`data`，互不干扰，维护独立的一份数据对象。
+- 数据响应式：组件内的数据变化会自动触发视图更新。
+
+e.g. 
+```javascript
+data() {
+  return {
+    msg: 'Hello Vue',
+    count: 0,
+    user: {
+      name: '张三',
+      age: 18
+    },
+    list: ['apple', 'banana', 'orange']
+  }
+}
+```
+
+
 #### methods 方法
 
 **概念**：methods选项用于定义组件的方法，方法内的`this`自动绑定到Vue实例。
@@ -1250,19 +1272,19 @@ const app = new Vue({
 
 #### 脚手架 Vue CLI
 
-##### 基本介绍
+**基本介绍**
 
 Vue CLI 是Vue官方提供的一个**全局命令工具**
 
 可以帮助我们**快速创建**一个开发Vue项目的**标准化基础架子**。【集成了webpack配置】
 
-##### 好处：
+**好处**
 
 1. 开箱即用，零配置
 2. 内置babel等工具
 3. 标准化的webpack配置
 
-##### 使用步骤：
+**使用步骤：**
 
 1. **全局安装**（只需安装一次即可）
    ```bash
@@ -1298,7 +1320,7 @@ Vue CLI 是Vue官方提供的一个**全局命令工具**
 
    `node_modules`一般不会被git所添加，在其他设备使用`git clone`同步后，需要运行`yarn install`来保证模块被安装。
 
-##### 创建项目时的配置选项
+**创建项目时的配置选项**
 
 - **Default ([Vue 2] babel, eslint)**：默认配置，适合快速开始
 - **Default ([Vue 3] babel, eslint)**：Vue 3 默认配置
@@ -1429,18 +1451,18 @@ graph TD
 
 组件化开发是指将一个复杂的应用拆分成多个组件，每个组件负责完成特定的功能，组件之间可以组合起来完成整个应用的功能。
 
-##### 好处：
+**好处**
 
 1. 代码复用：组件可以被多个地方使用，避免重复编写代码。
 2. 维护方便：组件化开发使得代码结构清晰，维护方便。
 3. 开发效率高：组件化开发使得开发效率高，开发周期短。
 
-##### 组件化开发的实现方式
+**组件化开发的实现方式**
 
 1. 全局组件：在main.js文件中注册组件，全局可用。
 2. 局部组件：在需要使用的组件中注册组件，只在当前组件可用。
 
-##### 根组件 App.vue
+**根组件 App.vue**
 
 整个应用最上层的组件，包裹所有的小组件（类似树的根节点）
 
@@ -1494,6 +1516,11 @@ graph TD
   /* 样式只在当前组件生效 */
   </style>
   ```
+
+**原理**：
+
+- **scoped 属性**：通过在组件的样式标签上添加 `scoped` 属性，Vue 会为该组件的样式添加一个唯一的标识符（如 `data-v-hash值`），并将该标识符添加到组件的 DOM 元素上。
+- **CSS 选择器**：在组件的样式中，所有的选择器都会被添加一个前缀，如 `.my-component[data-v-hash值]`，确保样式只作用于当前组件的 DOM 元素。
 
 - **CSS 预处理器支持**：
   ```bash
@@ -1786,6 +1813,623 @@ export default {
 ```
 
 
+
+### Vue 组件通信
+
+#### 父子组件通信概述
+
+**概念**：在Vue组件化开发中，组件之间需要进行数据传递和事件通信。父子组件通信是最常见的通信方式，包括父组件向子组件传递数据（Props）和子组件向父组件传递消息（$emit）。
+
+**通信方向**：
+- **父传子**：通过 Props 传递数据
+- **子传父**：通过 $emit 触发事件
+
+**应用场景**：
+- 父组件需要向子组件传递配置信息、显示数据
+- 子组件需要通知父组件某些操作（如按钮点击、表单提交）
+- 实现组件间的数据同步和状态管理
+
+#### Props 父传子
+
+**概念**：Props（properties的缩写）是组件上注册的一些自定义属性，用于父组件向子组件传递数据。Props是Vue组件通信的核心机制之一。
+
+**特点**：
+- 可以传递任意数量、任意类型的prop
+- 支持字符串、数字、布尔值、数组、对象、函数等所有JavaScript数据类型
+- 数据流是单向的：父组件数据变化会影响子组件，但子组件不能直接修改props
+
+**模板语法**：
+```html
+<!-- 父组件模板 -->
+<子组件名 :prop名="父组件数据"></子组件名>
+```
+
+```javascript
+// 子组件接收
+export default {
+  props: ['prop名1', 'prop名2'],
+  // 或者对象形式
+  props: {
+    prop名: 数据类型
+  }
+}
+```
+
+**基础示例**：
+```html
+<!-- 父组件 App.vue -->
+<template>
+  <div class="app">
+    <UserInfo 
+      :username="username" 
+      :age="age" 
+      :isSingle="isSingle" 
+      :car="car" 
+      :hobby="hobby">
+    </UserInfo>
+  </div>
+</template>
+
+<script>
+import UserInfo from './components/UserInfo.vue'
+export default {
+  data() {
+    return {
+      username: '小帅',
+      age: 28,
+      isSingle: true,
+      car: {
+        brand: '宝马',
+      },
+      hobby: ['篮球', '足球', '羽毛球'],
+    }
+  },
+  components: {
+    UserInfo,
+  },
+}
+</script>
+```
+
+```html
+<!-- 子组件 UserInfo.vue -->
+<template>
+  <div class="user-info">
+    <h2>用户信息</h2>
+    <p>姓名：{{ username }}</p>
+    <p>年龄：{{ age }}</p>
+    <p>单身：{{ isSingle ? '是' : '否' }}</p>
+    <p>车辆：{{ car.brand }}</p>
+    <p>爱好：{{ hobby.join(', ') }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  // 接收父组件传递的数据
+  props: ['username', 'age', 'isSingle', 'car', 'hobby']
+}
+</script>
+```
+
+#### Props 校验
+
+**概念**：Props校验是Vue提供的一种机制，用于验证父组件传递给子组件的数据是否符合预期的类型和格式，提高代码的健壮性和可维护性。
+
+**模板语法**：
+```javascript
+// 基础类型校验
+props: {
+  属性名: 数据类型
+}
+
+// 完整校验配置
+props: {
+  属性名: {
+    type: 数据类型,           // 类型校验
+    required: true,          // 是否必填
+    default: 默认值,         // 默认值
+    validator(value) {       // 自定义校验函数
+      return 校验逻辑;
+    }
+  }
+}
+```
+
+**支持的数据类型**：
+- `String` - 字符串
+- `Number` - 数字
+- `Boolean` - 布尔值
+- `Array` - 数组
+- `Object` - 对象
+- `Function` - 函数
+- `Symbol` - Symbol类型
+
+**校验示例**：
+```javascript
+// 进度条组件的props校验
+export default {
+  props: {
+    // 基础写法：类型校验
+    w: Number,
+    
+    // 完整写法：类型、必填、默认值、自定义校验
+    width: {
+      type: Number,
+      required: false,
+      default: 0,
+      validator(value) {
+        // 校验进度值必须在0-100之间
+        if (value >= 0 && value <= 100) {
+          return true
+        } else {
+          console.error('width must be a value between [0, 100]')
+          return false
+        }
+      }
+    },
+    
+    // 字符串类型校验
+    title: {
+      type: String,
+      default: '默认标题'
+    },
+    
+    // 数组类型校验
+    list: {
+      type: Array,
+      default: () => [] // 对象和数组的默认值必须是函数返回
+    },
+    
+    // 对象类型校验
+    config: {
+      type: Object,
+      default: () => ({})
+    }
+  }
+}
+```
+
+**进度条组件完整示例**：
+```html
+<!-- BaseProgress.vue -->
+<template>
+  <div class="base-progress">
+    <div class="inner" :style="{ width: w + '%' }">
+      <span>{{ w }}%</span>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    w: {
+      type: Number,
+      default: 0,
+      validator(value) {
+        if (value >= 0 && value <= 100) {
+          return true
+        } else {
+          console.error('width w must be a value between [0, 100]')
+          return false
+        }
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+.base-progress {
+  height: 26px;
+  width: 400px;
+  border-radius: 15px;
+  background-color: #272425;
+  border: 3px solid #272425;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+
+.inner {
+  position: relative;
+  background: #379bff;
+  border-radius: 15px;
+  height: 25px;
+  box-sizing: border-box;
+  left: -3px;
+  top: -2px;
+}
+
+.inner span {
+  position: absolute;
+  right: 0;
+  top: 26px;
+}
+</style>
+```
+
+#### $emit 子传父
+
+**概念**：$emit是Vue提供的实例方法，用于子组件向父组件发送消息。子组件通过触发自定义事件的方式，将数据传递给父组件。
+
+**模板语法**：
+```javascript
+// 子组件触发事件
+this.$emit('事件名', 传递的数据)
+```
+
+```html
+<!-- 父组件监听事件 -->
+<子组件名 @事件名="处理函数"></子组件名>
+```
+
+**基础示例**：
+```html
+<!-- 子组件 SonComponent.vue -->
+<template>
+  <div style="border: 3px solid cyan; margin: 10px; text-align: center;">
+    我是 Son 组件: {{ title }}
+    <button @click="msgToFather">修改 title</button>
+  </div>
+</template>
+
+<script>
+export default {
+  props: ['title'],
+  
+  methods: {
+    msgToFather() {
+      // 通过 $emit 触发事件，给父组件发送消息通知
+      this.$emit('changeTitle', '修改为子组件的消息')
+    }
+  }
+}
+</script>
+```
+
+```html
+<!-- 父组件 App.vue -->
+<template>
+  <div style="border: 3px solid cyan; margin: 10px; text-align: center;">
+    <h1>我是父组件</h1>
+    <!-- 父传子：给组件标签添加自定义动态属性的方式传值 -->
+    <!-- 子传父：父组件监听事件，事件名要与子组件的事件名同名 -->
+    <SonComponent :title="fatherMsg" @changeTitle="changeFn"></SonComponent>
+  </div>
+</template>
+
+<script>
+import SonComponent from './components/SonComponent.vue'
+export default {
+  components: {
+    SonComponent
+  },
+
+  data() {
+    return {
+      fatherMsg: '我是父组件的消息'
+    }
+  },
+
+  methods: {
+    // 提供对应的处理函数，修改消息；形参可以拿到新消息
+    changeFn(newMsg) {
+      this.fatherMsg = newMsg
+    }
+  }
+}
+</script>
+```
+
+#### Props 和 Data 的区别
+
+**概念**：Props和Data都是Vue组件中的数据，但它们有着本质的区别。理解这个区别对于正确使用Vue组件通信至关重要。
+
+**核心区别**：
+
+| 特性 | Props | Data |
+|------|-------|------|
+| **数据来源** | 外部传入（父组件） | 组件内部定义 |
+| **修改权限** | 只读，不能直接修改 | 可以随意修改 |
+| **数据流向** | 单向数据流（父→子） | 组件内部流动 |
+| **响应式** | 响应式（父组件变化会更新） | 响应式（内部变化会更新视图） |
+| **用途** | 接收外部配置和数据 | 存储组件内部状态 |
+
+**单向数据流原则**：
+- 父组件通过props传递数据给子组件
+- 子组件不能直接修改props中的数据
+- 子组件只能通过触发事件的方式通知父组件修改数据
+- 父组件修改数据后，会向下流动，通过props传递给子组件
+- 这个数据流动是单向的，确保数据流向清晰可控
+
+**错误示例**：
+```html
+<!-- BaseCount.vue - 错误做法 -->
+<template>
+  <div class="base-count">
+    <!-- 直接修改props会报错：Unexpected mutation of "count" prop -->
+    <button @click="count--">-</button>
+    <span>{{ count }}</span>
+    <button @click="count++">+</button>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    count: Number,
+  }
+}
+</script>
+```
+
+**正确示例**：
+```html
+<!-- BaseCount.vue - 正确做法 -->
+<template>
+  <div class="base-count">
+    <button @click="handleSub">-</button>
+    <span>{{ count }}</span>
+    <button @click="handleAdd">+</button>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    count: Number,
+  },
+
+  methods: {
+    handleSub() {
+      // 通过事件通知父组件修改数据
+      this.$emit('change', this.count - 1)
+    },
+    handleAdd() {
+      this.$emit('change', this.count + 1)
+    }
+  }
+}
+</script>
+```
+
+```html
+<!-- 父组件使用 -->
+<template>
+  <div>
+    <BaseCount :count="num" @change="handleChange"></BaseCount>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      num: 100
+    }
+  },
+  methods: {
+    handleChange(newVal) {
+      this.num = newVal
+    }
+  }
+}
+</script>
+```
+
+#### 组件通信综合案例 - 小黑记事本重构
+
+**概念**：通过将单文件应用重构为组件化应用，展示父子组件通信在实际项目中的应用。
+
+**项目结构**：
+```
+src/
+├── App.vue              # 根组件（数据管理中心）
+├── components/
+│   ├── TodoHead.vue     # 头部组件（添加任务）
+│   ├── TodoMain.vue     # 主体组件（任务列表）
+│   └── TodoFooter.vue   # 底部组件（统计和清空）
+└── styles/
+    └── index.css        # 样式文件
+```
+
+**根组件 App.vue**：
+```html
+<template>
+  <section id="app">
+    <!-- 头部：负责添加任务 -->
+    <TodoHead @addItem="handleAdd"></TodoHead>
+    
+    <!-- 主体：负责显示和删除任务 -->
+    <TodoMain :list="list" @delItem="handleDel"></TodoMain>
+    
+    <!-- 底部：负责统计和清空 -->
+    <TodoFooter :list="list" @emptyItems="emptyItems"></TodoFooter>
+  </section>
+</template>
+
+<script>
+import TodoHead from './components/TodoHead.vue'
+import TodoMain from './components/TodoMain.vue'
+import TodoFooter from './components/TodoFooter.vue'
+
+export default {
+  components: {
+    TodoHead,
+    TodoMain,
+    TodoFooter,
+  },
+  
+  data() {
+    return {
+      // 从本地存储读取数据，如果没有则使用默认数据
+      list: JSON.parse(localStorage.getItem('list')) || [
+        {id: 1, name: 'Code'},
+        {id: 2, name: 'Eat'},
+        {id: 3, name: 'Sleep'},
+        {id: 4, name: 'Exercise'},
+        {id: 5, name: 'Music'},
+      ],
+    }
+  },
+  
+  methods: {
+    // 添加任务（子传父）
+    handleAdd(value) {
+      if (!value) {
+        alert('fatal: content must not be empty!')
+        return
+      }
+      this.list.unshift({
+        id: +new Date(),
+        name: value
+      })
+    },
+
+    // 删除任务（子传父）
+    handleDel(id) {
+      if (confirm('Are you sure to delete item?')) {
+        this.list = this.list.filter(item => item.id !== id)
+      }
+    },
+
+    // 清空所有任务（子传父）
+    emptyItems() {
+      this.list = []
+    }
+  },
+  
+  // 监听数据变化，实现持久化存储
+  watch: {
+    list: {
+      deep: true,
+      immediate: true,
+      handler() {
+        localStorage.setItem('list', JSON.stringify(this.list))
+      }
+    }
+  }
+}
+</script>
+```
+
+**头部组件 TodoHead.vue**：
+```html
+<template>
+  <header class="header">
+    <h1>小黑记事本</h1>
+    <input 
+      @keyup.enter="addItem" 
+      v-model.trim="addedItem" 
+      placeholder="Click here to add reminders" 
+      class="new-todo" 
+    />
+    <button class="add" @click="addItem">添加任务</button>
+  </header>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      addedItem: ''
+    }
+  },
+
+  methods: {
+    addItem() {
+      // 子传父：将输入的内容传递给父组件
+      this.$emit('addItem', this.addedItem)
+      // 清空输入框
+      this.addedItem = ''
+    }
+  }
+}
+</script>
+```
+
+**主体组件 TodoMain.vue**：
+```html
+<template>
+  <section class="main">
+    <ul class="todo-list">
+      <li class="todo" v-for="(item, index) in list" :key="item.id">
+        <div class="view">
+          <span class="index">{{ index + 1 }}.</span> 
+          <label>{{ item.name }}</label>
+          <button class="destroy" @click="del(item.id)"></button>
+        </div>
+      </li>
+    </ul>
+  </section>
+</template>
+
+<script>
+export default {
+  // 父传子：接收任务列表数据
+  props: {
+    list: Array,
+  },
+
+  methods: {
+    del(id) {
+      // 子传父：通知父组件删除指定任务
+      this.$emit('delItem', id)
+    }
+  }
+}
+</script>
+```
+
+**底部组件 TodoFooter.vue**：
+```html
+<template>
+  <footer class="footer">
+    <!-- 父传子：显示任务统计 -->
+    <span class="todo-count">
+      合 计:<strong>{{ list.length }}</strong>
+    </span>
+    <button class="clear-completed" @click="clear">
+      清空任务
+    </button>
+  </footer>
+</template>
+
+<script>
+export default {
+  // 父传子：接收任务列表用于统计
+  props: {
+    list: Array,
+  },
+
+  methods: {
+    clear() {
+      // 子传父：通知父组件清空所有任务
+      this.$emit('emptyItems')
+    }
+  }
+}
+</script>
+```
+
+**组件通信流程总结**：
+
+1. **数据管理**：所有数据都在根组件App.vue中管理
+2. **父传子**：
+   - App.vue → TodoMain.vue：传递任务列表数据
+   - App.vue → TodoFooter.vue：传递任务列表用于统计
+3. **子传父**：
+   - TodoHead.vue → App.vue：传递新添加的任务内容
+   - TodoMain.vue → App.vue：传递要删除的任务ID
+   - TodoFooter.vue → App.vue：通知清空所有任务
+4. **数据持久化**：通过watch监听数据变化，自动保存到localStorage
+
+**设计原则**：
+- **单一数据源**：所有数据都在父组件中管理
+- **单向数据流**：数据从父组件流向子组件，事件从子组件流向父组件
+- **职责分离**：每个组件只负责自己的功能模块
+- **可复用性**：组件设计具有良好的复用性和可维护性
 
 ### 综合案例技巧
 
