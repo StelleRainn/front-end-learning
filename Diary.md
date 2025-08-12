@@ -1,9 +1,22 @@
 # Diary 
 
 
-<details><summary> July 2025 </summary>
+<details><summary> August 2025 </summary>
 
-## July 2025
+## August 2025
+
+### Aug 12th, Tue, Day 145
+
+> Thank you, Macbook Air, and farewell.
+>
+> 现在是 2025-08-12 15:53:54，这是使用此 MacBook Air 的最后一次 Git 提交，而后完成其它备份工作后，就可以和这位相处了一年的战友告别了。
+>
+> 但我不会忘记，那些一起在图书馆奋斗的日子，在老家的阳光下休闲的日子，那些一起「巡征追猎」的日子。
+>
+> 至是，我言尽，因为多说亦无益。带着这份初心，继续抗争下去。
+>
+> 永远记住，要为这麻木不堪的时代，带来破晓！
+
 
 ### Aug 11th, Mon, Day 144
 
@@ -87,6 +100,12 @@
 倘若这就是迷雾，那，就以我的心智、态度、坚韧、智慧与行动作为利剑，为这麻木不堪的时代，带来***破晓***。
 
 而下次，以更光明的姿态凯旋。
+
+</details>
+
+<details><summary> July 2025 </summary>
+
+## July 2025
 
 ### July 30th, Wed, Day 132
 
