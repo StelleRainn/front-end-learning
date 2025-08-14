@@ -2431,6 +2431,775 @@ export default {
 - **职责分离**：每个组件只负责自己的功能模块
 - **可复用性**：组件设计具有良好的复用性和可维护性
 
+### 非父子组件通信
+
+#### EventBus 事件总线
+
+**概念**：EventBus是Vue中用于非父子组件间通信的一种方式，通过创建一个空的Vue实例作为事件总线，实现任意组件间的消息传递。
+
+**适用场景**：
+- 兄弟组件间通信
+- 跨层级组件间简单消息传递
+- 小型项目的组件通信（复杂场景推荐使用Vuex）
+
+**实现步骤**：
+1. 创建EventBus实例
+2. 在接收方监听事件
+3. 在发送方触发事件
+
+**模板代码**：
+```javascript
+// 1. 创建EventBus实例 (utils/EventBus.js)
+import Vue from "vue";
+const Bus = new Vue();
+export default Bus;
+```
+
+```javascript
+// 2. 接收方：监听事件
+import Bus from '../utils/EventBus'
+export default {
+  created() {
+    // 监听事件
+    Bus.$on('事件名', (参数) => {
+      // 处理接收到的数据
+    })
+  }
+}
+```
+
+```javascript
+// 3. 发送方：触发事件
+import Bus from '../utils/EventBus'
+export default {
+  methods: {
+    sendMessage() {
+      // 触发事件并传递数据
+      Bus.$emit('事件名', 数据)
+    }
+  }
+}
+```
+
+**完整示例**：
+```javascript
+// EventBus.js
+import Vue from "vue";
+const Bus = new Vue();
+export default Bus;
+```
+
+```html
+<!-- 发送方组件 BaseB.vue -->
+<template>
+  <div class="base-b">
+    <div>我是B组件（发布方）</div>
+    <button @click="sendMsgFn">发送消息</button>
+  </div>
+</template>
+
+<script>
+import Bus from '../utils/EventBus'
+export default {
+  methods: {
+    sendMsgFn() {
+      // 触发事件，事件名要与接收方一致
+      Bus.$emit('sendMsg', '发送消息')
+    }
+  }
+}
+</script>
+```
+
+```html
+<!-- 接收方组件 BaseA.vue -->
+<template>
+  <div class="base-a">
+    我是A组件（接受方）
+    <p>{{ msg }}</p>
+  </div>
+</template>
+
+<script>
+import Bus from '../utils/EventBus'
+export default {
+  created() {
+    // 监听Bus实例的事件
+    Bus.$on('sendMsg', (msg) => {
+      this.msg = msg
+    })
+  },
+  data() {
+    return {
+      msg: ''
+    }
+  }
+}
+</script>
+```
+
+**注意事项**：
+- 事件名必须保持一致
+- 建议在组件销毁时移除事件监听，避免内存泄漏
+- EventBus适合简单场景，复杂状态管理建议使用Vuex
+
+#### provide 和 inject
+
+**概念**：provide和inject是Vue提供的跨层级组件通信方案，允许祖先组件向所有子孙组件注入依赖，无论组件层次有多深。
+
+**适用场景**：
+- 祖先组件向子孙组件传递数据
+- 跨多层级的数据共享
+- 组件库开发中的配置传递
+
+**模板语法**：
+```javascript
+// 祖先组件：提供数据
+export default {
+  provide() {
+    return {
+      数据名: this.数据值
+    }
+  }
+}
+```
+
+```javascript
+// 子孙组件：注入数据
+export default {
+  inject: ['数据名1', '数据名2']
+}
+```
+
+**响应式特性**：
+- **简单类型**：非响应式，数据变化时视图不会更新
+- **复杂类型**：响应式，对象或数组被修改后视图会更新
+
+**完整示例**：
+```html
+<!-- 祖先组件 App.vue -->
+<template>
+  <div class="app">
+    我是APP组件
+    <button @click="change">修改数据</button>
+    <SonA></SonA>
+    <SonB></SonB>
+  </div>
+</template>
+
+<script>
+import SonA from './components/SonA.vue'
+import SonB from './components/SonB.vue'
+
+export default {
+  // 父组件 provide 提供数据
+  provide() {
+    return {
+      // 简单类型：非响应式
+      color: this.color,
+      // 复杂类型：响应式（推荐）
+      userInfo: this.userInfo
+    }
+  },
+
+  data() {
+    return {
+      color: 'pink',
+      userInfo: {
+        name: 'zs',
+        age: 18,
+      },
+    }
+  },
+
+  methods: {
+    change() {
+      this.color = 'red'        // 视图不会更新
+      this.userInfo.name = 'ls' // 视图会更新
+    },
+  },
+
+  components: {
+    SonA,
+    SonB,
+  },
+}
+</script>
+```
+
+```html
+<!-- 子组件 SonA.vue -->
+<template>
+  <div class="SonA">
+    我是SonA组件
+    <GrandSon></GrandSon>
+    {{ color }} - {{ userInfo.name }} - {{ userInfo.age }}
+  </div>
+</template>
+
+<script>
+import GrandSon from './GrandSon.vue'
+export default {
+  // 子孙组件 inject 取值使用
+  inject: ['color', 'userInfo'],
+  components: {
+    GrandSon,
+  }
+}
+</script>
+```
+
+```html
+<!-- 孙组件 GrandSon.vue -->
+<template>
+  <div class="grandSon">
+    我是GrandSon
+    {{ color }} - {{ userInfo.name }} - {{ userInfo.age }}
+  </div>
+</template>
+
+<script>
+export default {
+  // 任意层级的子孙组件都可以注入
+  inject: ['color', 'userInfo'],
+}
+</script>
+```
+
+**优势**：
+- 无需逐层传递props
+- 适合深层嵌套的组件结构
+- 代码简洁，维护方便
+
+**注意事项**：
+- 推荐使用对象形式提供响应式数据
+- 不要过度使用，会增加组件间的耦合度
+- 适合稳定的、不经常变化的数据
+
+### v-model 进阶
+
+#### v-model 原理
+
+**概念**：v-model是Vue提供的语法糖，本质上是属性绑定和事件监听的组合写法，实现双向数据绑定。
+
+**本质原理**：
+- 对于**文本输入框**：`:value` + `@input`
+- 对于**复选框**：`:checked` + `@change`
+- 对于**单选框**：`:checked` + `@change`
+- 对于**下拉选择**：`:value` + `@change`
+
+**模板语法**：
+```html
+<!-- v-model语法糖 -->
+<input v-model="message">
+
+<!-- 等价于 -->
+<input :value="message" @input="message = $event.target.value">
+```
+
+**基础示例**：
+```html
+<template>
+  <div class="app">
+    <!-- 使用v-model -->
+    <input type="text" v-model="msg1" />
+    
+    <!-- v-model的底层实现 -->
+    <input type="text" :value="msg2" @input="msg2 = $event.target.value">
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      msg1: '',
+      msg2: '',
+    }
+  },
+}
+</script>
+```
+
+**$event的使用**：
+- `$event`：在模板中获取事件对象
+- `$event.target.value`：获取输入框的当前值
+- 用于在内联事件处理中访问原生事件
+
+#### 自定义组件的 v-model
+
+**概念**：在自定义组件上使用v-model，需要组件内部配合实现特定的props和事件约定。
+
+**实现约定**：
+1. 组件接收名为`value`的prop
+2. 组件触发名为`input`的事件
+3. 父组件就可以使用`v-model`进行双向绑定
+
+**模板语法**：
+```javascript
+// 子组件
+export default {
+  props: {
+    value: [String, Number] // 接收value prop
+  },
+  methods: {
+    handleChange(newValue) {
+      // 触发input事件
+      this.$emit('input', newValue)
+    }
+  }
+}
+```
+
+```html
+<!-- 父组件 -->
+<CustomComponent v-model="data"></CustomComponent>
+
+<!-- 等价于 -->
+<CustomComponent :value="data" @input="data = $event"></CustomComponent>
+```
+
+**完整示例**：
+```html
+<!-- 子组件 BaseSelect.vue -->
+<template>
+  <div>
+    <select :value="value" @change="handleChange">
+      <option value="101">北京</option>
+      <option value="102">上海</option>
+      <option value="103">武汉</option>
+      <option value="104">广州</option>
+      <option value="105">深圳</option>
+    </select>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    value: Number // 接收value prop
+  },
+  methods: {
+    handleChange(e) {
+      // 触发input事件，传递新值
+      this.$emit('input', e.target.value)
+    }
+  }
+}
+</script>
+```
+
+```html
+<!-- 父组件 App.vue -->
+<template>
+  <div class="app">
+    <!-- 直接使用v-model -->
+    <BaseSelect v-model="selectId"></BaseSelect>
+  </div>
+</template>
+
+<script>
+import BaseSelect from './components/BaseSelect.vue'
+export default {
+  data() {
+    return {
+      selectId: '102',
+    }
+  },
+  components: {
+    BaseSelect,
+  },
+}
+</script>
+```
+
+**实现步骤**：
+1. 子组件通过`props`接收`value`
+2. 子组件通过`$emit('input', newValue)`通知父组件
+3. 父组件使用`v-model`实现双向绑定
+
+#### .sync 修饰符
+
+**概念**：.sync修饰符是Vue提供的语法糖，用于实现父子组件间的双向绑定，相比v-model更加灵活，可以自定义属性名。
+
+**本质原理**：`:属性名` + `@update:属性名`
+
+**模板语法**：
+```html
+<!-- 使用.sync修饰符 -->
+<ChildComponent :visible.sync="isShow"></ChildComponent>
+
+<!-- 等价于 -->
+<ChildComponent :visible="isShow" @update:visible="isShow = $event"></ChildComponent>
+```
+
+**子组件实现**：
+```javascript
+// 子组件触发更新事件
+this.$emit('update:属性名', 新值)
+```
+
+**完整示例**：
+```html
+<!-- 父组件 App.vue -->
+<template>
+  <div class="app">
+    <button @click="isShow = true">显示弹框</button>
+    <!-- 使用.sync修饰符 -->
+    <BaseDialog :visible.sync="isShow"></BaseDialog>
+  </div>
+</template>
+
+<script>
+import BaseDialog from "./components/BaseDialog.vue"
+export default {
+  data() {
+    return {
+      isShow: false
+    }
+  },
+  components: {
+    BaseDialog,
+  },
+}
+</script>
+```
+
+```html
+<!-- 子组件 BaseDialog.vue -->
+<template>
+  <div v-show="visible" class="base-dialog-wrap">
+    <div class="base-dialog">
+      <div class="title">
+        <h3>温馨提示：</h3>
+        <button class="close" @click="changeVisible">x</button>
+      </div>
+      <div class="content">
+        <p>你确认要退出本系统么？</p>
+      </div>
+      <div class="footer">
+        <button>确认</button>
+        <button @click="changeVisible">取消</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    visible: Boolean
+  },
+  methods: {
+    changeVisible() {
+      // 触发update:visible事件
+      this.$emit('update:visible', false)
+    }
+  }
+}
+</script>
+```
+
+**sync vs v-model**：
+
+| 特性 | v-model | .sync |
+|------|---------|-------|
+| **属性名** | 固定为value | 可自定义 |
+| **事件名** | 固定为input | update:属性名 |
+| **使用场景** | 表单元素、单一数据绑定 | 多个属性双向绑定 |
+| **灵活性** | 较低 | 较高 |
+
+**使用建议**：
+- 表单组件使用`v-model`
+- 弹框、开关等组件使用`.sync`
+- 需要多个双向绑定属性时使用`.sync`
+
+### ref 和 $refs
+
+#### 获取 DOM 元素
+
+**概念**：ref是Vue提供的特殊属性，用于给元素或组件注册引用信息，通过$refs可以直接访问DOM元素或组件实例。
+
+**模板语法**：
+```html
+<!-- 给DOM元素添加ref -->
+<div ref="引用名"></div>
+<input ref="inputRef">
+
+<!-- 在组件中访问 -->
+this.$refs.引用名
+```
+
+**使用场景**：
+- 需要直接操作DOM元素
+- 调用第三方库需要DOM引用
+- 表单验证、焦点控制等
+
+**基础示例**：
+```html
+<!-- BaseChart.vue -->
+<template>
+  <div class="base-chart-box" ref="chartRef">子组件</div>
+</template>
+
+<script>
+import * as echarts from 'echarts'
+
+export default {
+  mounted() {
+    // 通过$refs获取DOM元素
+    const myChart = echarts.init(this.$refs.chartRef)
+    
+    // 绘制图表
+    myChart.setOption({
+      title: {
+        text: 'ECharts 入门示例',
+      },
+      tooltip: {},
+      xAxis: {
+        data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子'],
+      },
+      yAxis: {},
+      series: [
+        {
+          name: '销量',
+          type: 'bar',
+          data: [5, 20, 36, 10, 10, 20],
+        },
+      ],
+    })
+  },
+}
+</script>
+```
+
+**优势**：
+- 精确定位：查找范围限定在当前组件内
+- 避免冲突：不会受到其他组件同名元素的干扰
+- 性能更好：直接引用，无需DOM查询
+
+#### 获取组件实例
+
+**概念**：ref不仅可以获取DOM元素，还可以获取子组件的实例，从而调用子组件的方法或访问子组件的数据。
+
+**模板语法**：
+```html
+<!-- 给组件添加ref -->
+<ChildComponent ref="childRef"></ChildComponent>
+
+<!-- 调用子组件方法 -->
+this.$refs.childRef.方法名()
+```
+
+**完整示例**：
+```html
+<!-- 父组件 App.vue -->
+<template>
+  <div class="app">
+    <h4>父组件</h4>
+    <!-- 为子组件添加ref属性 -->
+    <BaseForm ref="baseForm"></BaseForm>
+    <div>
+      <button @click="handleGetData">获取数据</button>
+      <button @click="handleResetData">重置数据</button>
+    </div>
+  </div>
+</template>
+
+<script>
+import BaseForm from './components/BaseForm.vue'
+export default {
+  components: {
+    BaseForm,
+  },
+  methods: {
+    // 通过$refs调用子组件方法
+    handleGetData() {
+      this.$refs.baseForm.getFormData()
+    },
+    handleResetData() {
+      this.$refs.baseForm.resetFormData()
+    }
+  }
+}
+</script>
+```
+
+```html
+<!-- 子组件 BaseForm.vue -->
+<template>
+  <div class="app">
+    <div>
+      账号: <input v-model="username" type="text">
+    </div>
+    <div>
+      密码: <input v-model="password" type="text">
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      username: 'admin',
+      password: '123456',
+    }
+  },
+  methods: {
+    // 提供给父组件调用的方法
+    getFormData() {
+      console.log('获取表单数据', this.username, this.password);
+    },
+    resetFormData() {
+      this.username = ''
+      this.password = ''
+      console.log('重置表单数据成功');
+    },
+  }
+}
+</script>
+```
+
+**应用场景**：
+- 父组件控制子组件的行为
+- 表单验证和重置
+- 调用子组件的公共方法
+- 获取子组件的状态数据
+
+**注意事项**：
+- ref在组件渲染完成后才能访问
+- 建议在mounted生命周期中使用
+- 不要过度使用，优先考虑props和事件通信
+
+### Vue 异步更新和 $nextTick
+
+#### Vue 异步更新机制
+
+**概念**：Vue在更新DOM时是异步执行的。当数据发生变化时，Vue会开启一个队列，缓冲在同一事件循环中发生的所有数据变更，然后在下一个事件循环中统一更新DOM。
+
+**异步更新的原因**：
+- **性能优化**：避免频繁的DOM操作
+- **批量更新**：将多次数据变更合并为一次DOM更新
+- **避免重复渲染**：相同数据的多次修改只触发一次更新
+
+**问题场景**：
+```javascript
+// 数据更新后立即操作DOM会失败
+this.isShow = true
+this.$refs.input.focus() // 此时DOM还未更新，会报错
+```
+
+#### $nextTick 的作用
+
+**概念**：$nextTick是Vue提供的方法，用于在下次DOM更新循环结束之后执行延迟回调。简单说就是当数据更新后，要等DOM更新完成后再执行某些操作。
+
+**模板语法**：
+```javascript
+// 方法1：回调函数形式
+this.$nextTick(() => {
+  // DOM更新完成后执行
+})
+
+// 方法2：Promise形式
+this.$nextTick().then(() => {
+  // DOM更新完成后执行
+})
+
+// 方法3：async/await形式
+async method() {
+  await this.$nextTick()
+  // DOM更新完成后执行
+}
+```
+
+**完整示例**：
+```html
+<template>
+  <div class="app">
+    <!-- 编辑模式 -->
+    <div v-if="isShowEdit">
+      <input type="text" v-model="editValue" ref="inp" />
+      <button>确认</button>
+    </div>
+
+    <!-- 显示模式 -->
+    <div v-else>
+      <span>{{ title }}</span>
+      <button @click="handleEdit">编辑</button>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      title: '大标题',
+      isShowEdit: false,
+      editValue: '',
+    }
+  },
+  methods: {
+    handleEdit() {
+      // 1. 切换到编辑模式
+      this.isShowEdit = true
+      
+      // 2. 等待DOM更新完成后聚焦输入框
+      this.$nextTick(() => {
+        this.$refs.inp.focus()
+      })
+    }
+  },
+}
+</script>
+```
+
+**常见应用场景**：
+
+1. **表单聚焦**：
+```javascript
+// 显示输入框后立即聚焦
+this.showInput = true
+this.$nextTick(() => {
+  this.$refs.input.focus()
+})
+```
+
+2. **获取更新后的DOM尺寸**：
+```javascript
+// 内容变化后获取新的高度
+this.content = '新内容'
+this.$nextTick(() => {
+  const height = this.$refs.container.offsetHeight
+  console.log('新高度:', height)
+})
+```
+
+3. **第三方库的DOM操作**：
+```javascript
+// 数据更新后重新初始化图表
+this.chartData = newData
+this.$nextTick(() => {
+  this.chart.resize()
+})
+```
+
+4. **滚动定位**：
+```javascript
+// 添加新消息后滚动到底部
+this.messages.push(newMessage)
+this.$nextTick(() => {
+  this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight
+})
+```
+
+**最佳实践**：
+- 只在需要操作更新后的DOM时使用
+- 避免在$nextTick中进行数据修改，可能导致无限循环
+- 可以与async/await结合使用，提高代码可读性
+- 在组件销毁前取消未完成的$nextTick回调
+
 ### 综合案例技巧
 
 #### 数组操作方法

@@ -1,0 +1,24 @@
+<template>
+  <div class="SonB">
+    我是SonB组件
+    {{ color }} - {{ userInfo.name }} - {{ userInfo.age }}
+  </div>
+</template>
+
+<script>
+export default {
+    // 子孙组件 inject 取值使用
+    // inject: ['变量名A', '变量名B']
+  inject: ['color', 'userInfo'],
+
+}
+</script>
+
+<style>
+.SonB {
+  border: 3px solid #000;
+  border-radius: 6px;
+  margin: 10px;
+  height: 200px;
+}
+</style>
