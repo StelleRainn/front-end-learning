@@ -5,6 +5,10 @@
 
 ## August 2025
 
+### Aug 17th, Sun
+
+> Just live. Do what you WANT TO do instead of what you HAVE TO do.
+
 ### Aug 16th, Sat
 
 > Just play.
