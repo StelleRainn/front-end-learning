@@ -5,6 +5,14 @@
 
 ## August 2025
 
+### Aug 18th, Mon
+
+> MacBook Pro, M1, 16+512, Silver, with Active Thermal.
+
+至是，*用 MacBook Pro 搭建属于我自己的网站*——这一 「最初的梦想」，已然实现。
+
+带着这其中所蕴含的无限潜力，一往无前吧！
+
 ### Aug 17th, Sun
 
 > Just live. Do what you WANT TO do instead of what you HAVE TO do.
