@@ -1,9 +1,8 @@
 <template>
   <div class="main">
-    <!-- 在需要的盒子上加上自定义 v-loading 指令，其值用一个布尔值赋予 -->
     <div class="box" v-loading="isLoading">
       <ul>
-        <li v-for="item in list" :key="item.id" class="news" >
+        <li v-for="item in list" :key="item.id" class="news">
           <div class="left">
             <div class="title">{{ item.title }}</div>
             <div class="info">
@@ -31,12 +30,9 @@ export default {
   data () {
     return {
       list: [],
-
-      // 定义新数据用以表示加载状态
       isLoading: true,
     }
   },
-
   async created () {
     // 1. 发送请求获取数据
     const res = await axios.get('http://hmajax.itheima.net/api/news')
@@ -44,18 +40,20 @@ export default {
     setTimeout(() => {
       // 2. 更新到 list 中
       this.list = res.data.data
+
+      // 当获取数据（加载完毕），应当结束加载状态
       this.isLoading = false
     }, 2000)
   },
-
   directives: {
     loading: {
-      inserted (el, binding) {
-        // binding.value即isLoading的值，由此决定是添加蒙层还是移除蒙层
-        binding.value ? el.classList.add('loading') : el.classList.remove('loading')
+      inserted(el, binding) {
+        // 根据指令的值，决定添加或移除“遮罩层”类名
+        binding.value ? el.classList.add('loading') : el.classList.remove('loading')        
       },
-      update (el, binding) {
-        binding.value ? el.classList.add('loading') : el.classList.remove('loading')
+      // 当 isLoading 状态更新，在此触发修改逻辑
+      update(el, binding) {
+        binding.value ? el.classList.add('loading') : el.classList.remove('loading') 
       }
     }
   }
@@ -73,6 +71,13 @@ export default {
   height: 100%;
   background: #fff url('./loading.gif') no-repeat center;
 }
+
+/* .box2 {
+  width: 400px;
+  height: 400px;
+  border: 2px solid #000;
+  position: relative;
+} */
 
 .box {
   width: 800px;

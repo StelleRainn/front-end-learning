@@ -6,17 +6,19 @@
 
 ### Vue 基础概念
 
-#### 创建Vue实例
+#### 创建 Vue 实例
 
-**概念**：Vue实例是Vue应用的根实例，通过new Vue()创建，它将数据和DOM进行绑定，实现响应式的数据驱动视图更新。
+**概念**：Vue 实例是 Vue 应用的根实例，通过 new Vue()创建，它将数据和 DOM 进行绑定，实现响应式的数据驱动视图更新。
 
 **创建步骤**：
-1. 准备HTML容器
-2. 引入Vue.js库
-3. 创建Vue实例
+
+1. 准备 HTML 容器
+2. 引入 Vue.js 库
+3. 创建 Vue 实例
 4. 添加配置项完成渲染
 
 **模板代码**：
+
 ```html
 <!-- 1. 准备容器 -->
 <div id="app">
@@ -31,56 +33,62 @@
 // 3. 创建Vue实例
 const app = new Vue({
   // 4. 配置选项
-  el: '选择器',           // 指定Vue管理的DOM元素
-  data: {                // 响应式数据
-    属性名: 初始值
+  el: "选择器", // 指定Vue管理的DOM元素
+  data: {
+    // 响应式数据
+    属性名: 初始值,
   },
-  methods: {             // 方法定义
+  methods: {
+    // 方法定义
     方法名() {
       // 方法体
-    }
+    },
   },
-  computed: {            // 计算属性
+  computed: {
+    // 计算属性
     计算属性名() {
       return 计算结果;
-    }
+    },
   },
-  watch: {               // 侦听器
+  watch: {
+    // 侦听器
     被侦听属性(newVal, oldVal) {
       // 处理逻辑
-    }
-  }
+    },
+  },
 });
 ```
 
 **基础示例**：
+
 ```javascript
 // 创建Vue实例
 const app = new Vue({
   // el: 配置选择器，指定Vue管理的是哪个盒子
-  el: '#app',
-  
+  el: "#app",
+
   // data：提供数据
   data: {
-    msg: 'Hello, Vue!',
+    msg: "Hello, Vue!",
     num: 123456,
-    isVisible: true
+    isVisible: true,
   },
-  
+
   // methods：定义方法
   methods: {
     handleClick() {
       this.isVisible = !this.isVisible;
-    }
-  }
-})
+    },
+  },
+});
 ```
 
 #### 响应式特征
 
-Vue的核心特性之一是响应式数据绑定：
+Vue 的核心特性之一是响应式数据绑定：
+
 - 数据改变，视图自动更新
-- data中的数据，最终会被添加到实例上
+- data 中的数据，最终会被添加到实例上
 - 访问数据：`实例.属性`，如 `app.msg`
 - 修改数据：`实例.属性 = '值'`，如 `app.msg = 'hello'`
 
@@ -88,51 +96,50 @@ Vue的核心特性之一是响应式数据绑定：
 
 #### 插值表达式
 
-**概念**：插值表达式是Vue的核心模板语法，使用双大括号`{{ }}`将Vue实例中的数据渲染到HTML模板中，实现数据的动态显示。
+**概念**：插值表达式是 Vue 的核心模板语法，使用双大括号`{{ }}`将 Vue 实例中的数据渲染到 HTML 模板中，实现数据的动态显示。
 
 **模板语法**：
+
 ```html
 <!-- 基础语法 -->
 {{ 数据属性 }}
 
 <!-- 表达式计算 -->
-{{ 数学表达式 }}
-{{ 字符串拼接 }}
-{{ 三元运算符 }}
-{{ 方法调用 }}
+{{ 数学表达式 }} {{ 字符串拼接 }} {{ 三元运算符 }} {{ 方法调用 }}
 
 <!-- 对象属性访问 -->
-{{ 对象.属性 }}
-{{ 数组[索引] }}
+{{ 对象.属性 }} {{ 数组[索引] }}
 ```
 
 **使用规则**：
-1. 使用的数据必须在data中声明
-2. 支持JavaScript表达式，不支持语句（如if、for、while等）
-3. 不能在HTML属性中使用（需要用v-bind）
+
+1. 使用的数据必须在 data 中声明
+2. 支持 JavaScript 表达式，不支持语句（如 if、for、while 等）
+3. 不能在 HTML 属性中使用（需要用 v-bind）
 4. 每个插值表达式只能包含单个表达式
 
 **基础示例**：
+
 ```html
 <div id="app">
   <!-- 简单数据显示 -->
   <p>{{ nickname }}</p>
-  
+
   <!-- 方法调用 -->
   <p>{{ nickname.toUpperCase() }}</p>
-  
+
   <!-- 字符串拼接 -->
   <p>{{ nickname + ' how are you!' }}</p>
-  
+
   <!-- 三元运算符 -->
   <p>{{ age >= 18 ? '成年' : '未成年' }}</p>
-  
+
   <!-- 对象属性访问 -->
   <p>{{ friends.name + ' ' + friends.desc }}</p>
-  
+
   <!-- 数学运算 -->
   <p>{{ price * quantity }}</p>
-  
+
   <!-- 数组访问 -->
   <p>{{ list[0] }}</p>
 </div>
@@ -154,11 +161,11 @@ data: {
 
 ### Vue 指令
 
-Vue指令是带有`v-`前缀的特殊属性，不同属性对应不同的功能。
+Vue 指令是带有`v-`前缀的特殊属性，不同属性对应不同的功能。
 
 #### v-html
 
-动态设置元素的innerHTML。
+动态设置元素的 innerHTML。
 
 **语法**：`v-html="表达式"`
 
@@ -168,7 +175,7 @@ Vue指令是带有`v-`前缀的特殊属性，不同属性对应不同的功能�
 
 ```javascript
 data: {
-  msg: `<a href="https://apple.com.cn/" target="_blank">苹果官网</a>`
+  msg: `<a href="https://apple.com.cn/" target="_blank">苹果官网</a>`;
 }
 ```
 
@@ -179,8 +186,9 @@ data: {
 **语法**：`v-show="表达式"`、`v-if="表达式"`
 
 **差异**：
-- `v-show`：通过控制CSS属性`display: none`来隐藏元素
-- `v-if`：控制DOM元素的创建与否
+
+- `v-show`：通过控制 CSS 属性`display: none`来隐藏元素
+- `v-if`：控制 DOM 元素的创建与否
 - `v-show`适合频繁切换的场景，`v-if`适合条件不经常改变的场景
 
 ```html
@@ -193,6 +201,7 @@ data: {
 辅助`v-if`进行条件渲染。
 
 **语法**：
+
 - `v-if="表达式" + v-else`
 - `v-if="表达式" + v-else-if="表达式" + v-else`
 
@@ -207,9 +216,10 @@ data: {
 
 #### v-on 事件监听
 
-**概念**：v-on指令用于监听DOM事件，当事件触发时执行相应的JavaScript代码或调用方法。
+**概念**：v-on 指令用于监听 DOM 事件，当事件触发时执行相应的 JavaScript 代码或调用方法。
 
 **模板语法**：
+
 ```html
 <!-- 基础语法 -->
 <button v-on:事件名="处理逻辑">按钮</button>
@@ -227,7 +237,7 @@ data: {
 <button @click="方法名(参数)">按钮</button>
 ```
 
-**语法1 - 内联语句**：直接在模板中编写简单的JavaScript表达式
+**语法 1 - 内联语句**：直接在模板中编写简单的 JavaScript 表达式
 
 ```html
 <button v-on:click="count--">-</button>
@@ -235,7 +245,7 @@ data: {
 <button @click="flag = !flag">切换</button>
 ```
 
-**语法2 - 调用方法**：调用methods中定义的方法
+**语法 2 - 调用方法**：调用 methods 中定义的方法
 
 ```html
 <button @click="fn">控制显隐</button>
@@ -250,7 +260,7 @@ methods: {
 }
 ```
 
-**语法3 - 调用传参**：在事件处理中传递参数
+**语法 3 - 调用传参**：在事件处理中传递参数
 
 ```html
 <button @click="fn(5)">可乐5元</button>
@@ -271,9 +281,10 @@ methods: {
 
 #### v-bind 属性绑定
 
-**概念**：v-bind指令用于**动态**绑定HTML属性，可以将Vue实例的数据绑定到元素的属性上，实现**属性值的动态更新**。
+**概念**：v-bind 指令用于**动态**绑定 HTML 属性，可以将 Vue 实例的数据绑定到元素的属性上，实现**属性值的动态更新**。
 
 **模板语法**：
+
 ```html
 <!-- 基础语法 -->
 <元素 v-bind:属性名="表达式"></元素>
@@ -290,11 +301,12 @@ methods: {
 ```
 
 **基础示例**：
+
 ```html
-<img v-bind:src="url" v-bind:title="msg" alt="#">
-<img :src="url" :title="msg" alt="#">
+<img v-bind:src="url" v-bind:title="msg" alt="#" />
+<img :src="url" :title="msg" alt="#" />
 <a :href="link">{{ linkText }}</a>
-<input :placeholder="placeholderText">
+<input :placeholder="placeholderText" />
 ```
 
 ```javascript
@@ -309,14 +321,13 @@ data: {
 
 #### v-for 列表渲染
 
-**概念**：v-for指令用于基于数组、对象或数字进行循环渲染，可以将数据列表渲染为DOM元素列表。
+**概念**：v-for 指令用于基于数组、对象或数字进行循环渲染，可以将数据列表渲染为 DOM 元素列表。
 
 **模板语法**：
+
 ```html
 <!-- 遍历数组 -->
-<li v-for="(item, index) in 数组" :key="唯一标识">
-  {{ item }} - {{ index }}
-</li>
+<li v-for="(item, index) in 数组" :key="唯一标识">{{ item }} - {{ index }}</li>
 
 <!-- 遍历对象 -->
 <li v-for="(value, key, index) in 对象" :key="key">
@@ -324,12 +335,11 @@ data: {
 </li>
 
 <!-- 遍历数字 -->
-<li v-for="n in 数字" :key="n">
-  {{ n }}
-</li>
+<li v-for="n in 数字" :key="n">{{ n }}</li>
 ```
 
 **参数说明**：
+
 - `item`：当前遍历的元素值
 - `index`：当前遍历元素的索引（可选）
 - `value`：对象的属性值
@@ -337,13 +347,14 @@ data: {
 - `n`：数字遍历时的当前数字
 
 **数组遍历示例**：
+
 ```html
 <ul>
   <!-- 简单数组 -->
   <li v-for="(fruit, index) in fruits" :key="index">
     {{ index + 1 }}. {{ fruit }}
   </li>
-  
+
   <!-- 对象数组 -->
   <li v-for="(item, index) in list" :key="item.id">
     {{ item.name }} - {{ item.price }}元
@@ -362,20 +373,22 @@ data: {
 }
 ```
 
-**v-for中的key属性**：
+**v-for 中的 key 属性**：
 
-**概念**：key是Vue用于跟踪列表项变化的特殊属性，帮助Vue高效地更新虚拟DOM。
+**概念**：key 是 Vue 用于跟踪列表项变化的特殊属性，帮助 Vue 高效地更新虚拟 DOM。
 
 **重要性**：
-- 给元素添加唯一标识，便于Vue进行列表项的正确排序和复用
-- 提高列表渲染性能，避免不必要的DOM操作
+
+- 给元素添加唯一标识，便于 Vue 进行列表项的正确排序和复用
+- 提高列表渲染性能，避免不必要的 DOM 操作
 - 确保组件状态的正确维护
 
 **使用规则**：
-- key的值只能是字符串或数字类型
-- key的值必须具有唯一性
-- 推荐使用数据的id作为key
-- 不推荐使用index作为key（会导致性能问题）
+
+- key 的值只能是字符串或数字类型
+- key 的值必须具有唯一性
+- 推荐使用数据的 id 作为 key
+- 不推荐使用 index 作为 key（会导致性能问题）
 
 ```html
 <!-- 推荐：使用唯一id -->
@@ -387,31 +400,35 @@ data: {
 
 #### v-model 双向数据绑定
 
-**概念**：v-model是Vue提供的**双向数据绑定指令**，**专门用于表单元素**，实现数据与视图的同步更新。
+**概念**：v-model 是 Vue 提供的**双向数据绑定指令**，**专门用于表单元素**，实现数据与视图的同步更新。
 
 **模板语法**：
+
 ```html
 <!-- 基础语法 -->
-<input v-model="变量名">
+<input v-model="变量名" />
 
 <!-- 不同表单元素的使用 -->
-<input type="text" v-model="文本变量">
-<input type="checkbox" v-model="布尔变量">
-<input type="radio" v-model="选择变量">
+<input type="text" v-model="文本变量" />
+<input type="checkbox" v-model="布尔变量" />
+<input type="radio" v-model="选择变量" />
 <select v-model="选项变量">
-<textarea v-model="文本变量"></textarea>
+  <textarea v-model="文本变量"></textarea>
+</select>
 ```
 
 **作用**：
+
 - 数据变化，视图自动更新
 - 视图变化，数据自动更新
 - 可以快速获取或设置表单元素内容
 
 **基础示例**：
+
 ```html
 <form>
-  用户：<input type="text" v-model="username"> <br>
-  密码：<input type="password" v-model="password"> <br>
+  用户：<input type="text" v-model="username" /> <br />
+  密码：<input type="password" v-model="password" /> <br />
   <button @click="login">登录</button>
   <button @click="reset">重置</button>
 </form>
@@ -437,12 +454,12 @@ methods: {
 
 ```html
 <!-- 复选框 -->
-是否单身：<input type="checkbox" v-model="isSingle">
+是否单身：<input type="checkbox" v-model="isSingle" />
 
 <!-- 单选框 -->
-性别: 
-<input type="radio" name="gender" value="1" v-model="gender">男
-<input type="radio" name="gender" value="0" v-model="gender">女
+性别:
+<input type="radio" name="gender" value="1" v-model="gender" />男
+<input type="radio" name="gender" value="0" v-model="gender" />女
 
 <!-- 下拉选择 -->
 所在城市:
@@ -467,28 +484,31 @@ data: {
 
 ### Vue 指令修饰符
 
-**概念**：指令修饰符是Vue指令的扩展功能，用于增强指令的行为，通过在指令后添加`.修饰符`的方式使用。
+**概念**：指令修饰符是 Vue 指令的扩展功能，用于增强指令的行为，通过在指令后添加`.修饰符`的方式使用。
 
 #### 按键修饰符
 
 **模板语法**：
+
 ```html
 <!-- 监听特定按键事件 -->
-<input @keyup.按键名="处理函数">
-<input @keydown.按键名="处理函数">
+<input @keyup.按键名="处理函数" />
+<input @keydown.按键名="处理函数" />
 ```
 
 **常用按键修饰符**：
+
 - `.enter` - 回车键
-- `.tab` - Tab键
+- `.tab` - Tab 键
 - `.delete` - 删除键
-- `.esc` - Esc键
+- `.esc` - Esc 键
 - `.space` - 空格键
 - `.up/.down/.left/.right` - 方向键
 
 **示例**：
+
 ```html
-<input @keyup.enter="fn" v-model="username">
+<input @keyup.enter="fn" v-model="username" />
 ```
 
 ```javascript
@@ -502,6 +522,7 @@ methods: {
 #### 事件修饰符
 
 **模板语法**：
+
 ```html
 <!-- 阻止事件冒泡 -->
 <button @click.stop="处理函数">按钮</button>
@@ -514,39 +535,42 @@ methods: {
 ```
 
 **常用事件修饰符**：
+
 - `.stop` - 阻止事件冒泡
 - `.prevent` - 阻止默认行为
 - `.capture` - 添加事件监听器时使用事件捕获模式
 - `.self` - 只当在 event.target 是当前元素自身时触发处理函数
 - `.once` - 事件只触发一次
 
-#### v-model修饰符
+#### v-model 修饰符
 
 **模板语法**：
+
 ```html
 <!-- 去除首尾空格 -->
-<input v-model.trim="变量名">
+<input v-model.trim="变量名" />
 
 <!-- 转换为数字类型 -->
-<input v-model.number="变量名">
+<input v-model.number="变量名" />
 
 <!-- 懒更新（失去焦点时更新） -->
-<input v-model.lazy="变量名">
+<input v-model.lazy="变量名" />
 ```
 
 **示例**：
+
 ```html
-姓名：<input v-model.trim="username">
-年龄：<input v-model.number="age">
+姓名：<input v-model.trim="username" /> 年龄：<input v-model.number="age" />
 ```
 
 ### v-bind 样式控制
 
-**概念**：v-bind不仅可以绑定普通属性，还可以专门用于动态控制元素的class和style，实现样式的动态切换。
+**概念**：v-bind 不仅可以绑定普通属性，还可以专门用于动态控制元素的 class 和 style，实现样式的动态切换。
 
-#### 控制class类名
+#### 控制 class 类名
 
 **模板语法**：
+
 ```html
 <!-- 对象语法：根据布尔值控制类名 -->
 <div :class="{ 类名1: 布尔值1, 类名2: 布尔值2 }"></div>
@@ -559,6 +583,7 @@ methods: {
 ```
 
 **对象语法示例**：
+
 ```html
 <div :class="{ active: isActive, disabled: isDisabled }">内容</div>
 ```
@@ -572,13 +597,15 @@ data: {
 ```
 
 **数组语法示例**：
+
 ```html
 <div :class="['box', 'container', isActive ? 'active' : '']">内容</div>
 ```
 
-#### 控制style样式
+#### 控制 style 样式
 
 **模板语法**：
+
 ```html
 <!-- 对象语法：动态设置内联样式 -->
 <div :style="{ CSS属性名: '值', CSS属性名: 变量 }"></div>
@@ -588,14 +615,17 @@ data: {
 ```
 
 **示例**：
+
 ```html
-<div :style="{ width: '300px', height: '300px', backgroundColor: 'darkcyan' }"></div>
+<div
+  :style="{ width: '300px', height: '300px', backgroundColor: 'darkcyan' }"
+></div>
 <div :style="{ width: percent + '%' }">进度条</div>
 ```
 
 ```javascript
 data: {
-  percent: 50
+  percent: 50;
 }
 ```
 
@@ -604,6 +634,7 @@ data: {
 **概念**：计算属性是基于现有数据计算出来的新属性，具有缓存特性，只有当依赖的数据发生变化时才会重新计算。
 
 **模板语法**：
+
 ```javascript
 computed: {
   计算属性名() {
@@ -614,6 +645,7 @@ computed: {
 ```
 
 **基础示例**：
+
 ```javascript
 computed: {
   totalCount() {
@@ -630,17 +662,20 @@ computed: {
 #### 计算属性 vs 方法
 
 **计算属性特点**：
+
 - 基于响应式依赖进行缓存
 - 只有相关响应式依赖发生改变时才会重新求值
 - 多次访问会立即返回之前的计算结果
 - 作为属性使用：`{{ 计算属性名 }}`
 
 **方法特点**：
+
 - 每次调用都会重新执行
 - 没有缓存机制
 - 作为方法调用：`{{ 方法名() }}`
 
 **对比示例**：
+
 ```javascript
 // 计算属性 - 有缓存
 computed: {
@@ -661,6 +696,7 @@ methods: {
 #### 计算属性完整写法
 
 **模板语法**：
+
 ```javascript
 computed: {
   计算属性名: {
@@ -677,6 +713,7 @@ computed: {
 ```
 
 **示例**：
+
 ```javascript
 computed: {
   fullName: {
@@ -693,11 +730,12 @@ computed: {
 
 ### 侦听器 watch
 
-**概念**：侦听器用于观察和响应Vue实例上数据的变化，当被侦听的数据发生变化时，会执行相应的回调函数。
+**概念**：侦听器用于观察和响应 Vue 实例上数据的变化，当被侦听的数据发生变化时，会执行相应的回调函数。
 
 #### 简单写法
 
 **模板语法**：
+
 ```javascript
 watch: {
   // 侦听根级别属性
@@ -712,6 +750,7 @@ watch: {
 ```
 
 **示例**：
+
 ```javascript
 watch: {
   'obj.words'(newVal) {
@@ -731,6 +770,7 @@ watch: {
 #### 完整写法
 
 **模板语法**：
+
 ```javascript
 watch: {
   属性名: {
@@ -744,11 +784,13 @@ watch: {
 ```
 
 **配置选项**：
+
 - `deep: true` - 深度监听，监听对象内部值的变化
-- `immediate: true` - 立即执行一次handler
+- `immediate: true` - 立即执行一次 handler
 - `handler` - 具体的处理函数
 
 **示例**：
+
 ```javascript
 watch: {
   obj: {
@@ -766,9 +808,10 @@ watch: {
 
 #### data 数据
 
-**概念**：data选项用于声明组件的响应式数据，Vue会将data中的属性转换为响应式属性。
+**概念**：data 选项用于声明组件的响应式数据，Vue 会将 data 中的属性转换为响应式属性。
 
 **模板语法**：
+
 ```javascript
 data: {
   属性名: 初始值,
@@ -778,6 +821,7 @@ data: {
 ```
 
 **示例**：
+
 ```javascript
 data: {
   msg: 'Hello Vue',
@@ -793,10 +837,12 @@ data: {
 在后期的脚手架、组件化开发模式中，一个组件的`data`选项会被提取到组件的`data`函数中，返回一个对象。
 
 **目的**：
+
 - 组件化开发：每个组件有自己的`data`，互不干扰，维护独立的一份数据对象。
 - 数据响应式：组件内的数据变化会自动触发视图更新。
 
-e.g. 
+e.g.
+
 ```javascript
 data() {
   return {
@@ -811,12 +857,12 @@ data() {
 }
 ```
 
-
 #### methods 方法
 
-**概念**：methods选项用于定义组件的方法，方法内的`this`自动绑定到Vue实例。
+**概念**：methods 选项用于定义组件的方法，方法内的`this`自动绑定到 Vue 实例。
 
 **模板语法**：
+
 ```javascript
 methods: {
   方法名(参数1, 参数2) {
@@ -828,6 +874,7 @@ methods: {
 ```
 
 **示例**：
+
 ```javascript
 methods: {
   handleClick() {
@@ -846,9 +893,10 @@ methods: {
 
 #### computed 计算属性
 
-**概念**：computed选项用于定义计算属性，基于现有数据计算出新的属性值。
+**概念**：computed 选项用于定义计算属性，基于现有数据计算出新的属性值。
 
 **模板语法**：
+
 ```javascript
 computed: {
   计算属性名() {
@@ -859,9 +907,10 @@ computed: {
 
 #### watch 侦听器
 
-**概念**：watch选项用于侦听数据变化，当数据发生变化时执行相应的回调函数。
+**概念**：watch 选项用于侦听数据变化，当数据发生变化时执行相应的回调函数。
 
 **模板语法**：
+
 ```javascript
 watch: {
   被侦听的属性名(newVal, oldVal) {
@@ -874,104 +923,120 @@ watch: {
 
 #### 概念
 
-**概念**：Vue实例从创建到销毁的过程，每个阶段都有特定的钩子函数可以调用。Vue生命周期是指Vue实例从创建到销毁的整个过程，在这个过程中会自动执行一些函数，这些函数被称为生命周期钩子函数。
+**概念**：Vue 实例从创建到销毁的过程，每个阶段都有特定的钩子函数可以调用。Vue 生命周期是指 Vue 实例从创建到销毁的整个过程，在这个过程中会自动执行一些函数，这些函数被称为生命周期钩子函数。
 
 **生命周期四个阶段**：① 创建 ② 挂载 ③ 更新 ④ 销毁
 
 1. **创建阶段**：创建响应式数据
 2. **挂载阶段**：渲染模板
 3. **更新阶段**：修改数据，更新视图
-4. **销毁阶段**：销毁Vue实例
+4. **销毁阶段**：销毁 Vue 实例
 
 ![vue生命周期](assets-for-notebook/1682065991013.png)
 
 #### 生命周期钩子（hook）
 
-Vue生命周期过程中，会**自动运行一些函数**，被称为【**生命周期钩子**】→ 让开发者可以在【**特定阶段**】运行**自己的代码**
+Vue 生命周期过程中，会**自动运行一些函数**，被称为【**生命周期钩子**】→ 让开发者可以在【**特定阶段**】运行**自己的代码**
 
 ![vue钩子函数](assets-for-notebook/1682066040295.png)
 
 **八大生命周期钩子**：
 
 **1. 创建阶段**：
-- `beforeCreate`：实例初始化后，数据观测和事件配置之前调用，此时data和methods都不可用
-- `created`：实例创建完成，数据观测和事件配置完成，但DOM未挂载，**常用于发送初始化请求**
+
+- `beforeCreate`：实例初始化后，数据观测和事件配置之前调用，此时 data 和 methods 都不可用
+- `created`：实例创建完成，数据观测和事件配置完成，但 DOM 未挂载，**常用于发送初始化请求**
 
 **2. 挂载阶段**：
+
 - `beforeMount`：挂载开始前调用，模板编译完成但未挂载到页面
-- `mounted`：实例挂载完成，DOM已挂载，**常用于DOM操作**
+- `mounted`：实例挂载完成，DOM 已挂载，**常用于 DOM 操作**
 
 **3. 更新阶段**：
-- `beforeUpdate`：数据更新时调用，发生在虚拟DOM打补丁之前
-- `updated`：数据更新后调用，发生在虚拟DOM打补丁之后
+
+- `beforeUpdate`：数据更新时调用，发生在虚拟 DOM 打补丁之前
+- `updated`：数据更新后调用，发生在虚拟 DOM 打补丁之后
 
 **4. 销毁阶段**：
+
 - `beforeDestroy`：实例销毁前调用，实例仍然完全可用
 - `destroyed`：实例销毁后调用，所有事件监听器被移除
 
 **模板代码**：
+
 ```javascript
 const app = new Vue({
-  el: '#app',
+  el: "#app",
   data: {
     count: 100,
-    title: '计数器'
+    title: "计数器",
   },
 
   // 八大钩子函数
   // 1. 创建阶段
   beforeCreate() {
-    console.log('beforeCreate 响应式数据未准备', this.count);
+    console.log("beforeCreate 响应式数据未准备", this.count);
     // this.count 输出 undefined
   },
 
   created() {
-    console.log('created 数据准备完毕', this.count);
+    console.log("created 数据准备完毕", this.count);
     // 常用于：发送初始化请求，获取数据
   },
 
   // 2. 挂载阶段
   beforeMount() {
-    console.log('beforeMount DOM未被渲染', document.querySelector('span').innerHTML);
+    console.log(
+      "beforeMount DOM未被渲染",
+      document.querySelector("span").innerHTML
+    );
     // 输出 {{ count }}
   },
 
   mounted() {
-    console.log('mounted DOM已渲染', document.querySelector('span').innerHTML);
+    console.log("mounted DOM已渲染", document.querySelector("span").innerHTML);
     // 常用于：DOM操作，如获取焦点、初始化图表等
   },
 
   // 3. 更新阶段
   beforeUpdate() {
     // 需要有数据更新，才会触发更新阶段
-    console.log('beforeUpdate 数据更新了，DOM未更新', document.querySelector('span').innerHTML);
+    console.log(
+      "beforeUpdate 数据更新了，DOM未更新",
+      document.querySelector("span").innerHTML
+    );
   },
   updated() {
-    console.log('updated 数据更新了，DOM也更新了', document.querySelector('span').innerHTML);
+    console.log(
+      "updated 数据更新了，DOM也更新了",
+      document.querySelector("span").innerHTML
+    );
   },
 
   // 4. 销毁阶段
   // 在控制台中，使用 app.$destroy() 销毁组件
   beforeDestroy() {
-    console.log('beforeDestroy 组件销毁前');
+    console.log("beforeDestroy 组件销毁前");
   },
   destroyed() {
-    console.log('destroyed 组件销毁后, 此时点击dom元素不再有响应');
-  }
-})
+    console.log("destroyed 组件销毁后, 此时点击dom元素不再有响应");
+  },
+});
 ```
 
 #### created 应用场景
 
-**概念**：created钩子在Vue实例创建完成后立即调用，此时数据观测和事件配置已完成，但DOM还未挂载。
+**概念**：created 钩子在 Vue 实例创建完成后立即调用，此时数据观测和事件配置已完成，但 DOM 还未挂载。
 
 **适用场景**：
+
 - 发送初始化请求获取数据
 - 进行数据的初始化处理
 - 启动定时器
 - 订阅消息
 
 **模板代码**：
+
 ```javascript
 async created() {
   // 发送请求获取数据
@@ -981,18 +1046,19 @@ async created() {
 ```
 
 **实际应用 - 新闻列表**：
+
 ```javascript
 const app = new Vue({
-  el: '#app',
+  el: "#app",
   data: {
-    newsList: []
+    newsList: [],
   },
   async created() {
     // 页面加载完成后立即获取新闻数据
-    const res = await axios.get('http://hmajax.itheima.net/api/news');
+    const res = await axios.get("http://hmajax.itheima.net/api/news");
     this.newsList = res.data.data;
-  }
-})
+  },
+});
 ```
 
 ```html
@@ -1006,7 +1072,7 @@ const app = new Vue({
       </div>
     </div>
     <div class="right">
-      <img :src="item.img" alt="">
+      <img :src="item.img" alt="" />
     </div>
   </li>
 </ul>
@@ -1014,203 +1080,218 @@ const app = new Vue({
 
 #### mounted 应用场景
 
-**概念**：mounted钩子在Vue实例挂载完成后调用，此时DOM已经渲染完成，可以进行DOM操作。
+**概念**：mounted 钩子在 Vue 实例挂载完成后调用，此时 DOM 已经渲染完成，可以进行 DOM 操作。
 
 **适用场景**：
-- DOM操作（获取焦点、获取元素尺寸等）
+
+- DOM 操作（获取焦点、获取元素尺寸等）
 - 初始化第三方库（如图表库、地图等）
-- 启动轮播图等需要DOM的功能
+- 启动轮播图等需要 DOM 的功能
 
 **模板代码**：
+
 ```javascript
 mounted() {
   // DOM操作
   document.querySelector('#元素id').focus();
-  
+
   // 初始化第三方库
   this.chart = echarts.init(document.querySelector('#chart'));
 }
 ```
 
 **实际应用 - 输入框获取焦点**：
+
 ```javascript
 const app = new Vue({
-  el: '#app',
+  el: "#app",
   data: {
-    words: ''
+    words: "",
   },
   mounted() {
     // 等待输入框渲染完毕后获取焦点
-    document.querySelector('#inp').focus();
-  }
-})
+    document.querySelector("#inp").focus();
+  },
+});
 ```
 
 ```html
 <div class="search-box">
-  <input type="text" v-model="words" id="inp">
+  <input type="text" v-model="words" id="inp" />
   <button>搜索一下</button>
 </div>
 ```
 
 **实际应用 - 初始化图表**：
+
 ```javascript
 const app = new Vue({
-  el: '#app',
+  el: "#app",
   data: {
-    list: []
+    list: [],
   },
   mounted() {
     // echarts 使用 → 3步走（前提：已经引入了 echarts 库）
 
     //  1. 初始化echarts图表
     // 声明变量时，由于需要在外部函数中使用 setOption 函数以动态更新图表，所以提升变量，将 myChart 挂载到 Vue 实例上
-    this.myChart = echarts.init(document.querySelector('#main'));
-    
+    this.myChart = echarts.init(document.querySelector("#main"));
+
     // 2. 配置图表选项
     this.option = {
       title: {
-        text: '消费账单占比',
-        left: 'center'
+        text: "消费账单占比",
+        left: "center",
       },
       tooltip: {
-        trigger: 'item'
+        trigger: "item",
       },
-      series: [{
-        name: '消费账单',
-        type: 'pie',
-        radius: '50%',
-        data: []
-      }]
+      series: [
+        {
+          name: "消费账单",
+          type: "pie",
+          radius: "50%",
+          data: [],
+        },
+      ],
     };
-    
+
     // 3. 使用配置项显示图表
     // 注意统一使用 this，因为该变量统一挂载到了实例上；没有 this 则会出现未定义报错
     this.myChart.setOption(this.option);
-  }
-})
+  },
+});
 ```
 
 #### 生命周期综合案例 - 小黑记账清单
 
 **功能需求**：
+
 1. 页面加载时获取账单数据（created）
-2. DOM渲染完成后初始化图表（mounted）
+2. DOM 渲染完成后初始化图表（mounted）
 3. 添加、删除账单功能
 4. 实时更新饼图显示
 
 **完整实现**：
+
 ```javascript
 const app = new Vue({
-  el: '#app',
+  el: "#app",
   data: {
     list: [],
-    name: '',
-    price: ''
+    name: "",
+    price: "",
   },
-  
+
   computed: {
     totalPrice() {
       return this.list.reduce((prev, curr) => prev + curr.price, 0);
-    }
+    },
   },
-  
+
   // 1. 页面加载时获取数据
   created() {
     this.renderer();
   },
-  
+
   // 2. DOM渲染完成后初始化图表
   mounted() {
     // 初始化echarts实例
-    this.myChart = echarts.init(document.querySelector('#main'));
-    
+    this.myChart = echarts.init(document.querySelector("#main"));
+
     // 配置图表选项
     this.option = {
       title: {
-        text: '消费账单占比',
-        left: 'center'
+        text: "消费账单占比",
+        left: "center",
       },
       tooltip: {
-        trigger: 'item'
+        trigger: "item",
       },
       legend: {
-        orient: 'vertical',
-        left: 'left'
+        orient: "vertical",
+        left: "left",
       },
-      series: [{
-        name: '消费账单',
-        type: 'pie',
-        radius: '50%',
-        data: [],
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }]
+      series: [
+        {
+          name: "消费账单",
+          type: "pie",
+          radius: "50%",
+          data: [],
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
+        },
+      ],
     };
-    
+
     this.myChart.setOption(this.option);
   },
-  
+
   methods: {
     // 渲染数据和图表
     async renderer() {
-      const res = await axios.get('https://applet-base-api-t.itheima.net/bill', {
-        // get 方法需要单独的 params 对象
-        params: {
-          creator: 'StelleRainn'
+      const res = await axios.get(
+        "https://applet-base-api-t.itheima.net/bill",
+        {
+          // get 方法需要单独的 params 对象
+          params: {
+            creator: "StelleRainn",
+          },
         }
-      });
+      );
       this.list = res.data.data;
-      
+
       // 更新图表数据
       if (this.myChart) {
         this.myChart.setOption({
           // 需要修改什么，就修改什么
-          series: [{
-            // 注意加上括号以避免对象被识别为函数体或代码段
-            data: this.list.map(curr => ({
-              value: curr.price, 
-              name: curr.name
-            }))
-          }]
+          series: [
+            {
+              // 注意加上括号以避免对象被识别为函数体或代码段
+              data: this.list.map((curr) => ({
+                value: curr.price,
+                name: curr.name,
+              })),
+            },
+          ],
         });
       }
     },
-    
+
     // 添加账单
     async addItem() {
       // 校验表单数据
       if (!this.name.trim() || !this.price) {
-        alert('请填写完整信息');
+        alert("请填写完整信息");
         return;
       }
-      
-      await axios.post('https://applet-base-api-t.itheima.net/bill', {
-        creator: 'StelleRainn',
+
+      await axios.post("https://applet-base-api-t.itheima.net/bill", {
+        creator: "StelleRainn",
         name: this.name,
-        price: this.price
+        price: this.price,
       });
-      
+
       // 重新渲染
       this.renderer();
-      
+
       // 清空表单
-      this.name = '';
-      this.price = '';
+      this.name = "";
+      this.price = "";
     },
-    
+
     // 删除账单
     async delItem(id) {
-      await axios.delete('https://applet-base-api-t.itheima.net/bill/' + id);
+      await axios.delete("https://applet-base-api-t.itheima.net/bill/" + id);
       this.renderer();
-    }
-  }
-})
+    },
+  },
+});
 ```
 
 ```html
@@ -1224,7 +1305,7 @@ const app = new Vue({
         <input v-model="price" type="text" placeholder="消费价格" />
         <button type="button" @click="addItem">添加账单</button>
       </form>
-      
+
       <!-- 账单列表 -->
       <table class="table table-hover">
         <thead>
@@ -1239,7 +1320,9 @@ const app = new Vue({
           <tr v-for="(item, index) in list" :key="item.id">
             <td>{{ index + 1 }}</td>
             <td>{{ item.name }}</td>
-            <td :class="{ red: item.price > 178 }">{{ item.price.toFixed(2) }}</td>
+            <td :class="{ red: item.price > 178 }">
+              {{ item.price.toFixed(2) }}
+            </td>
             <td><a href="javascript:;" @click="delItem(item.id)">删除</a></td>
           </tr>
         </tbody>
@@ -1250,7 +1333,7 @@ const app = new Vue({
         </tfoot>
       </table>
     </div>
-    
+
     <!-- 右侧图表 -->
     <div class="echarts-box" id="main"></div>
   </div>
@@ -1261,12 +1344,13 @@ const app = new Vue({
 
 #### 开发 Vue 的两种方式
 
-- 核心包传统开发模式：基于html / css / js 文件，直接引入核心包，开发 Vue。
-- **工程化开发模式：基于构建工具（例如：webpack）的环境中开发Vue。**
+- 核心包传统开发模式：基于 html / css / js 文件，直接引入核心包，开发 Vue。
+- **工程化开发模式：基于构建工具（例如：webpack）的环境中开发 Vue。**
 
 **工程化开发模式的优势**：
+
 - 提供了项目的结构和组织方式，方便开发和维护。
-- 集成了代码转换、压缩、热更新等功能，支持新语法（如ES6+，LESS，Sass，TS等）和新特性（如组件化），提高开发效率。
+- 集成了代码转换、压缩、热更新等功能，支持新语法（如 ES6+，LESS，Sass，TS 等）和新特性（如组件化），提高开发效率。
 - 支持模块化开发，方便代码的拆分和复用。
 - 提供了丰富的插件和工具，满足不同项目的需求。
 
@@ -1274,19 +1358,20 @@ const app = new Vue({
 
 **基本介绍**
 
-Vue CLI 是Vue官方提供的一个**全局命令工具**
+Vue CLI 是 Vue 官方提供的一个**全局命令工具**
 
-可以帮助我们**快速创建**一个开发Vue项目的**标准化基础架子**。【集成了webpack配置】
+可以帮助我们**快速创建**一个开发 Vue 项目的**标准化基础架子**。【集成了 webpack 配置】
 
 **好处**
 
 1. 开箱即用，零配置
-2. 内置babel等工具
-3. 标准化的webpack配置
+2. 内置 babel 等工具
+3. 标准化的 webpack 配置
 
 **使用步骤：**
 
 1. **全局安装**（只需安装一次即可）
+
    ```bash
    # 使用 yarn
    yarn global add @vue/cli
@@ -1295,17 +1380,21 @@ Vue CLI 是Vue官方提供的一个**全局命令工具**
    ```
 
 2. **查看版本**
+
    ```bash
    vue --version
    ```
 
 3. **创建项目**
+
    ```bash
    vue create project-name
    ```
+
    > 注意：项目名不能使用中文，建议使用小写字母和连字符
 
 4. **启动项目**
+
    ```bash
    # 进入项目目录
    cd project-name
@@ -1314,11 +1403,12 @@ Vue CLI 是Vue官方提供的一个**全局命令工具**
    # 或
    npm run serve
    ```
+
    > 具体命令可在 package.json 的 scripts 字段中查看
 
 5. **备注**
 
-   `node_modules`一般不会被git所添加，在其他设备使用`git clone`同步后，需要运行`yarn install`来保证模块被安装。
+   `node_modules`一般不会被 git 所添加，在其他设备使用`git clone`同步后，需要运行`yarn install`来保证模块被安装。
 
 **创建项目时的配置选项**
 
@@ -1374,46 +1464,48 @@ project-name/
 
 ##### 核心文件说明
 
-- **src/main.js**：项目入口文件，负责创建Vue实例并挂载到DOM
+- **src/main.js**：项目入口文件，负责创建 Vue 实例并挂载到 DOM
 - **src/App.vue**：根组件，所有其他组件的父组件
-- **public/index.html**：HTML模板，Vue应用最终会挂载到这里
+- **public/index.html**：HTML 模板，Vue 应用最终会挂载到这里
 - **package.json**：项目配置文件，包含依赖、脚本命令等信息
 
 ##### 重点文件详解
 
 1. **main.js** - 项目入口文件
+
    ```javascript
-   import { createApp } from 'vue'
-   import App from './App.vue'
-   
-   createApp(App).mount('#app')
+   import { createApp } from "vue";
+   import App from "./App.vue";
+
+   createApp(App).mount("#app");
    ```
 
 2. **App.vue** - 根组件
+
    ```vue
    <template>
      <div id="app">
        <!-- 应用内容 -->
      </div>
    </template>
-   
+
    <script>
    export default {
-     name: 'App'
-   }
+     name: "App",
+   };
    </script>
-   
+
    <style>
    /* 全局样式 */
    </style>
    ```
 
-3. **index.html** - HTML模板文件
+3. **index.html** - HTML 模板文件
    ```html
    <!DOCTYPE html>
    <html lang="">
      <head>
-       <meta charset="utf-8">
+       <meta charset="utf-8" />
        <title>Vue App</title>
      </head>
      <body>
@@ -1436,6 +1528,7 @@ graph TD
 ```
 
 **详细步骤：**
+
 1. 执行 `yarn serve` 启动开发服务器
 2. Webpack 开始构建项目，处理各种文件类型
 3. 自动加载 `src/main.js` 入口文件
@@ -1443,7 +1536,6 @@ graph TD
 5. Vue 将 `App.vue` 组件渲染并挂载到 `public/index.html` 中的 `#app` 元素
 6. 浏览器接收处理后的 HTML、CSS、JS 文件并显示页面
 7. 开发服务器启动热重载，文件变化时自动刷新页面
-
 
 #### 组件化开发
 
@@ -1459,7 +1551,7 @@ graph TD
 
 **组件化开发的实现方式**
 
-1. 全局组件：在main.js文件中注册组件，全局可用。
+1. 全局组件：在 main.js 文件中注册组件，全局可用。
 2. 局部组件：在需要使用的组件中注册组件，只在当前组件可用。
 
 **根组件 App.vue**
@@ -1469,6 +1561,7 @@ graph TD
 ##### 组件的三个组成部分
 
 1. **`<template>`**：组件的模板，定义组件的结构和内容
+
    ```vue
    <template>
      <div class="my-component">
@@ -1478,23 +1571,24 @@ graph TD
    </template>
    ```
 
-2. **`<script>`**：JavaScript逻辑，定义组件的行为和逻辑
+2. **`<script>`**：JavaScript 逻辑，定义组件的行为和逻辑
+
    ```vue
    <script>
    export default {
-     name: 'MyComponent',
+     name: "MyComponent",
      data() {
        return {
-         title: '组件标题',
-         content: '组件内容'
-       }
+         title: "组件标题",
+         content: "组件内容",
+       };
      },
      methods: {
        handleClick() {
-         console.log('按钮被点击')
-       }
-     }
-   }
+         console.log("按钮被点击");
+       },
+     },
+   };
    </script>
    ```
 
@@ -1523,21 +1617,22 @@ graph TD
 - **CSS 选择器**：在组件的样式中，所有的选择器都会被添加一个前缀，如 `.my-component[data-v-hash值]`，确保样式只作用于当前组件的 DOM 元素。
 
 - **CSS 预处理器支持**：
+
   ```bash
   # 安装 Less
   yarn add less less-loader -D
-  
+
   # 安装 Sass
   yarn add sass sass-loader -D
   ```
-  
+
   ```vue
   <style lang="less" scoped>
   @primary-color: #007bff;
-  
+
   .my-component {
     color: @primary-color;
-    
+
     &:hover {
       opacity: 0.8;
     }
@@ -1551,10 +1646,10 @@ graph TD
 
 **步骤**：
 
-1. 在components目录下创建组件文件（例如：MyComponent.vue）
+1. 在 components 目录下创建组件文件（例如：MyComponent.vue）
 2. 在需要使用的组件中引入组件文件
    ```javascript
-   import MyComponent from '@/components/MyComponent.vue'
+   import MyComponent from "@/components/MyComponent.vue";
    ```
 3. 在组件中注册组件
    ```javascript
@@ -1565,11 +1660,11 @@ graph TD
      }
    }
    ```
-4. 在组件的模板中使用组件, 当成html标签使用即可
+4. 在组件的模板中使用组件, 当成 html 标签使用即可
    ```html
-   <MyComponent><MyComponent />
+   <MyComponent><MyComponent /></MyComponent>
    ```
-   *p.s. 组件命名规范：大驼峰命名法*
+   _p.s. 组件命名规范：大驼峰命名法_
 
 ##### 普通组件的注册使用-全局注册
 
@@ -1577,30 +1672,32 @@ graph TD
 
 **步骤**：
 
-1. 在components目录下创建组件文件（例如：GlobalComponent.vue）
-2. 在***main.js***文件中引入组件文件
+1. 在 components 目录下创建组件文件（例如：GlobalComponent.vue）
+2. 在**_main.js_**文件中引入组件文件
    ```javascript
-   import GlobalComponent from '@/components/GlobalComponent.vue'
+   import GlobalComponent from "@/components/GlobalComponent.vue";
    ```
-3. 在***main.js***文件中注册组件
+3. 在**_main.js_**文件中注册组件
    ```javascript
-   Vue.component('GlobalComponent', GlobalComponent)
+   Vue.component("GlobalComponent", GlobalComponent);
    ```
-4. 在组件的模板中使用组件, 当成html标签使用即可
+4. 在组件的模板中使用组件, 当成 html 标签使用即可
    ```html
-   <GlobalComponent><GlobalComponent />
+   <GlobalComponent><GlobalComponent /></GlobalComponent>
    ```
 
-*p.s. 通常在 IDE 内，可以先完成步骤 3，语法补全会自动引入步骤 2 中的代码*
+_p.s. 通常在 IDE 内，可以先完成步骤 3，语法补全会自动引入步骤 2 中的代码_
 
 ##### 组件开发最佳实践
 
 **1. 组件命名规范**
+
 - 使用 PascalCase（大驼峰）命名：`MyComponent.vue`
 - 组件名应该具有描述性：`UserProfile.vue`、`ProductCard.vue`
-- 避免与HTML标签冲突：不要使用 `Header.vue`，可以用 `AppHeader.vue`
+- 避免与 HTML 标签冲突：不要使用 `Header.vue`，可以用 `AppHeader.vue`
 
 **2. 组件文件组织**
+
 ```
 src/
 ├── components/
@@ -1617,13 +1714,11 @@ src/
 │       └── ProductList.vue
 ```
 
-
-
 ##### 组件化开发 综合案例 小兔鲜组件化
 
 ```html
- <!-- App.vue -->
-  <template>
+<!-- App.vue -->
+<template>
   <div id="app">
     <!-- 快捷链接 -->
     <XtxShortCut></XtxShortCut>
@@ -1643,38 +1738,37 @@ src/
 </template>
 
 <script>
+  // 引入组件
+  import XtxShortCut from "./components/XtxShortCut";
+  import XtxHeaderNav from "./components/XtxHeaderNav";
+  import XtxBanner from "./components/XtxBanner";
+  import XtxNewGoods from "./components/XtxNewGoods";
+  import XtxHotBrand from "./components/XtxHotBrand";
+  import XtxTopic from "./components/XtxTopic";
+  import XtxFooter from "./components/XtxFooter";
 
-// 引入组件
-import XtxShortCut from './components/XtxShortCut'
-import XtxHeaderNav from './components/XtxHeaderNav'
-import XtxBanner from './components/XtxBanner'
-import XtxNewGoods from './components/XtxNewGoods'
-import XtxHotBrand from './components/XtxHotBrand'
-import XtxTopic from './components/XtxTopic'
-import XtxFooter from './components/XtxFooter'
-
-export default {
-
-  // 注册为局部组件
-  components: {
-    XtxShortCut,
-    XtxHeaderNav,
-    XtxBanner,
-    XtxNewGoods,
-    XtxHotBrand,
-    XtxTopic,
-    XtxFooter,
-  }
-}
+  export default {
+    // 注册为局部组件
+    components: {
+      XtxShortCut,
+      XtxHeaderNav,
+      XtxBanner,
+      XtxNewGoods,
+      XtxHotBrand,
+      XtxTopic,
+      XtxFooter,
+    },
+  };
 </script>
 
 <style></style>
 ```
+
 举 XtxNewGoods 组件为例子
 
 ```html
 <!-- XtxNewGoods.vue -->
- <template>
+<template>
   <!-- 新鲜好物 -->
   <div class="goods wrapper">
     <div class="title">
@@ -1683,7 +1777,9 @@ export default {
         <p>新鲜出炉 品质靠谱</p>
       </div>
       <div class="right">
-        <a href="#" class="more">查看全部<span class="iconfont icon-arrow-right-bold"></span></a>
+        <a href="#" class="more"
+          >查看全部<span class="iconfont icon-arrow-right-bold"></span
+        ></a>
       </div>
     </div>
     <div class="bd">
@@ -1695,17 +1791,15 @@ export default {
 </template>
 
 <script>
-export default {
-
-}
+  export default {};
 </script>
 
 <style>
-/* 新鲜好物 */
-.goods .bd ul {
-  display: flex;
-  justify-content: space-between;
-}
+  /* 新鲜好物 */
+  .goods .bd ul {
+    display: flex;
+    justify-content: space-between;
+  }
 </style>
 ```
 
@@ -1714,34 +1808,32 @@ export default {
 ```html
 <!-- BaseGoodsItem.vue -->
 <template>
-    <li class="base-goods-item">
-        <a href="#">
-            <div class="pic"><img src="@/assets/images/goods1.png" alt="" /></div>
-            <div class="txt">
-                <h4>KN95级莫兰迪色防护口罩</h4>
-                <p>¥ <span>79</span></p>
-            </div>
-        </a>
-    </li>
+  <li class="base-goods-item">
+    <a href="#">
+      <div class="pic"><img src="@/assets/images/goods1.png" alt="" /></div>
+      <div class="txt">
+        <h4>KN95级莫兰迪色防护口罩</h4>
+        <p>¥ <span>79</span></p>
+      </div>
+    </a>
+  </li>
 </template>
 
 <script>
-export default {
-
-}
+  export default {};
 </script>
 
 <style>
-/* 省略样式 */
+  /* 省略样式 */
 </style>
 ```
 
 ```js
 // main.js
-import BaseGoodsItem from '@/components/BaseGoodsItem.vue'
+import BaseGoodsItem from "@/components/BaseGoodsItem.vue";
 
 // 全局注册
-Vue.component('BaseGoodsItem', BaseGoodsItem)
+Vue.component("BaseGoodsItem", BaseGoodsItem);
 ```
 
 #### 常用开发命令与调试技巧
@@ -1751,9 +1843,9 @@ Vue.component('BaseGoodsItem', BaseGoodsItem)
 ```json
 {
   "scripts": {
-    "serve": "vue-cli-service serve",      // 启动开发服务器
-    "build": "vue-cli-service build",      // 构建生产版本
-    "lint": "vue-cli-service lint",        // 代码检查
+    "serve": "vue-cli-service serve", // 启动开发服务器
+    "build": "vue-cli-service build", // 构建生产版本
+    "lint": "vue-cli-service lint", // 代码检查
     "test:unit": "vue-cli-service test:unit" // 单元测试
   }
 }
@@ -1778,19 +1870,22 @@ vue ui              # 启动图形化界面
 ##### 开发调试技巧
 
 **1. Vue DevTools**
+
 - 浏览器扩展，用于调试 Vue 应用
 - 可以查看组件树、状态、事件等
 - 支持时间旅行调试
 
 **2. 控制台调试**
+
 ```javascript
 // 在组件中使用
-console.log('数据:', this.data)
-console.table(this.list) // 表格形式显示数组
-debugger // 设置断点
+console.log("数据:", this.data);
+console.table(this.list); // 表格形式显示数组
+debugger; // 设置断点
 ```
 
 **3. 热重载**
+
 - 修改代码后自动刷新页面
 - 保持组件状态不丢失
 - 提高开发效率
@@ -1800,45 +1895,47 @@ debugger // 设置断点
 ```javascript
 // 全局错误处理
 Vue.config.errorHandler = (err, vm, info) => {
-  console.error('Vue Error:', err, info)
-}
+  console.error("Vue Error:", err, info);
+};
 
 // 组件内错误处理
 export default {
   errorCaptured(err, instance, info) {
-    console.error('Component Error:', err, info)
-    return false
-  }
-}
+    console.error("Component Error:", err, info);
+    return false;
+  },
+};
 ```
-
-
 
 ### Vue 组件通信
 
 #### 父子组件通信概述
 
-**概念**：在Vue组件化开发中，组件之间需要进行数据传递和事件通信。父子组件通信是最常见的通信方式，包括父组件向子组件传递数据（Props）和子组件向父组件传递消息（$emit）。
+**概念**：在 Vue 组件化开发中，组件之间需要进行数据传递和事件通信。父子组件通信是最常见的通信方式，包括父组件向子组件传递数据（Props）和子组件向父组件传递消息（$emit）。
 
 **通信方向**：
+
 - **父传子**：通过 Props 传递数据
 - **子传父**：通过 $emit 触发事件
 
 **应用场景**：
+
 - 父组件需要向子组件传递配置信息、显示数据
 - 子组件需要通知父组件某些操作（如按钮点击、表单提交）
 - 实现组件间的数据同步和状态管理
 
 #### Props 父传子
 
-**概念**：Props（properties的缩写）是组件上注册的一些自定义属性，用于父组件向子组件传递数据。Props是Vue组件通信的核心机制之一。
+**概念**：Props（properties 的缩写）是组件上注册的一些自定义属性，用于父组件向子组件传递数据。Props 是 Vue 组件通信的核心机制之一。
 
 **特点**：
-- 可以传递任意数量、任意类型的prop
-- 支持字符串、数字、布尔值、数组、对象、函数等所有JavaScript数据类型
-- 数据流是单向的：父组件数据变化会影响子组件，但子组件不能直接修改props
+
+- 可以传递任意数量、任意类型的 prop
+- 支持字符串、数字、布尔值、数组、对象、函数等所有 JavaScript 数据类型
+- 数据流是单向的：父组件数据变化会影响子组件，但子组件不能直接修改 props
 
 **模板语法**：
+
 ```html
 <!-- 父组件模板 -->
 <子组件名 :prop名="父组件数据"></子组件名>
@@ -1847,47 +1944,49 @@ export default {
 ```javascript
 // 子组件接收
 export default {
-  props: ['prop名1', 'prop名2'],
+  props: ["prop名1", "prop名2"],
   // 或者对象形式
   props: {
-    prop名: 数据类型
-  }
-}
+    prop名: 数据类型,
+  },
+};
 ```
 
 **基础示例**：
+
 ```html
 <!-- 父组件 App.vue -->
 <template>
   <div class="app">
-    <UserInfo 
-      :username="username" 
-      :age="age" 
-      :isSingle="isSingle" 
-      :car="car" 
-      :hobby="hobby">
+    <UserInfo
+      :username="username"
+      :age="age"
+      :isSingle="isSingle"
+      :car="car"
+      :hobby="hobby"
+    >
     </UserInfo>
   </div>
 </template>
 
 <script>
-import UserInfo from './components/UserInfo.vue'
-export default {
-  data() {
-    return {
-      username: '小帅',
-      age: 28,
-      isSingle: true,
-      car: {
-        brand: '宝马',
-      },
-      hobby: ['篮球', '足球', '羽毛球'],
-    }
-  },
-  components: {
-    UserInfo,
-  },
-}
+  import UserInfo from "./components/UserInfo.vue";
+  export default {
+    data() {
+      return {
+        username: "小帅",
+        age: 28,
+        isSingle: true,
+        car: {
+          brand: "宝马",
+        },
+        hobby: ["篮球", "足球", "羽毛球"],
+      };
+    },
+    components: {
+      UserInfo,
+    },
+  };
 </script>
 ```
 
@@ -1905,18 +2004,19 @@ export default {
 </template>
 
 <script>
-export default {
-  // 接收父组件传递的数据
-  props: ['username', 'age', 'isSingle', 'car', 'hobby']
-}
+  export default {
+    // 接收父组件传递的数据
+    props: ["username", "age", "isSingle", "car", "hobby"],
+  };
 </script>
 ```
 
 #### Props 校验
 
-**概念**：Props校验是Vue提供的一种机制，用于验证父组件传递给子组件的数据是否符合预期的类型和格式，提高代码的健壮性和可维护性。
+**概念**：Props 校验是 Vue 提供的一种机制，用于验证父组件传递给子组件的数据是否符合预期的类型和格式，提高代码的健壮性和可维护性。
 
 **模板语法**：
+
 ```javascript
 // 基础类型校验
 props: {
@@ -1937,22 +2037,24 @@ props: {
 ```
 
 **支持的数据类型**：
+
 - `String` - 字符串
 - `Number` - 数字
 - `Boolean` - 布尔值
 - `Array` - 数组
 - `Object` - 对象
 - `Function` - 函数
-- `Symbol` - Symbol类型
+- `Symbol` - Symbol 类型
 
 **校验示例**：
+
 ```javascript
 // 进度条组件的props校验
 export default {
   props: {
     // 基础写法：类型校验
     w: Number,
-    
+
     // 完整写法：类型、必填、默认值、自定义校验
     width: {
       type: Number,
@@ -1961,36 +2063,37 @@ export default {
       validator(value) {
         // 校验进度值必须在0-100之间
         if (value >= 0 && value <= 100) {
-          return true
+          return true;
         } else {
-          console.error('width must be a value between [0, 100]')
-          return false
+          console.error("width must be a value between [0, 100]");
+          return false;
         }
-      }
+      },
     },
-    
+
     // 字符串类型校验
     title: {
       type: String,
-      default: '默认标题'
+      default: "默认标题",
     },
-    
+
     // 数组类型校验
     list: {
       type: Array,
-      default: () => [] // 对象和数组的默认值必须是函数返回
+      default: () => [], // 对象和数组的默认值必须是函数返回
     },
-    
+
     // 对象类型校验
     config: {
       type: Object,
-      default: () => ({})
-    }
-  }
-}
+      default: () => ({}),
+    },
+  },
+};
 ```
 
 **进度条组件完整示例**：
+
 ```html
 <!-- BaseProgress.vue -->
 <template>
@@ -2002,61 +2105,62 @@ export default {
 </template>
 
 <script>
-export default {
-  props: {
-    w: {
-      type: Number,
-      default: 0,
-      validator(value) {
-        if (value >= 0 && value <= 100) {
-          return true
-        } else {
-          console.error('width w must be a value between [0, 100]')
-          return false
-        }
-      }
-    }
-  }
-}
+  export default {
+    props: {
+      w: {
+        type: Number,
+        default: 0,
+        validator(value) {
+          if (value >= 0 && value <= 100) {
+            return true;
+          } else {
+            console.error("width w must be a value between [0, 100]");
+            return false;
+          }
+        },
+      },
+    },
+  };
 </script>
 
 <style scoped>
-.base-progress {
-  height: 26px;
-  width: 400px;
-  border-radius: 15px;
-  background-color: #272425;
-  border: 3px solid #272425;
-  box-sizing: border-box;
-  margin-bottom: 30px;
-}
+  .base-progress {
+    height: 26px;
+    width: 400px;
+    border-radius: 15px;
+    background-color: #272425;
+    border: 3px solid #272425;
+    box-sizing: border-box;
+    margin-bottom: 30px;
+  }
 
-.inner {
-  position: relative;
-  background: #379bff;
-  border-radius: 15px;
-  height: 25px;
-  box-sizing: border-box;
-  left: -3px;
-  top: -2px;
-}
+  .inner {
+    position: relative;
+    background: #379bff;
+    border-radius: 15px;
+    height: 25px;
+    box-sizing: border-box;
+    left: -3px;
+    top: -2px;
+  }
 
-.inner span {
-  position: absolute;
-  right: 0;
-  top: 26px;
-}
+  .inner span {
+    position: absolute;
+    right: 0;
+    top: 26px;
+  }
 </style>
 ```
 
 #### $emit 子传父
 
-**概念**：$emit是Vue提供的实例方法，用于子组件向父组件发送消息。子组件通过触发自定义事件的方式，将数据传递给父组件。
+**概念**：$emit 是 Vue 提供的实例方法，用于子组件向父组件发送消息。子组件通过触发自定义事件的方式，将数据传递给父组件。
 
 **模板语法**：
+
 ```javascript
 // 子组件触发事件
-this.$emit('事件名', 传递的数据)
+this.$emit("事件名", 传递的数据);
 ```
 
 ```html
@@ -2065,6 +2169,7 @@ this.$emit('事件名', 传递的数据)
 ```
 
 **基础示例**：
+
 ```html
 <!-- 子组件 SonComponent.vue -->
 <template>
@@ -2075,16 +2180,16 @@ this.$emit('事件名', 传递的数据)
 </template>
 
 <script>
-export default {
-  props: ['title'],
-  
-  methods: {
-    msgToFather() {
-      // 通过 $emit 触发事件，给父组件发送消息通知
-      this.$emit('changeTitle', '修改为子组件的消息')
-    }
-  }
-}
+  export default {
+    props: ["title"],
+
+    methods: {
+      msgToFather() {
+        // 通过 $emit 触发事件，给父组件发送消息通知
+        this.$emit("changeTitle", "修改为子组件的消息");
+      },
+    },
+  };
 </script>
 ```
 
@@ -2100,50 +2205,52 @@ export default {
 </template>
 
 <script>
-import SonComponent from './components/SonComponent.vue'
-export default {
-  components: {
-    SonComponent
-  },
+  import SonComponent from "./components/SonComponent.vue";
+  export default {
+    components: {
+      SonComponent,
+    },
 
-  data() {
-    return {
-      fatherMsg: '我是父组件的消息'
-    }
-  },
+    data() {
+      return {
+        fatherMsg: "我是父组件的消息",
+      };
+    },
 
-  methods: {
-    // 提供对应的处理函数，修改消息；形参可以拿到新消息
-    changeFn(newMsg) {
-      this.fatherMsg = newMsg
-    }
-  }
-}
+    methods: {
+      // 提供对应的处理函数，修改消息；形参可以拿到新消息
+      changeFn(newMsg) {
+        this.fatherMsg = newMsg;
+      },
+    },
+  };
 </script>
 ```
 
 #### Props 和 Data 的区别
 
-**概念**：Props和Data都是Vue组件中的数据，但它们有着本质的区别。理解这个区别对于正确使用Vue组件通信至关重要。
+**概念**：Props 和 Data 都是 Vue 组件中的数据，但它们有着本质的区别。理解这个区别对于正确使用 Vue 组件通信至关重要。
 
 **核心区别**：
 
-| 特性 | Props | Data |
-|------|-------|------|
-| **数据来源** | 外部传入（父组件） | 组件内部定义 |
-| **修改权限** | 只读，不能直接修改 | 可以随意修改 |
-| **数据流向** | 单向数据流（父→子） | 组件内部流动 |
-| **响应式** | 响应式（父组件变化会更新） | 响应式（内部变化会更新视图） |
-| **用途** | 接收外部配置和数据 | 存储组件内部状态 |
+| 特性         | Props                      | Data                         |
+| ------------ | -------------------------- | ---------------------------- |
+| **数据来源** | 外部传入（父组件）         | 组件内部定义                 |
+| **修改权限** | 只读，不能直接修改         | 可以随意修改                 |
+| **数据流向** | 单向数据流（父 → 子）      | 组件内部流动                 |
+| **响应式**   | 响应式（父组件变化会更新） | 响应式（内部变化会更新视图） |
+| **用途**     | 接收外部配置和数据         | 存储组件内部状态             |
 
 **单向数据流原则**：
-- 父组件通过props传递数据给子组件
-- 子组件不能直接修改props中的数据
+
+- 父组件通过 props 传递数据给子组件
+- 子组件不能直接修改 props 中的数据
 - 子组件只能通过触发事件的方式通知父组件修改数据
-- 父组件修改数据后，会向下流动，通过props传递给子组件
+- 父组件修改数据后，会向下流动，通过 props 传递给子组件
 - 这个数据流动是单向的，确保数据流向清晰可控
 
 **错误示例**：
+
 ```html
 <!-- BaseCount.vue - 错误做法 -->
 <template>
@@ -2156,15 +2263,16 @@ export default {
 </template>
 
 <script>
-export default {
-  props: {
-    count: Number,
-  }
-}
+  export default {
+    props: {
+      count: Number,
+    },
+  };
 </script>
 ```
 
 **正确示例**：
+
 ```html
 <!-- BaseCount.vue - 正确做法 -->
 <template>
@@ -2176,21 +2284,21 @@ export default {
 </template>
 
 <script>
-export default {
-  props: {
-    count: Number,
-  },
-
-  methods: {
-    handleSub() {
-      // 通过事件通知父组件修改数据
-      this.$emit('change', this.count - 1)
+  export default {
+    props: {
+      count: Number,
     },
-    handleAdd() {
-      this.$emit('change', this.count + 1)
-    }
-  }
-}
+
+    methods: {
+      handleSub() {
+        // 通过事件通知父组件修改数据
+        this.$emit("change", this.count - 1);
+      },
+      handleAdd() {
+        this.$emit("change", this.count + 1);
+      },
+    },
+  };
 </script>
 ```
 
@@ -2203,18 +2311,18 @@ export default {
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      num: 100
-    }
-  },
-  methods: {
-    handleChange(newVal) {
-      this.num = newVal
-    }
-  }
-}
+  export default {
+    data() {
+      return {
+        num: 100,
+      };
+    },
+    methods: {
+      handleChange(newVal) {
+        this.num = newVal;
+      },
+    },
+  };
 </script>
 ```
 
@@ -2223,6 +2331,7 @@ export default {
 **概念**：通过将单文件应用重构为组件化应用，展示父子组件通信在实际项目中的应用。
 
 **项目结构**：
+
 ```
 src/
 ├── App.vue              # 根组件（数据管理中心）
@@ -2235,128 +2344,131 @@ src/
 ```
 
 **根组件 App.vue**：
+
 ```html
 <template>
   <section id="app">
     <!-- 头部：负责添加任务 -->
     <TodoHead @addItem="handleAdd"></TodoHead>
-    
+
     <!-- 主体：负责显示和删除任务 -->
     <TodoMain :list="list" @delItem="handleDel"></TodoMain>
-    
+
     <!-- 底部：负责统计和清空 -->
     <TodoFooter :list="list" @emptyItems="emptyItems"></TodoFooter>
   </section>
 </template>
 
 <script>
-import TodoHead from './components/TodoHead.vue'
-import TodoMain from './components/TodoMain.vue'
-import TodoFooter from './components/TodoFooter.vue'
+  import TodoHead from "./components/TodoHead.vue";
+  import TodoMain from "./components/TodoMain.vue";
+  import TodoFooter from "./components/TodoFooter.vue";
 
-export default {
-  components: {
-    TodoHead,
-    TodoMain,
-    TodoFooter,
-  },
-  
-  data() {
-    return {
-      // 从本地存储读取数据，如果没有则使用默认数据
-      list: JSON.parse(localStorage.getItem('list')) || [
-        {id: 1, name: 'Code'},
-        {id: 2, name: 'Eat'},
-        {id: 3, name: 'Sleep'},
-        {id: 4, name: 'Exercise'},
-        {id: 5, name: 'Music'},
-      ],
-    }
-  },
-  
-  methods: {
-    // 添加任务（子传父）
-    handleAdd(value) {
-      if (!value) {
-        alert('fatal: content must not be empty!')
-        return
-      }
-      this.list.unshift({
-        id: +new Date(),
-        name: value
-      })
+  export default {
+    components: {
+      TodoHead,
+      TodoMain,
+      TodoFooter,
     },
 
-    // 删除任务（子传父）
-    handleDel(id) {
-      if (confirm('Are you sure to delete item?')) {
-        this.list = this.list.filter(item => item.id !== id)
-      }
+    data() {
+      return {
+        // 从本地存储读取数据，如果没有则使用默认数据
+        list: JSON.parse(localStorage.getItem("list")) || [
+          { id: 1, name: "Code" },
+          { id: 2, name: "Eat" },
+          { id: 3, name: "Sleep" },
+          { id: 4, name: "Exercise" },
+          { id: 5, name: "Music" },
+        ],
+      };
     },
 
-    // 清空所有任务（子传父）
-    emptyItems() {
-      this.list = []
-    }
-  },
-  
-  // 监听数据变化，实现持久化存储
-  watch: {
-    list: {
-      deep: true,
-      immediate: true,
-      handler() {
-        localStorage.setItem('list', JSON.stringify(this.list))
-      }
-    }
-  }
-}
+    methods: {
+      // 添加任务（子传父）
+      handleAdd(value) {
+        if (!value) {
+          alert("fatal: content must not be empty!");
+          return;
+        }
+        this.list.unshift({
+          id: +new Date(),
+          name: value,
+        });
+      },
+
+      // 删除任务（子传父）
+      handleDel(id) {
+        if (confirm("Are you sure to delete item?")) {
+          this.list = this.list.filter((item) => item.id !== id);
+        }
+      },
+
+      // 清空所有任务（子传父）
+      emptyItems() {
+        this.list = [];
+      },
+    },
+
+    // 监听数据变化，实现持久化存储
+    watch: {
+      list: {
+        deep: true,
+        immediate: true,
+        handler() {
+          localStorage.setItem("list", JSON.stringify(this.list));
+        },
+      },
+    },
+  };
 </script>
 ```
 
 **头部组件 TodoHead.vue**：
+
 ```html
 <template>
   <header class="header">
     <h1>小黑记事本</h1>
-    <input 
-      @keyup.enter="addItem" 
-      v-model.trim="addedItem" 
-      placeholder="Click here to add reminders" 
-      class="new-todo" 
+    <input
+      @keyup.enter="addItem"
+      v-model.trim="addedItem"
+      placeholder="Click here to add reminders"
+      class="new-todo"
     />
     <button class="add" @click="addItem">添加任务</button>
   </header>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      addedItem: ''
-    }
-  },
+  export default {
+    data() {
+      return {
+        addedItem: "",
+      };
+    },
 
-  methods: {
-    addItem() {
-      // 子传父：将输入的内容传递给父组件
-      this.$emit('addItem', this.addedItem)
-      // 清空输入框
-      this.addedItem = ''
-    }
-  }
-}
+    methods: {
+      addItem() {
+        // 子传父：将输入的内容传递给父组件
+        this.$emit("addItem", this.addedItem);
+        // 清空输入框
+        this.addedItem = "";
+      },
+    },
+  };
 </script>
 ```
 
 **主体组件 TodoMain.vue**：
+
 ```html
 <template>
   <section class="main">
     <ul class="todo-list">
       <li class="todo" v-for="(item, index) in list" :key="item.id">
         <div class="view">
-          <span class="index">{{ index + 1 }}.</span> 
+          <span class="index">{{ index + 1 }}.</span>
           <label>{{ item.name }}</label>
           <button class="destroy" @click="del(item.id)"></button>
         </div>
@@ -2366,66 +2478,64 @@ export default {
 </template>
 
 <script>
-export default {
-  // 父传子：接收任务列表数据
-  props: {
-    list: Array,
-  },
+  export default {
+    // 父传子：接收任务列表数据
+    props: {
+      list: Array,
+    },
 
-  methods: {
-    del(id) {
-      // 子传父：通知父组件删除指定任务
-      this.$emit('delItem', id)
-    }
-  }
-}
+    methods: {
+      del(id) {
+        // 子传父：通知父组件删除指定任务
+        this.$emit("delItem", id);
+      },
+    },
+  };
 </script>
 ```
 
 **底部组件 TodoFooter.vue**：
+
 ```html
 <template>
   <footer class="footer">
     <!-- 父传子：显示任务统计 -->
-    <span class="todo-count">
-      合 计:<strong>{{ list.length }}</strong>
-    </span>
-    <button class="clear-completed" @click="clear">
-      清空任务
-    </button>
+    <span class="todo-count"> 合 计:<strong>{{ list.length }}</strong> </span>
+    <button class="clear-completed" @click="clear">清空任务</button>
   </footer>
 </template>
 
 <script>
-export default {
-  // 父传子：接收任务列表用于统计
-  props: {
-    list: Array,
-  },
+  export default {
+    // 父传子：接收任务列表用于统计
+    props: {
+      list: Array,
+    },
 
-  methods: {
-    clear() {
-      // 子传父：通知父组件清空所有任务
-      this.$emit('emptyItems')
-    }
-  }
-}
+    methods: {
+      clear() {
+        // 子传父：通知父组件清空所有任务
+        this.$emit("emptyItems");
+      },
+    },
+  };
 </script>
 ```
 
 **组件通信流程总结**：
 
-1. **数据管理**：所有数据都在根组件App.vue中管理
+1. **数据管理**：所有数据都在根组件 App.vue 中管理
 2. **父传子**：
    - App.vue → TodoMain.vue：传递任务列表数据
    - App.vue → TodoFooter.vue：传递任务列表用于统计
 3. **子传父**：
    - TodoHead.vue → App.vue：传递新添加的任务内容
-   - TodoMain.vue → App.vue：传递要删除的任务ID
+   - TodoMain.vue → App.vue：传递要删除的任务 ID
    - TodoFooter.vue → App.vue：通知清空所有任务
-4. **数据持久化**：通过watch监听数据变化，自动保存到localStorage
+4. **数据持久化**：通过 watch 监听数据变化，自动保存到 localStorage
 
 **设计原则**：
+
 - **单一数据源**：所有数据都在父组件中管理
 - **单向数据流**：数据从父组件流向子组件，事件从子组件流向父组件
 - **职责分离**：每个组件只负责自己的功能模块
@@ -2435,19 +2545,22 @@ export default {
 
 #### EventBus 事件总线
 
-**概念**：EventBus是Vue中用于非父子组件间通信的一种方式，通过创建一个空的Vue实例作为事件总线，实现任意组件间的消息传递。
+**概念**：EventBus 是 Vue 中用于非父子组件间通信的一种方式，通过创建一个空的 Vue 实例作为事件总线，实现任意组件间的消息传递。
 
 **适用场景**：
+
 - 兄弟组件间通信
 - 跨层级组件间简单消息传递
-- 小型项目的组件通信（复杂场景推荐使用Vuex）
+- 小型项目的组件通信（复杂场景推荐使用 Vuex）
 
 **实现步骤**：
-1. 创建EventBus实例
+
+1. 创建 EventBus 实例
 2. 在接收方监听事件
 3. 在发送方触发事件
 
 **模板代码**：
+
 ```javascript
 // 1. 创建EventBus实例 (utils/EventBus.js)
 import Vue from "vue";
@@ -2457,31 +2570,32 @@ export default Bus;
 
 ```javascript
 // 2. 接收方：监听事件
-import Bus from '../utils/EventBus'
+import Bus from "../utils/EventBus";
 export default {
   created() {
     // 监听事件
-    Bus.$on('事件名', (参数) => {
+    Bus.$on("事件名", (参数) => {
       // 处理接收到的数据
-    })
-  }
-}
+    });
+  },
+};
 ```
 
 ```javascript
 // 3. 发送方：触发事件
-import Bus from '../utils/EventBus'
+import Bus from "../utils/EventBus";
 export default {
   methods: {
     sendMessage() {
       // 触发事件并传递数据
-      Bus.$emit('事件名', 数据)
-    }
-  }
-}
+      Bus.$emit("事件名", 数据);
+    },
+  },
+};
 ```
 
 **完整示例**：
+
 ```javascript
 // EventBus.js
 import Vue from "vue";
@@ -2499,15 +2613,15 @@ export default Bus;
 </template>
 
 <script>
-import Bus from '../utils/EventBus'
-export default {
-  methods: {
-    sendMsgFn() {
-      // 触发事件，事件名要与接收方一致
-      Bus.$emit('sendMsg', '发送消息')
-    }
-  }
-}
+  import Bus from "../utils/EventBus";
+  export default {
+    methods: {
+      sendMsgFn() {
+        // 触发事件，事件名要与接收方一致
+        Bus.$emit("sendMsg", "发送消息");
+      },
+    },
+  };
 </script>
 ```
 
@@ -2521,61 +2635,66 @@ export default {
 </template>
 
 <script>
-import Bus from '../utils/EventBus'
-export default {
-  created() {
-    // 监听Bus实例的事件
-    Bus.$on('sendMsg', (msg) => {
-      this.msg = msg
-    })
-  },
-  data() {
-    return {
-      msg: ''
-    }
-  }
-}
+  import Bus from "../utils/EventBus";
+  export default {
+    created() {
+      // 监听Bus实例的事件
+      Bus.$on("sendMsg", (msg) => {
+        this.msg = msg;
+      });
+    },
+    data() {
+      return {
+        msg: "",
+      };
+    },
+  };
 </script>
 ```
 
 **注意事项**：
+
 - 事件名必须保持一致
 - 建议在组件销毁时移除事件监听，避免内存泄漏
-- EventBus适合简单场景，复杂状态管理建议使用Vuex
+- EventBus 适合简单场景，复杂状态管理建议使用 Vuex
 
 #### provide 和 inject
 
-**概念**：provide和inject是Vue提供的跨层级组件通信方案，允许祖先组件向所有子孙组件注入依赖，无论组件层次有多深。
+**概念**：provide 和 inject 是 Vue 提供的跨层级组件通信方案，允许祖先组件向所有子孙组件注入依赖，无论组件层次有多深。
 
 **适用场景**：
+
 - 祖先组件向子孙组件传递数据
 - 跨多层级的数据共享
 - 组件库开发中的配置传递
 
 **模板语法**：
+
 ```javascript
 // 祖先组件：提供数据
 export default {
   provide() {
     return {
-      数据名: this.数据值
-    }
-  }
-}
+      数据名: this.数据值,
+    };
+  },
+};
 ```
 
 ```javascript
 // 子孙组件：注入数据
 export default {
-  inject: ['数据名1', '数据名2']
-}
+  inject: ["数据名1", "数据名2"],
+};
 ```
 
 **响应式特性**：
+
 - **简单类型**：非响应式，数据变化时视图不会更新
 - **复杂类型**：响应式，对象或数组被修改后视图会更新
 
 **完整示例**：
+
 ```html
 <!-- 祖先组件 App.vue -->
 <template>
@@ -2588,42 +2707,42 @@ export default {
 </template>
 
 <script>
-import SonA from './components/SonA.vue'
-import SonB from './components/SonB.vue'
+  import SonA from "./components/SonA.vue";
+  import SonB from "./components/SonB.vue";
 
-export default {
-  // 父组件 provide 提供数据
-  provide() {
-    return {
-      // 简单类型：非响应式
-      color: this.color,
-      // 复杂类型：响应式（推荐）
-      userInfo: this.userInfo
-    }
-  },
-
-  data() {
-    return {
-      color: 'pink',
-      userInfo: {
-        name: 'zs',
-        age: 18,
-      },
-    }
-  },
-
-  methods: {
-    change() {
-      this.color = 'red'        // 视图不会更新
-      this.userInfo.name = 'ls' // 视图会更新
+  export default {
+    // 父组件 provide 提供数据
+    provide() {
+      return {
+        // 简单类型：非响应式
+        color: this.color,
+        // 复杂类型：响应式（推荐）
+        userInfo: this.userInfo,
+      };
     },
-  },
 
-  components: {
-    SonA,
-    SonB,
-  },
-}
+    data() {
+      return {
+        color: "pink",
+        userInfo: {
+          name: "zs",
+          age: 18,
+        },
+      };
+    },
+
+    methods: {
+      change() {
+        this.color = "red"; // 视图不会更新
+        this.userInfo.name = "ls"; // 视图会更新
+      },
+    },
+
+    components: {
+      SonA,
+      SonB,
+    },
+  };
 </script>
 ```
 
@@ -2638,14 +2757,14 @@ export default {
 </template>
 
 <script>
-import GrandSon from './GrandSon.vue'
-export default {
-  // 子孙组件 inject 取值使用
-  inject: ['color', 'userInfo'],
-  components: {
-    GrandSon,
-  }
-}
+  import GrandSon from "./GrandSon.vue";
+  export default {
+    // 子孙组件 inject 取值使用
+    inject: ["color", "userInfo"],
+    components: {
+      GrandSon,
+    },
+  };
 </script>
 ```
 
@@ -2653,25 +2772,26 @@ export default {
 <!-- 孙组件 GrandSon.vue -->
 <template>
   <div class="grandSon">
-    我是GrandSon
-    {{ color }} - {{ userInfo.name }} - {{ userInfo.age }}
+    我是GrandSon {{ color }} - {{ userInfo.name }} - {{ userInfo.age }}
   </div>
 </template>
 
 <script>
-export default {
-  // 任意层级的子孙组件都可以注入
-  inject: ['color', 'userInfo'],
-}
+  export default {
+    // 任意层级的子孙组件都可以注入
+    inject: ["color", "userInfo"],
+  };
 </script>
 ```
 
 **优势**：
-- 无需逐层传递props
+
+- 无需逐层传递 props
 - 适合深层嵌套的组件结构
 - 代码简洁，维护方便
 
 **注意事项**：
+
 - 推荐使用对象形式提供响应式数据
 - 不要过度使用，会增加组件间的耦合度
 - 适合稳定的、不经常变化的数据
@@ -2680,75 +2800,81 @@ export default {
 
 #### v-model 原理
 
-**概念**：v-model是Vue提供的语法糖，本质上是属性绑定和事件监听的组合写法，实现双向数据绑定。
+**概念**：v-model 是 Vue 提供的语法糖，本质上是属性绑定和事件监听的组合写法，实现双向数据绑定。
 
 **本质原理**：
+
 - 对于**文本输入框**：`:value` + `@input`
 - 对于**复选框**：`:checked` + `@change`
 - 对于**单选框**：`:checked` + `@change`
 - 对于**下拉选择**：`:value` + `@change`
 
 **模板语法**：
+
 ```html
 <!-- v-model语法糖 -->
-<input v-model="message">
+<input v-model="message" />
 
 <!-- 等价于 -->
-<input :value="message" @input="message = $event.target.value">
+<input :value="message" @input="message = $event.target.value" />
 ```
 
 **基础示例**：
+
 ```html
 <template>
   <div class="app">
     <!-- 使用v-model -->
     <input type="text" v-model="msg1" />
-    
+
     <!-- v-model的底层实现 -->
-    <input type="text" :value="msg2" @input="msg2 = $event.target.value">
+    <input type="text" :value="msg2" @input="msg2 = $event.target.value" />
   </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      msg1: '',
-      msg2: '',
-    }
-  },
-}
+  export default {
+    data() {
+      return {
+        msg1: "",
+        msg2: "",
+      };
+    },
+  };
 </script>
 ```
 
-**$event的使用**：
+**$event 的使用**：
+
 - `$event`：在模板中获取事件对象
 - `$event.target.value`：获取输入框的当前值
 - 用于在内联事件处理中访问原生事件
 
 #### 自定义组件的 v-model
 
-**概念**：在自定义组件上使用v-model，需要组件内部配合实现特定的props和事件约定。
+**概念**：在自定义组件上使用 v-model，需要组件内部配合实现特定的 props 和事件约定。
 
 **实现约定**：
-1. 组件接收名为`value`的prop
+
+1. 组件接收名为`value`的 prop
 2. 组件触发名为`input`的事件
 3. 父组件就可以使用`v-model`进行双向绑定
 
 **模板语法**：
+
 ```javascript
 // 子组件
 export default {
   props: {
-    value: [String, Number] // 接收value prop
+    value: [String, Number], // 接收value prop
   },
   methods: {
     handleChange(newValue) {
       // 触发input事件
-      this.$emit('input', newValue)
-    }
-  }
-}
+      this.$emit("input", newValue);
+    },
+  },
+};
 ```
 
 ```html
@@ -2760,6 +2886,7 @@ export default {
 ```
 
 **完整示例**：
+
 ```html
 <!-- 子组件 BaseSelect.vue -->
 <template>
@@ -2775,17 +2902,17 @@ export default {
 </template>
 
 <script>
-export default {
-  props: {
-    value: Number // 接收value prop
-  },
-  methods: {
-    handleChange(e) {
-      // 触发input事件，传递新值
-      this.$emit('input', e.target.value)
-    }
-  }
-}
+  export default {
+    props: {
+      value: Number, // 接收value prop
+    },
+    methods: {
+      handleChange(e) {
+        // 触发input事件，传递新值
+        this.$emit("input", e.target.value);
+      },
+    },
+  };
 </script>
 ```
 
@@ -2799,47 +2926,54 @@ export default {
 </template>
 
 <script>
-import BaseSelect from './components/BaseSelect.vue'
-export default {
-  data() {
-    return {
-      selectId: '102',
-    }
-  },
-  components: {
-    BaseSelect,
-  },
-}
+  import BaseSelect from "./components/BaseSelect.vue";
+  export default {
+    data() {
+      return {
+        selectId: "102",
+      };
+    },
+    components: {
+      BaseSelect,
+    },
+  };
 </script>
 ```
 
 **实现步骤**：
+
 1. 子组件通过`props`接收`value`
 2. 子组件通过`$emit('input', newValue)`通知父组件
 3. 父组件使用`v-model`实现双向绑定
 
 #### .sync 修饰符
 
-**概念**：.sync修饰符是Vue提供的语法糖，用于实现父子组件间的双向绑定，相比v-model更加灵活，可以自定义属性名。
+**概念**：.sync 修饰符是 Vue 提供的语法糖，用于实现父子组件间的双向绑定，相比 v-model 更加灵活，可以自定义属性名。
 
 **本质原理**：`:属性名` + `@update:属性名`
 
 **模板语法**：
+
 ```html
 <!-- 使用.sync修饰符 -->
 <ChildComponent :visible.sync="isShow"></ChildComponent>
 
 <!-- 等价于 -->
-<ChildComponent :visible="isShow" @update:visible="isShow = $event"></ChildComponent>
+<ChildComponent
+  :visible="isShow"
+  @update:visible="isShow = $event"
+></ChildComponent>
 ```
 
 **子组件实现**：
+
 ```javascript
 // 子组件触发更新事件
-this.$emit('update:属性名', 新值)
+this.$emit("update:属性名", 新值);
 ```
 
 **完整示例**：
+
 ```html
 <!-- 父组件 App.vue -->
 <template>
@@ -2851,17 +2985,17 @@ this.$emit('update:属性名', 新值)
 </template>
 
 <script>
-import BaseDialog from "./components/BaseDialog.vue"
-export default {
-  data() {
-    return {
-      isShow: false
-    }
-  },
-  components: {
-    BaseDialog,
-  },
-}
+  import BaseDialog from "./components/BaseDialog.vue";
+  export default {
+    data() {
+      return {
+        isShow: false,
+      };
+    },
+    components: {
+      BaseDialog,
+    },
+  };
 </script>
 ```
 
@@ -2886,30 +3020,31 @@ export default {
 </template>
 
 <script>
-export default {
-  props: {
-    visible: Boolean
-  },
-  methods: {
-    changeVisible() {
-      // 触发update:visible事件
-      this.$emit('update:visible', false)
-    }
-  }
-}
+  export default {
+    props: {
+      visible: Boolean,
+    },
+    methods: {
+      changeVisible() {
+        // 触发update:visible事件
+        this.$emit("update:visible", false);
+      },
+    },
+  };
 </script>
 ```
 
 **sync vs v-model**：
 
-| 特性 | v-model | .sync |
-|------|---------|-------|
-| **属性名** | 固定为value | 可自定义 |
-| **事件名** | 固定为input | update:属性名 |
+| 特性         | v-model                | .sync            |
+| ------------ | ---------------------- | ---------------- |
+| **属性名**   | 固定为 value           | 可自定义         |
+| **事件名**   | 固定为 input           | update:属性名    |
 | **使用场景** | 表单元素、单一数据绑定 | 多个属性双向绑定 |
-| **灵活性** | 较低 | 较高 |
+| **灵活性**   | 较低                   | 较高             |
 
 **使用建议**：
+
 - 表单组件使用`v-model`
 - 弹框、开关等组件使用`.sync`
 - 需要多个双向绑定属性时使用`.sync`
@@ -2918,24 +3053,27 @@ export default {
 
 #### 获取 DOM 元素
 
-**概念**：ref是Vue提供的特殊属性，用于给元素或组件注册引用信息，通过$refs可以直接访问DOM元素或组件实例。
+**概念**：ref 是 Vue 提供的特殊属性，用于给元素或组件注册引用信息，通过$refs 可以直接访问 DOM 元素或组件实例。
 
 **模板语法**：
+
 ```html
 <!-- 给DOM元素添加ref -->
 <div ref="引用名"></div>
-<input ref="inputRef">
+<input ref="inputRef" />
 
 <!-- 在组件中访问 -->
 this.$refs.引用名
 ```
 
 **使用场景**：
-- 需要直接操作DOM元素
-- 调用第三方库需要DOM引用
+
+- 需要直接操作 DOM 元素
+- 调用第三方库需要 DOM 引用
 - 表单验证、焦点控制等
 
 **基础示例**：
+
 ```html
 <!-- BaseChart.vue -->
 <template>
@@ -2943,46 +3081,48 @@ this.$refs.引用名
 </template>
 
 <script>
-import * as echarts from 'echarts'
+  import * as echarts from "echarts";
 
-export default {
-  mounted() {
-    // 通过$refs获取DOM元素
-    const myChart = echarts.init(this.$refs.chartRef)
-    
-    // 绘制图表
-    myChart.setOption({
-      title: {
-        text: 'ECharts 入门示例',
-      },
-      tooltip: {},
-      xAxis: {
-        data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子'],
-      },
-      yAxis: {},
-      series: [
-        {
-          name: '销量',
-          type: 'bar',
-          data: [5, 20, 36, 10, 10, 20],
+  export default {
+    mounted() {
+      // 通过$refs获取DOM元素
+      const myChart = echarts.init(this.$refs.chartRef);
+
+      // 绘制图表
+      myChart.setOption({
+        title: {
+          text: "ECharts 入门示例",
         },
-      ],
-    })
-  },
-}
+        tooltip: {},
+        xAxis: {
+          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+        },
+        yAxis: {},
+        series: [
+          {
+            name: "销量",
+            type: "bar",
+            data: [5, 20, 36, 10, 10, 20],
+          },
+        ],
+      });
+    },
+  };
 </script>
 ```
 
 **优势**：
+
 - 精确定位：查找范围限定在当前组件内
 - 避免冲突：不会受到其他组件同名元素的干扰
-- 性能更好：直接引用，无需DOM查询
+- 性能更好：直接引用，无需 DOM 查询
 
 #### 获取组件实例
 
-**概念**：ref不仅可以获取DOM元素，还可以获取子组件的实例，从而调用子组件的方法或访问子组件的数据。
+**概念**：ref 不仅可以获取 DOM 元素，还可以获取子组件的实例，从而调用子组件的方法或访问子组件的数据。
 
 **模板语法**：
+
 ```html
 <!-- 给组件添加ref -->
 <ChildComponent ref="childRef"></ChildComponent>
@@ -2992,6 +3132,7 @@ this.$refs.childRef.方法名()
 ```
 
 **完整示例**：
+
 ```html
 <!-- 父组件 App.vue -->
 <template>
@@ -3007,21 +3148,21 @@ this.$refs.childRef.方法名()
 </template>
 
 <script>
-import BaseForm from './components/BaseForm.vue'
-export default {
-  components: {
-    BaseForm,
-  },
-  methods: {
-    // 通过$refs调用子组件方法
-    handleGetData() {
-      this.$refs.baseForm.getFormData()
+  import BaseForm from "./components/BaseForm.vue";
+  export default {
+    components: {
+      BaseForm,
     },
-    handleResetData() {
-      this.$refs.baseForm.resetFormData()
-    }
-  }
-}
+    methods: {
+      // 通过$refs调用子组件方法
+      handleGetData() {
+        this.$refs.baseForm.getFormData();
+      },
+      handleResetData() {
+        this.$refs.baseForm.resetFormData();
+      },
+    },
+  };
 </script>
 ```
 
@@ -3029,72 +3170,73 @@ export default {
 <!-- 子组件 BaseForm.vue -->
 <template>
   <div class="app">
-    <div>
-      账号: <input v-model="username" type="text">
-    </div>
-    <div>
-      密码: <input v-model="password" type="text">
-    </div>
+    <div>账号: <input v-model="username" type="text" /></div>
+    <div>密码: <input v-model="password" type="text" /></div>
   </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      username: 'admin',
-      password: '123456',
-    }
-  },
-  methods: {
-    // 提供给父组件调用的方法
-    getFormData() {
-      console.log('获取表单数据', this.username, this.password);
+  export default {
+    data() {
+      return {
+        username: "admin",
+        password: "123456",
+      };
     },
-    resetFormData() {
-      this.username = ''
-      this.password = ''
-      console.log('重置表单数据成功');
+    methods: {
+      // 提供给父组件调用的方法
+      getFormData() {
+        console.log("获取表单数据", this.username, this.password);
+      },
+      resetFormData() {
+        this.username = "";
+        this.password = "";
+        console.log("重置表单数据成功");
+      },
     },
-  }
-}
+  };
 </script>
 ```
 
 **应用场景**：
+
 - 父组件控制子组件的行为
 - 表单验证和重置
 - 调用子组件的公共方法
 - 获取子组件的状态数据
 
 **注意事项**：
-- ref在组件渲染完成后才能访问
-- 建议在mounted生命周期中使用
-- 不要过度使用，优先考虑props和事件通信
+
+- ref 在组件渲染完成后才能访问
+- 建议在 mounted 生命周期中使用
+- 不要过度使用，优先考虑 props 和事件通信
 
 ### Vue 异步更新和 $nextTick
 
 #### Vue 异步更新机制
 
-**概念**：Vue在更新DOM时是异步执行的。当数据发生变化时，Vue会开启一个队列，缓冲在同一事件循环中发生的所有数据变更，然后在下一个事件循环中统一更新DOM。
+**概念**：Vue 在更新 DOM 时是异步执行的。当数据发生变化时，Vue 会开启一个队列，缓冲在同一事件循环中发生的所有数据变更，然后在下一个事件循环中统一更新 DOM。
 
 **异步更新的原因**：
-- **性能优化**：避免频繁的DOM操作
-- **批量更新**：将多次数据变更合并为一次DOM更新
+
+- **性能优化**：避免频繁的 DOM 操作
+- **批量更新**：将多次数据变更合并为一次 DOM 更新
 - **避免重复渲染**：相同数据的多次修改只触发一次更新
 
 **问题场景**：
+
 ```javascript
 // 数据更新后立即操作DOM会失败
-this.isShow = true
-this.$refs.input.focus() // 此时DOM还未更新，会报错
+this.isShow = true;
+this.$refs.input.focus(); // 此时DOM还未更新，会报错
 ```
 
 #### $nextTick 的作用
 
-**概念**：$nextTick是Vue提供的方法，用于在下次DOM更新循环结束之后执行延迟回调。简单说就是当数据更新后，要等DOM更新完成后再执行某些操作。
+**概念**：$nextTick 是 Vue 提供的方法，用于在下次 DOM 更新循环结束之后执行延迟回调。简单说就是当数据更新后，要等 DOM 更新完成后再执行某些操作。
 
 **模板语法**：
+
 ```javascript
 // 方法1：回调函数形式
 this.$nextTick(() => {
@@ -3114,6 +3256,7 @@ async method() {
 ```
 
 **完整示例**：
+
 ```html
 <template>
   <div class="app">
@@ -3132,137 +3275,649 @@ async method() {
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      title: '大标题',
-      isShowEdit: false,
-      editValue: '',
-    }
-  },
-  methods: {
-    handleEdit() {
-      // 1. 切换到编辑模式
-      this.isShowEdit = true
-      
-      // 2. 等待DOM更新完成后聚焦输入框
-      this.$nextTick(() => {
-        this.$refs.inp.focus()
-      })
-    }
-  },
-}
+  export default {
+    data() {
+      return {
+        title: "大标题",
+        isShowEdit: false,
+        editValue: "",
+      };
+    },
+    methods: {
+      handleEdit() {
+        // 1. 切换到编辑模式
+        this.isShowEdit = true;
+
+        // 2. 等待DOM更新完成后聚焦输入框
+        this.$nextTick(() => {
+          this.$refs.inp.focus();
+        });
+      },
+    },
+  };
 </script>
 ```
 
 **常见应用场景**：
 
 1. **表单聚焦**：
+
 ```javascript
 // 显示输入框后立即聚焦
-this.showInput = true
+this.showInput = true;
 this.$nextTick(() => {
-  this.$refs.input.focus()
-})
+  this.$refs.input.focus();
+});
 ```
 
-2. **获取更新后的DOM尺寸**：
+2. **获取更新后的 DOM 尺寸**：
+
 ```javascript
 // 内容变化后获取新的高度
-this.content = '新内容'
+this.content = "新内容";
 this.$nextTick(() => {
-  const height = this.$refs.container.offsetHeight
-  console.log('新高度:', height)
-})
+  const height = this.$refs.container.offsetHeight;
+  console.log("新高度:", height);
+});
 ```
 
-3. **第三方库的DOM操作**：
+3. **第三方库的 DOM 操作**：
+
 ```javascript
 // 数据更新后重新初始化图表
-this.chartData = newData
+this.chartData = newData;
 this.$nextTick(() => {
-  this.chart.resize()
-})
+  this.chart.resize();
+});
 ```
 
 4. **滚动定位**：
+
 ```javascript
 // 添加新消息后滚动到底部
-this.messages.push(newMessage)
+this.messages.push(newMessage);
 this.$nextTick(() => {
-  this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight
-})
+  this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
+});
 ```
 
 **最佳实践**：
-- 只在需要操作更新后的DOM时使用
-- 避免在$nextTick中进行数据修改，可能导致无限循环
-- 可以与async/await结合使用，提高代码可读性
-- 在组件销毁前取消未完成的$nextTick回调
+
+- 只在需要操作更新后的 DOM 时使用
+- 避免在$nextTick 中进行数据修改，可能导致无限循环
+- 可以与 async/await 结合使用，提高代码可读性
+- 在组件销毁前取消未完成的$nextTick 回调
+
+### Vue 自定义指令
+
+#### 自定义指令概念
+
+**概念**：自定义指令是 Vue 提供的一种扩展机制，允许开发者封装对 DOM 元素的底层操作，实现代码复用和逻辑封装。自定义指令主要用于操作 DOM，如自动聚焦、权限控制、加载状态等。
+
+**使用场景**：
+- DOM 元素的直接操作（聚焦、滚动等）
+- 权限控制显示隐藏
+- 加载状态的视觉反馈
+- 拖拽、缩放等交互效果
+
+#### 自定义指令基础语法
+
+**模板语法**：
+
+```javascript
+// 全局注册
+Vue.directive('指令名', {
+  // 钩子函数
+  inserted(el, binding) {
+    // el: 指令绑定的DOM元素
+    // binding: 包含指令信息的对象
+  }
+});
+
+// 局部注册
+export default {
+  directives: {
+    指令名: {
+      inserted(el, binding) {
+        // 指令逻辑
+      }
+    }
+  }
+}
+```
+
+**基础示例**：
+
+```javascript
+// 全局注册自动聚焦指令
+Vue.directive('focus', {
+  // inserted 当指令所在的元素被插入到页面中时触发
+  inserted(el) {
+    // el 就是指令所绑定的元素
+    el.focus();
+  }
+});
+```
+
+```html
+<!-- 使用自定义指令 -->
+<input v-focus type="text" />
+```
+
+#### 指令的值传递
+
+**概念**：自定义指令可以接收动态值，通过 `binding.value` 获取指令绑定的值，实现更灵活的功能。
+
+**模板语法**：
+
+```javascript
+directives: {
+  指令名: {
+    inserted(el, binding) {
+      // binding.value 获取指令的值
+      console.log(binding.value);
+    },
+    // update 指令值更新时触发
+    update(el, binding) {
+      // 处理值更新的逻辑
+    }
+  }
+}
+```
+
+**实用示例**：
+
+```javascript
+// 动态颜色指令
+directives: {
+  color: {
+    inserted(el, binding) {
+      el.style.color = binding.value;
+    },
+    update(el, binding) {
+      el.style.color = binding.value;
+    }
+  }
+}
+```
+
+```html
+<h1 v-color="color1">指令的值-测试1</h1>
+<h1 v-color="color2">指令的值-测试2</h1>
+```
+
+```javascript
+data() {
+  return {
+    color1: 'red',
+    color2: 'cyan'
+  }
+}
+```
+
+#### 自定义指令钩子函数
+
+**钩子函数类型**：
+
+- `bind`：只调用一次，指令第一次绑定到元素时调用
+- `inserted`：被绑定元素插入父节点时调用
+- `update`：所在组件的 VNode 更新时调用
+- `componentUpdated`：所在组件的 VNode 及其子 VNode 全部更新后调用
+- `unbind`：只调用一次，指令与元素解绑时调用
+
+**参数说明**：
+
+- `el`：指令所绑定的元素，可以用来直接操作 DOM
+- `binding`：包含指令信息的对象
+  - `value`：指令的绑定值
+  - `oldValue`：指令绑定的前一个值
+  - `expression`：字符串形式的指令表达式
+  - `arg`：传给指令的参数
+  - `modifiers`：包含修饰符的对象
+
+#### v-loading 指令实战
+
+**概念**：v-loading 是一个实用的自定义指令，用于在数据加载时显示加载动画，提升用户体验。
+
+**实现思路**：
+1. 根据指令值控制加载状态的显示隐藏
+2. 使用 CSS 伪元素创建遮罩层效果
+3. 在 inserted 和 update 钩子中处理状态变化
+
+**完整示例**：
+
+```javascript
+// 自定义 v-loading 指令
+directives: {
+  loading: {
+    inserted(el, binding) {
+      // 根据指令的值，决定添加或移除"遮罩层"类名
+      binding.value ? el.classList.add('loading') : el.classList.remove('loading');
+    },
+    // 当 isLoading 状态更新，在此触发修改逻辑
+    update(el, binding) {
+      binding.value ? el.classList.add('loading') : el.classList.remove('loading');
+    }
+  }
+}
+```
+
+```html
+<div class="box" v-loading="isLoading">
+  <!-- 内容区域 -->
+  <ul>
+    <li v-for="item in list" :key="item.id">
+      {{ item.title }}
+    </li>
+  </ul>
+</div>
+```
+
+```css
+/* 伪类 - 蒙层效果 */
+.loading:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff url('./loading.gif') no-repeat center;
+}
+```
+
+```javascript
+// 使用示例
+export default {
+  data() {
+    return {
+      list: [],
+      isLoading: true
+    }
+  },
+  async created() {
+    // 发送请求获取数据
+    const res = await axios.get('http://api.example.com/data');
+    
+    setTimeout(() => {
+      this.list = res.data.data;
+      // 数据加载完毕，结束加载状态
+      this.isLoading = false;
+    }, 2000);
+  }
+}
+```
+
+### Vue 插槽 (Slot)
+
+#### 插槽概念
+
+**概念**：插槽是 Vue 组件的一种内容分发机制，允许父组件向子组件传递模板内容，实现组件内部结构的自定义。插槽让组件更加灵活和可复用，是组件化开发的重要特性。
+
+**作用**：
+- 让组件内部的某些结构支持自定义
+- 提高组件的灵活性和复用性
+- 实现内容的动态分发
+- 支持复杂的组件组合
+
+#### 默认插槽
+
+**概念**：默认插槽是最基础的插槽类型，用于在组件中预留一个内容插入位置，父组件可以向这个位置传入任意内容。
+
+**模板语法**：
+
+```html
+<!-- 子组件中定义插槽 -->
+<template>
+  <div class="container">
+    <slot>默认内容</slot>
+  </div>
+</template>
+
+<!-- 父组件中使用 -->
+<template>
+  <MyComponent>自定义内容</MyComponent>
+  <MyComponent><div>HTML标签内容</div></MyComponent>
+  <MyComponent></MyComponent> <!-- 显示默认内容 -->
+</template>
+```
+
+**实用示例**：
+
+```html
+<!-- MyDialog.vue 子组件 -->
+<template>
+  <div class="dialog">
+    <div class="dialog-header">
+      <h3>友情提示</h3>
+      <span class="close">✖️</span>
+    </div>
+    <div class="dialog-content">
+      <!-- 在需要定制的位置，使用slot占位 -->
+      <!-- slot标签内的内容作为后备内容（默认值） -->
+      <slot>这里的内容为默认展示</slot>
+    </div>
+    <div class="dialog-footer">
+      <button>取消</button>
+      <button>确认</button>
+    </div>
+  </div>
+</template>
+```
+
+```html
+<!-- App.vue 父组件 -->
+<template>
+  <div>
+    <MyDialog></MyDialog> <!-- 显示默认内容 -->
+    <MyDialog>你确认要删除吗？</MyDialog>
+    <MyDialog>你确认要退出本系统么?</MyDialog>
+    <MyDialog><div>Are you sure to quit this system?</div></MyDialog>
+  </div>
+</template>
+```
+
+#### 具名插槽
+
+**概念**：具名插槽允许在一个组件中定义多个插槽，每个插槽都有自己的名称，父组件可以向指定名称的插槽传入内容。
+
+**模板语法**：
+
+```html
+<!-- 子组件中定义具名插槽 -->
+<template>
+  <div class="container">
+    <slot name="header"></slot>
+    <slot name="content"></slot>
+    <slot name="footer"></slot>
+  </div>
+</template>
+
+<!-- 父组件中使用具名插槽 -->
+<template>
+  <MyComponent>
+    <template v-slot:header>头部内容</template>
+    <template v-slot:content>主体内容</template>
+    <template #footer>底部内容</template> <!-- 简写语法 -->
+  </MyComponent>
+</template>
+```
+
+**语法要点**：
+1. 多个 slot 时，用 name 属性区分名字
+2. 一旦插槽起了名字，就是具名插槽，只能定向分发
+3. template 配合 `v-slot:name` 来分发对应标签
+4. `v-slot:name` 可以简化为 `#name`
+
+**实用示例**：
+
+```html
+<!-- MyDialog.vue 子组件 -->
+<template>
+  <div class="dialog">
+    <div class="dialog-header">
+      <slot name="header"></slot>
+    </div>
+    <div class="dialog-content">
+      <slot name="content"></slot>
+    </div>
+    <div class="dialog-footer">
+      <slot name="footer"></slot>
+    </div>
+  </div>
+</template>
+```
+
+```html
+<!-- App.vue 父组件 -->
+<template>
+  <div>
+    <MyDialog>
+      <template v-slot:header>大标题</template>
+      <template v-slot:content>这是一段内容</template>
+      <template #footer>
+        <button>确认</button>
+        <button>取消</button>
+      </template>
+    </MyDialog>
+  </div>
+</template>
+```
+
+#### 作用域插槽
+
+**概念**：作用域插槽是插槽的一种传参语法，允许子组件向插槽传递数据，父组件可以接收这些数据并在模板中使用。这种机制实现了子组件向父组件的数据传递。
+
+**模板语法**：
+
+```html
+<!-- 子组件中传递数据 -->
+<template>
+  <div>
+    <slot :数据名="数据值" :其他数据="其他值"></slot>
+  </div>
+</template>
+
+<!-- 父组件中接收数据 -->
+<template>
+  <MyComponent>
+    <template #default="slotProps">
+      {{ slotProps.数据名 }}
+    </template>
+    
+    <!-- 解构语法 -->
+    <template #default="{ 数据名, 其他数据 }">
+      {{ 数据名 }} - {{ 其他数据 }}
+    </template>
+  </MyComponent>
+</template>
+```
+
+**实用示例**：
+
+```html
+<!-- MyTable.vue 子组件 -->
+<template>
+  <table class="my-table">
+    <thead>
+      <tr>
+        <th>序号</th>
+        <th>姓名</th>
+        <th>年纪</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(item, index) in data" :key="item.id">
+        <td>{{ index + 1 }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.age }}</td>
+        <td>
+          <!-- 给slot标签以添加属性的方式传值 -->
+          <slot :currRow="item" :index="index"></slot>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</template>
+```
+
+```html
+<!-- App.vue 父组件 -->
+<template>
+  <div>
+    <MyTable :data="list">
+      <!-- 通过 #default="自定义变量名" 接收数据 -->
+      <template #default="obj">
+        <button @click="del(obj.currRow.id)">删除</button>
+      </template>
+    </MyTable>
+    
+    <MyTable :data="list2">
+      <!-- 解构语法 -->
+      <template #default="{ currRow }">
+        <button @click="check(currRow)">查看</button>
+      </template>
+    </MyTable>
+  </div>
+</template>
+```
+
+```javascript
+// 父组件方法
+methods: {
+  del(id) {
+    this.list = this.list.filter(item => item.id !== id);
+  },
+  check(currRow) {
+    alert(`姓名：${currRow.name}，年龄：${currRow.age}`);
+  }
+}
+```
+
+#### 插槽综合应用
+
+**概念**：在实际开发中，插槽常与其他 Vue 特性结合使用，如 v-model、自定义指令等，构建复杂的可复用组件。
+
+**v-model 在自定义组件中的应用**：
+
+```html
+<!-- MyTag.vue 组件 -->
+<template>
+  <div class="my-tag" @dblclick="handleClick">
+    <input
+      v-if="isEdit"
+      v-focus
+      @blur="isEdit = false"
+      :value="value"
+      @keyup.enter="handleEnter"
+      ref="inp"
+      class="input"
+      type="text"
+      placeholder="输入标签"
+    />
+    <div v-else class="text">
+      {{ value }}
+    </div>
+  </div>
+</template>
+```
+
+```javascript
+// MyTag.vue 组件逻辑
+export default {
+  props: {
+    value: String // 接收 v-model 的值
+  },
+  data() {
+    return {
+      isEdit: false
+    }
+  },
+  methods: {
+    handleClick() {
+      this.isEdit = true;
+    },
+    handleEnter() {
+      if (this.$refs.inp.value.trim()) {
+        // 通过 $emit('input') 实现 v-model
+        this.$emit('input', this.$refs.inp.value);
+        this.isEdit = false;
+      } else {
+        alert('输入不能为空');
+      }
+    }
+  }
+}
+```
+
+```html
+<!-- 父组件中使用 v-model -->
+<template>
+  <MyTable :data="goods">
+    <template #body="{ item }">
+      <td>{{ item.name }}</td>
+      <td>
+        <!-- v-model 双向绑定 -->
+        <MyTag v-model="item.tag"></MyTag>
+      </td>
+    </template>
+  </MyTable>
+</template>
+```
 
 ### 综合案例技巧
 
 #### 数组操作方法
 
 **模板方法**：
+
 ```javascript
 // 常用数组方法模板
-array.filter(item => 条件)     // 过滤数组
-array.map(item => 新值)        // 转换数组
-array.reduce((acc, item) => acc + item.属性, 初始值)  // 累计计算
-array.find(item => 条件)       // 查找元素
-array.push(新元素)             // 末尾添加
-array.unshift(新元素)          // 开头添加
-array.splice(索引, 删除数量, 新元素)  // 插入/删除
+array.filter((item) => 条件); // 过滤数组
+array.map((item) => 新值); // 转换数组
+array.reduce((acc, item) => acc + item.属性, 初始值); // 累计计算
+array.find((item) => 条件); // 查找元素
+array.push(新元素); // 末尾添加
+array.unshift(新元素); // 开头添加
+array.splice(索引, 删除数量, 新元素); // 插入/删除
 ```
 
 **实用示例**：
 
-1. **filter方法**：过滤数组，常用于删除功能
+1. **filter 方法**：过滤数组，常用于删除功能
+
    ```javascript
    // 删除指定id的项目
-   this.list = this.list.filter(item => item.id !== id)
-   
+   this.list = this.list.filter((item) => item.id !== id);
+
    // 筛选已选中的项目
-   this.selectedItems = this.list.filter(item => item.isChecked)
+   this.selectedItems = this.list.filter((item) => item.isChecked);
    ```
 
-2. **unshift方法**：在数组最前面添加元素
+2. **unshift 方法**：在数组最前面添加元素
+
    ```javascript
    // 添加新项目到列表开头
    this.list.unshift({
      id: +new Date(),
      name: this.inputValue,
-     createTime: new Date().toLocaleString()
-   })
+     createTime: new Date().toLocaleString(),
+   });
    ```
 
-3. **reduce方法**：累计计算，常用于统计
+3. **reduce 方法**：累计计算，常用于统计
+
    ```javascript
    // 计算总价
-   this.totalPrice = this.list.reduce((sum, item) => sum + item.price * item.num, 0)
-   
+   this.totalPrice = this.list.reduce(
+     (sum, item) => sum + item.price * item.num,
+     0
+   );
+
    // 计算总数量
-   this.totalCount = this.list.reduce((sum, item) => sum + item.num, 0)
+   this.totalCount = this.list.reduce((sum, item) => sum + item.num, 0);
    ```
 
 #### 表单验证技巧
 
 **模板方法**：
+
 ```javascript
 // 表单验证模板
-if (输入值.trim() === '') {
-  alert('请输入内容');
+if (输入值.trim() === "") {
+  alert("请输入内容");
   return;
 }
 
-if (typeof 数值 !== 'number') {
-  alert('请输入正确的数字');
+if (typeof 数值 !== "number") {
+  alert("请输入正确的数字");
   return;
 }
 ```
 
 **实用示例**：
+
 ```javascript
 // 综合验证示例
 add() {
@@ -3271,26 +3926,26 @@ add() {
     alert('请输入科目');
     return;
   }
-  
+
   // 数字类型验证
   if (typeof this.score !== 'number') {
     alert('请输入正确成绩');
     return;
   }
-  
+
   // 数值范围验证
   if (this.score < 0 || this.score > 100) {
     alert('成绩应在0-100之间');
     return;
   }
-  
+
   // 验证通过，执行添加逻辑
   this.list.unshift({
     id: +new Date(),
     subject: this.subject,
     score: this.score
   });
-  
+
   // 重置表单
   this.subject = '';
   this.score = '';
@@ -3300,6 +3955,7 @@ add() {
 #### 条件显示优化
 
 **模板方法**：
+
 ```html
 <!-- 条件渲染模板 -->
 <div v-if="条件">条件为真时显示</div>
@@ -3317,6 +3973,7 @@ add() {
 ```
 
 **实用示例**：
+
 ```html
 <!-- 只有在有数据时才显示底部统计区域 -->
 <footer v-show="list.length">
@@ -3340,19 +3997,21 @@ add() {
 #### 本地存储技巧
 
 **模板方法**：
+
 ```javascript
 // 本地存储模板
 // 保存数据
-localStorage.setItem('键名', JSON.stringify(数据));
+localStorage.setItem("键名", JSON.stringify(数据));
 
 // 读取数据
-const 数据 = JSON.parse(localStorage.getItem('键名')) || 默认值;
+const 数据 = JSON.parse(localStorage.getItem("键名")) || 默认值;
 
 // 删除数据
-localStorage.removeItem('键名');
+localStorage.removeItem("键名");
 ```
 
 **实用示例**：
+
 ```javascript
 // 在watch中实现自动保存
 watch: {
@@ -3373,6 +4032,7 @@ data: {
 #### 防抖处理技巧
 
 **模板方法**：
+
 ```javascript
 // 防抖函数模板
 if (this.timer) clearTimeout(this.timer);
@@ -3382,6 +4042,7 @@ this.timer = setTimeout(() => {
 ```
 
 **实用示例**：
+
 ```javascript
 // 搜索防抖
 watch: {

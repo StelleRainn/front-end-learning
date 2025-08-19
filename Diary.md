@@ -7,11 +7,13 @@
 
 ### Aug 18th, Mon
 
-> MacBook Pro, M1, 16+512, Silver, with Active Thermal.
+> MacBook Pro, M1, 16+512, Silver, with Active cooling system.
 
 至是，*用 MacBook Pro 搭建属于我自己的网站*——这一 「最初的梦想」，已然实现。
 
 带着这其中所蕴含的无限潜力，一往无前吧！
+
+以 Pro 之名，我，还不能输。 
 
 ### Aug 17th, Sun
 
