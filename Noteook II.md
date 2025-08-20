@@ -3355,6 +3355,7 @@ this.$nextTick(() => {
 **概念**：自定义指令是 Vue 提供的一种扩展机制，允许开发者封装对 DOM 元素的底层操作，实现代码复用和逻辑封装。自定义指令主要用于操作 DOM，如自动聚焦、权限控制、加载状态等。
 
 **使用场景**：
+
 - DOM 元素的直接操作（聚焦、滚动等）
 - 权限控制显示隐藏
 - 加载状态的视觉反馈
@@ -3366,12 +3367,12 @@ this.$nextTick(() => {
 
 ```javascript
 // 全局注册
-Vue.directive('指令名', {
+Vue.directive("指令名", {
   // 钩子函数
   inserted(el, binding) {
     // el: 指令绑定的DOM元素
     // binding: 包含指令信息的对象
-  }
+  },
 });
 
 // 局部注册
@@ -3380,22 +3381,22 @@ export default {
     指令名: {
       inserted(el, binding) {
         // 指令逻辑
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};
 ```
 
 **基础示例**：
 
 ```javascript
 // 全局注册自动聚焦指令
-Vue.directive('focus', {
+Vue.directive("focus", {
   // inserted 当指令所在的元素被插入到页面中时触发
   inserted(el) {
     // el 就是指令所绑定的元素
     el.focus();
-  }
+  },
 });
 ```
 
@@ -3480,6 +3481,7 @@ data() {
 **概念**：v-loading 是一个实用的自定义指令，用于在数据加载时显示加载动画，提升用户体验。
 
 **实现思路**：
+
 1. 根据指令值控制加载状态的显示隐藏
 2. 使用 CSS 伪元素创建遮罩层效果
 3. 在 inserted 和 update 钩子中处理状态变化
@@ -3506,9 +3508,7 @@ directives: {
 <div class="box" v-loading="isLoading">
   <!-- 内容区域 -->
   <ul>
-    <li v-for="item in list" :key="item.id">
-      {{ item.title }}
-    </li>
+    <li v-for="item in list" :key="item.id">{{ item.title }}</li>
   </ul>
 </div>
 ```
@@ -3516,13 +3516,13 @@ directives: {
 ```css
 /* 伪类 - 蒙层效果 */
 .loading:before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background: #fff url('./loading.gif') no-repeat center;
+  background: #fff url("./loading.gif") no-repeat center;
 }
 ```
 
@@ -3532,20 +3532,20 @@ export default {
   data() {
     return {
       list: [],
-      isLoading: true
-    }
+      isLoading: true,
+    };
   },
   async created() {
     // 发送请求获取数据
-    const res = await axios.get('http://api.example.com/data');
-    
+    const res = await axios.get("http://api.example.com/data");
+
     setTimeout(() => {
       this.list = res.data.data;
       // 数据加载完毕，结束加载状态
       this.isLoading = false;
     }, 2000);
-  }
-}
+  },
+};
 ```
 
 ### Vue 插槽 (Slot)
@@ -3555,6 +3555,7 @@ export default {
 **概念**：插槽是 Vue 组件的一种内容分发机制，允许父组件向子组件传递模板内容，实现组件内部结构的自定义。插槽让组件更加灵活和可复用，是组件化开发的重要特性。
 
 **作用**：
+
 - 让组件内部的某些结构支持自定义
 - 提高组件的灵活性和复用性
 - 实现内容的动态分发
@@ -3578,7 +3579,8 @@ export default {
 <template>
   <MyComponent>自定义内容</MyComponent>
   <MyComponent><div>HTML标签内容</div></MyComponent>
-  <MyComponent></MyComponent> <!-- 显示默认内容 -->
+  <MyComponent></MyComponent>
+  <!-- 显示默认内容 -->
 </template>
 ```
 
@@ -3609,7 +3611,8 @@ export default {
 <!-- App.vue 父组件 -->
 <template>
   <div>
-    <MyDialog></MyDialog> <!-- 显示默认内容 -->
+    <MyDialog></MyDialog>
+    <!-- 显示默认内容 -->
     <MyDialog>你确认要删除吗？</MyDialog>
     <MyDialog>你确认要退出本系统么?</MyDialog>
     <MyDialog><div>Are you sure to quit this system?</div></MyDialog>
@@ -3638,12 +3641,14 @@ export default {
   <MyComponent>
     <template v-slot:header>头部内容</template>
     <template v-slot:content>主体内容</template>
-    <template #footer>底部内容</template> <!-- 简写语法 -->
+    <template #footer>底部内容</template>
+    <!-- 简写语法 -->
   </MyComponent>
 </template>
 ```
 
 **语法要点**：
+
 1. 多个 slot 时，用 name 属性区分名字
 2. 一旦插槽起了名字，就是具名插槽，只能定向分发
 3. template 配合 `v-slot:name` 来分发对应标签
@@ -3701,10 +3706,8 @@ export default {
 <!-- 父组件中接收数据 -->
 <template>
   <MyComponent>
-    <template #default="slotProps">
-      {{ slotProps.数据名 }}
-    </template>
-    
+    <template #default="slotProps"> {{ slotProps.数据名 }} </template>
+
     <!-- 解构语法 -->
     <template #default="{ 数据名, 其他数据 }">
       {{ 数据名 }} - {{ 其他数据 }}
@@ -3752,7 +3755,7 @@ export default {
         <button @click="del(obj.currRow.id)">删除</button>
       </template>
     </MyTable>
-    
+
     <MyTable :data="list2">
       <!-- 解构语法 -->
       <template #default="{ currRow }">
@@ -3796,9 +3799,7 @@ methods: {
       type="text"
       placeholder="输入标签"
     />
-    <div v-else class="text">
-      {{ value }}
-    </div>
+    <div v-else class="text">{{ value }}</div>
   </div>
 </template>
 ```
@@ -3807,12 +3808,12 @@ methods: {
 // MyTag.vue 组件逻辑
 export default {
   props: {
-    value: String // 接收 v-model 的值
+    value: String, // 接收 v-model 的值
   },
   data() {
     return {
-      isEdit: false
-    }
+      isEdit: false,
+    };
   },
   methods: {
     handleClick() {
@@ -3821,14 +3822,14 @@ export default {
     handleEnter() {
       if (this.$refs.inp.value.trim()) {
         // 通过 $emit('input') 实现 v-model
-        this.$emit('input', this.$refs.inp.value);
+        this.$emit("input", this.$refs.inp.value);
         this.isEdit = false;
       } else {
-        alert('输入不能为空');
+        alert("输入不能为空");
       }
-    }
-  }
-}
+    },
+  },
+};
 ```
 
 ```html
@@ -3845,6 +3846,829 @@ export default {
   </MyTable>
 </template>
 ```
+
+### 路由 Vue Router
+
+#### 单页应用程序 (SPA)
+
+**概念**：单页应用程序（Single Page Application，SPA）是一种Web应用程序架构，整个应用只有一个HTML页面，通过JavaScript动态更新页面内容，而不需要重新加载整个页面。
+
+**传统多页应用 vs 单页应用**：
+
+| 对比项 | 多页应用（MPA） | 单页应用（SPA） |
+|--------|----------------|----------------|
+| 页面数量 | 多个HTML页面 | 一个HTML页面 |
+| 页面跳转 | 整页刷新 | 局部更新 |
+| 用户体验 | 页面切换有白屏 | 流畅，无白屏 |
+| 数据传递 | 通过URL、cookie等 | 通过全局变量、状态管理 |
+| SEO | 友好 | 需要特殊处理 |
+| 开发复杂度 | 相对简单 | 相对复杂 |
+
+**SPA的优点**：
+- **用户体验好**：页面切换流畅，无白屏等待
+- **减少服务器压力**：只需要提供数据接口
+- **前后端分离**：开发效率高，分工明确
+
+**SPA的缺点**：
+- **首屏加载慢**：需要加载所有资源
+- **SEO不友好**：搜索引擎难以抓取内容
+- **浏览器兼容性**：依赖现代浏览器特性
+
+**Vue Router的作用**：
+Vue Router是Vue.js官方的路由管理器，它让构建单页应用变得易如反掌。通过Vue Router，我们可以：
+- 实现页面间的跳转而不刷新页面
+- 管理应用的导航状态
+- 支持嵌套路由、路由参数、路由守卫等高级功能
+
+#### 基本使用步骤（5+2）
+
+##### 固定 5 步
+
+1. 安装 Vue Router（Vue2 → 3.x 版本）
+
+```bash
+npm install vue-router@3
+```
+
+2. 引入 Vue Router 模块
+
+```js
+import VueRouter from "vue-router";
+```
+
+3. 注册 Vue Router 插件
+
+```js
+Vue.use(VueRouter);
+```
+
+4. 创建路由对象
+
+```js
+const router = new VueRouter();
+```
+
+5. 注入到 Vue 实例
+
+```js
+new Vue({
+  router,
+});
+```
+
+完成固定的 5 步以后，可以发现地址栏处新增了 `#` 符号，这是 Vue Router 实现路由的基础。
+
+##### 核心 2 步
+
+1. 在`src/views`文件夹下创建组件，然后**配置路由规则**
+
+```js
+// main.js
+import Find from "@/views/Find.vue";
+import My from "@/views/My.vue";
+import Friend from "@/views/Friend.vue";
+
+const router = new VueRouter({
+  routes: [
+    { path: "/find", component: Find },
+    { path: "/my", component: My },
+    { path: "/friend", component: Friend },
+  ],
+});
+```
+
+_p.s. `@/` 标识符指代 `src/` 文件夹，可以直接从此寻找文件。以后可以多用。_
+
+2. 在`src/App.vue`中添加路由出口
+
+```html
+<template>
+  <div>
+    <a href="#/find">发现</a>
+    <a href="#/my">我的</a>
+    <a href="#/friend">好友</a>
+  </div>
+  <div>
+    <router-view></router-view>
+  </div>
+</template>
+```
+
+**拓展**：关于组件分类
+
+- 页面组件：放在`src/views`文件夹下，配合路由展示
+- 复用组件：放在`src/components`文件夹下，方便复用
+- 本质上都是.vue 文件，这是一种规范。
+
+#### 路由模块封装
+
+**为什么要封装路由模块？**
+- 当路由规则很多时，main.js 文件会变得臃肿
+- 便于维护和管理
+- 符合模块化开发的思想
+
+**封装步骤**：
+
+1. **创建路由模块文件** `router/index.js`：
+```javascript
+// 1. 导入Vue和VueRouter
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+
+// 2. 导入组件
+import Find from '@/views/Find.vue'
+import Friend from '@/views/Friend.vue'
+import My from '@/views/My.vue'
+
+// 3. 安装插件
+Vue.use(VueRouter)
+
+// 4. 创建路由对象
+const router = new VueRouter({
+  routes: [
+    { path: '/find', component: Find },
+    { path: '/friend', component: Friend },
+    { path: '/my', component: My }
+  ]
+})
+
+// 5. 导出路由对象
+export default router
+```
+
+2. **在 main.js 中导入并使用**：
+```javascript
+import Vue from 'vue'
+import App from './App.vue'
+// 导入路由模块
+import router from '@/router'
+
+Vue.config.productionTip = false
+
+new Vue({
+  render: h => h(App),
+  router  // 注入路由对象
+}).$mount('#app')
+```
+
+**封装的好处**：
+- **代码分离**：路由配置独立管理
+- **便于维护**：修改路由只需要修改 router/index.js
+- **团队协作**：多人开发时减少冲突
+
+#### router-link 导航链接
+
+**什么是 router-link？**
+- Vue Router 提供的组件，用于创建导航链接
+- 替代传统的 `<a>` 标签，实现声明式导航
+- 自动处理路由跳转，无需手动操作 hash
+
+**基本语法**：
+```html
+<!-- 传统方式 -->
+<a href="#/find">发现音乐</a>
+<a href="#/my">我的音乐</a>
+<a href="#/friend">朋友</a>
+
+<!-- router-link 方式 -->
+<router-link to="/find">发现音乐</router-link>
+<router-link to="/my">我的音乐</router-link>
+<router-link to="/friend">朋友</router-link>
+```
+
+**router-link 的优势**：
+- **自动高亮**：当前路由会自动添加激活类名
+- **无需 #**：to 属性直接写路径，无需手动添加 #
+- **更语义化**：代码更清晰，表意更明确
+
+#### 导航链接高亮
+
+**默认高亮类名**：
+router-link 在激活时会自动添加两个类名：
+
+| 类名 | 匹配规则 | 使用场景 |
+|------|----------|----------|
+| `router-link-active` | 模糊匹配 | 适用于嵌套路由 |
+| `router-link-exact-active` | 精确匹配 | 适用于完全匹配 |
+
+**匹配规则说明**：
+```javascript
+// 假设当前路由是 /my/info
+'/my'        // router-link-active (模糊匹配)
+'/my/info'   // router-link-exact-active (精确匹配)
+```
+
+**设置高亮样式**：
+```css
+/* 方式一：使用默认类名 */
+.router-link-active {
+  background-color: darkcyan;
+  color: white;
+}
+
+/* 方式二：使用精确匹配类名 */
+.router-link-exact-active {
+  background-color: orange;
+  color: white;
+}
+```
+
+#### 自定义高亮类名
+
+**为什么要自定义？**
+- 默认类名太长，不便书写
+- 与项目现有样式类名保持一致
+- 更好的可读性和维护性
+
+**配置方法**：
+在路由对象中添加配置：
+```javascript
+const router = new VueRouter({
+  routes: [
+    // 路由规则...
+  ],
+  // 自定义高亮类名
+  linkActiveClass: 'active',        // 模糊匹配类名
+  linkExactActiveClass: 'exact-active'  // 精确匹配类名
+})
+```
+
+**使用自定义类名**：
+```css
+/* 使用简洁的自定义类名 */
+.active {
+  background-color: darkcyan;
+  color: white;
+}
+
+.exact-active {
+  background-color: orange;
+  color: white;
+}
+```
+
+**完整示例**：
+```html
+<!-- App.vue -->
+<template>
+  <div>
+    <div class="footer_wrap">
+      <router-link to="/find">发现音乐</router-link>
+      <router-link to="/my">我的音乐</router-link>
+      <router-link to="/friend">朋友</router-link>
+    </div>
+    <router-view></router-view>
+  </div>
+</template>
+
+<style>
+.footer_wrap a.active {
+  background-color: darkcyan;
+  color: white;
+}
+</style>
+```
+
+#### 路由传参
+
+**为什么需要路由传参？**
+- 页面间需要传递数据
+- 根据参数显示不同内容
+- 实现动态路由功能
+
+**路由传参的两种方式**：
+
+##### 方式一：查询参数传参
+
+**特点**：
+- 参数会显示在 URL 的 `?` 后面
+- 适合传递可选参数
+- 参数可以是任意数量
+
+**传参语法**：
+```html
+<!-- 声明式导航 -->
+<router-link to="/path?参数名1=值1&参数名2=值2">跳转</router-link>
+
+<!-- 具体示例 -->
+<router-link to="/search?words=黑马&age=18">搜索</router-link>
+```
+
+**接收参数**：
+```javascript
+// 在目标组件中接收
+export default {
+  created() {
+    // 获取查询参数
+    console.log(this.$route.query.words)  // '黑马'
+    console.log(this.$route.query.age)    // '18'
+  }
+}
+```
+
+**路由配置**：
+```javascript
+// 查询参数不需要特殊配置
+const router = new VueRouter({
+  routes: [
+    { path: '/search', component: Search }
+  ]
+})
+```
+
+##### 方式二：动态路由传参
+
+**特点**：
+- 参数是路径的一部分
+- 适合传递必需参数
+- URL 更简洁美观
+
+**路由配置**：
+```javascript
+// 需要在路由规则中配置参数占位符
+const router = new VueRouter({
+  routes: [
+    // :words 是参数占位符
+    { path: '/search/:words', component: Search }
+  ]
+})
+```
+
+**传参语法**：
+```html
+<!-- 声明式导航 -->
+<router-link to="/path/参数值">跳转</router-link>
+
+<!-- 具体示例 -->
+<router-link to="/search/黑马">搜索黑马</router-link>
+```
+
+**接收参数**：
+```javascript
+// 在目标组件中接收
+export default {
+  created() {
+    // 获取动态路由参数
+    console.log(this.$route.params.words)  // '黑马'
+  }
+}
+```
+
+##### 两种方式对比
+
+| 对比项 | 查询参数 | 动态路由 |
+|--------|----------|----------|
+| **URL形式** | `/search?words=黑马` | `/search/黑马` |
+| **参数位置** | ? 后面 | 路径中 |
+| **路由配置** | 无需特殊配置 | 需要 `:参数名` |
+| **接收方式** | `$route.query.参数名` | `$route.params.参数名` |
+| **适用场景** | 可选参数、多个参数 | 必需参数、单个参数 |
+| **URL美观度** | 一般 | 更美观 |
+
+**完整示例**：
+```html
+<!-- Home.vue -->
+<template>
+  <div>
+    <h3>首页</h3>
+    
+    <!-- 查询参数传参 -->
+    <router-link to="/search?words=黑马&age=18">
+      查询参数跳转
+    </router-link>
+    
+    <!-- 动态路由传参 -->
+    <router-link to="/search/黑马">
+      动态路由跳转
+    </router-link>
+  </div>
+</template>
+```
+
+```javascript
+// Search.vue
+export default {
+  name: 'Search',
+  created() {
+    // 接收查询参数
+    console.log('查询参数:', this.$route.query)
+    
+    // 接收动态路由参数
+    console.log('动态参数:', this.$route.params)
+  }
+}
+```
+
+#### 路由重定向与404页面
+
+##### 路由重定向
+
+**什么是路由重定向？**
+- 当用户访问某个路径时，自动跳转到另一个路径
+- 常用于设置默认页面或处理旧路径
+
+**基本语法**：
+```javascript
+const router = new VueRouter({
+  routes: [
+    // 重定向：访问根路径时跳转到 /home
+    { path: '/', redirect: '/home' },
+    
+    // 正常路由
+    { path: '/home', component: Home },
+    { path: '/search', component: Search }
+  ]
+})
+```
+
+**应用场景**：
+- **默认页面**：用户访问网站根目录时跳转到首页
+- **路径变更**：旧路径重定向到新路径
+- **权限控制**：未登录用户重定向到登录页
+
+##### 404页面（通配符路由）
+
+**什么是404页面？**
+- 当用户访问不存在的路径时显示的页面
+- 提升用户体验，避免白屏
+
+**配置方法**：
+```javascript
+const router = new VueRouter({
+  routes: [
+    { path: '/', redirect: '/home' },
+    { path: '/home', component: Home },
+    { path: '/search', component: Search },
+    
+    // 404页面 - 必须放在最后
+    { path: '*', component: NotFound }
+  ]
+})
+```
+
+**NotFound 组件示例**：
+```vue
+<!-- NotFound.vue -->
+<template>
+  <div class="not-found">
+    <h1>404</h1>
+    <p>页面不存在</p>
+    <router-link to="/home">返回首页</router-link>
+  </div>
+</template>
+
+<style>
+.not-found {
+  text-align: center;
+  padding: 50px;
+}
+</style>
+```
+
+**注意事项**：
+- 通配符路由 `*` 必须放在路由配置的最后
+- 它会匹配所有未被其他路由匹配的路径
+
+#### 路由模式设置
+
+**Vue Router 的两种模式**：
+
+##### Hash 模式（默认）
+
+**特点**：
+- URL 中包含 `#` 符号
+- 兼容性好，支持所有浏览器
+- 不需要服务器配置
+
+**URL 示例**：
+```
+http://localhost:8080/#/home
+http://localhost:8080/#/search
+```
+
+**配置方式**：
+```javascript
+// 默认就是 hash 模式，可以不写
+const router = new VueRouter({
+  mode: 'hash',  // 可省略
+  routes: [...]
+})
+```
+
+##### History 模式
+
+**特点**：
+- URL 中没有 `#` 符号，更美观
+- 需要服务器支持
+- 利用 HTML5 History API
+
+**URL 示例**：
+```
+http://localhost:8080/home
+http://localhost:8080/search
+```
+
+**配置方式**：
+```javascript
+const router = new VueRouter({
+  mode: 'history',  // 开启 history 模式
+  routes: [...]
+})
+```
+
+**服务器配置要求**：
+使用 history 模式时，服务器需要配置：当访问不存在的路径时，返回 index.html
+
+##### 两种模式对比
+
+| 对比项 | Hash 模式 | History 模式 |
+|--------|-----------|-------------|
+| **URL 形式** | `/#/path` | `/path` |
+| **美观度** | 一般 | 更美观 |
+| **兼容性** | 所有浏览器 | 现代浏览器 |
+| **服务器配置** | 无需配置 | 需要配置 |
+| **SEO** | 不友好 | 相对友好 |
+
+**完整配置示例**：
+```javascript
+// router/index.js
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Home from '@/views/Home.vue'
+import Search from '@/views/Search.vue'
+import NotFound from '@/views/NotFound.vue'
+
+Vue.use(VueRouter)
+
+const router = new VueRouter({
+  mode: 'history',  // 设置为 history 模式
+  routes: [
+    // 重定向
+    { path: '/', redirect: '/home' },
+    
+    // 正常路由
+    { path: '/home', component: Home },
+    { path: '/search/:words', component: Search },
+    
+    // 404页面
+    { path: '*', component: NotFound }
+  ]
+})
+
+export default router
+```
+
+#### 编程式导航
+
+**什么是编程式导航？**
+- 通过 JavaScript 代码控制路由跳转
+- 与声明式导航（`<router-link>`）相对应
+- 适用于需要在特定条件下跳转的场景
+
+**声明式 vs 编程式**：
+
+| 导航方式 | 语法 | 使用场景 |
+|----------|------|----------|
+| **声明式** | `<router-link to="/path">` | 用户点击链接跳转 |
+| **编程式** | `this.$router.push('/path')` | 代码逻辑控制跳转 |
+
+##### 编程式导航的两种跳转语法
+
+**核心方法**：`this.$router.push()`
+
+###### 方式一：路径跳转
+
+**简写形式**：
+```javascript
+// 直接传入路径字符串
+this.$router.push('/search')
+this.$router.push('/home')
+```
+
+**完整形式**：
+```javascript
+// 传入路径对象
+this.$router.push({ path: '/search' })
+this.$router.push({ path: '/home' })
+```
+
+###### 方式二：路由名字跳转
+
+**前提条件**：路由规则中需要配置 `name` 属性
+```javascript
+// router/index.js
+const router = new VueRouter({
+  routes: [
+    { path: '/home', component: Home, name: 'home' },
+    { path: '/search/:words', component: Search, name: 'search' }
+  ]
+})
+```
+
+**跳转语法**：
+```javascript
+// 通过路由名字跳转
+this.$router.push({ name: 'search' })
+this.$router.push({ name: 'home' })
+```
+
+**适用场景**：
+- **路径较长**：避免写复杂的路径字符串
+- **动态路径**：路径中包含参数时更方便
+- **路径变更**：修改路径时只需改路由配置
+
+##### 编程式导航传参
+
+**重要原则**：编程式导航的两种跳转方式都支持传参，但传参方式有所不同。
+
+###### 路径跳转传参
+
+**1. 路径跳转 + 查询参数**：
+```javascript
+// 简写方式：直接在路径中拼接查询参数
+this.$router.push('/search?key=黑马')
+
+// 完整写法：使用 query 对象（推荐）
+this.$router.push({
+  path: '/search',
+  query: {
+    key: '黑马'
+  }
+})
+```
+
+**2. 路径跳转 + 动态传参**：
+```javascript
+// 简写方式：直接在路径中拼接参数
+this.$router.push('/search/黑马')
+
+// 完整写法：在 path 中拼接参数
+this.$router.push({
+  path: '/search/黑马'
+})
+// 或者使用模板字符串
+this.$router.push({
+  path: `/search/${this.searchValue}`
+})
+```
+
+###### 名字跳转传参
+
+**1. 名字跳转 + 查询参数**：
+```javascript
+this.$router.push({
+  name: 'search',
+  query: {
+    key: '黑马'
+  }
+})
+```
+
+**2. 名字跳转 + 动态传参**：
+```javascript
+this.$router.push({
+  name: 'search',
+  params: {
+    words: '黑马'
+  }
+})
+```
+
+**接收参数方式**：
+```javascript
+// 接收查询参数（query）
+console.log(this.$route.query.key)     // '黑马'
+
+// 接收动态路由参数（params）
+console.log(this.$route.params.words)  // '黑马'
+```
+
+**⚠️ 重要提醒**：
+- 路径跳转使用 `params` 对象传参无效，动态传参需要直接在 `path` 中拼接
+- 名字跳转可以使用 `params` 对象传参，更加灵活
+
+##### 完整实战示例
+
+**路由配置**：
+```javascript
+// router/index.js
+const router = new VueRouter({
+  routes: [
+    { path: '/home', component: Home, name: 'home' },
+    { path: '/search/:words', component: Search, name: 'search' }
+  ]
+})
+```
+
+**Home.vue 组件**：
+```vue
+<template>
+  <div>
+    <h3>首页</h3>
+    <input type="text" v-model="searchValue" placeholder="请输入搜索内容">
+    
+    <!-- 路径跳转传参 -->
+    <button @click="pathQueryJump">路径跳转+查询参数</button>
+    <button @click="pathParamsJump">路径跳转+动态传参</button>
+    
+    <!-- 名字跳转传参 -->
+    <button @click="nameQueryJump">名字跳转+查询参数</button>
+    <button @click="nameParamsJump">名字跳转+动态传参</button>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      searchValue: '黑马程序员'
+    }
+  },
+  methods: {
+    // 路径跳转 + 查询参数
+    pathQueryJump() {
+      this.$router.push({
+        path: '/search',
+        query: {
+          key: this.searchValue
+        }
+      })
+    },
+    
+    // 路径跳转 + 动态传参
+    pathParamsJump() {
+      this.$router.push({
+        path: `/search/${this.searchValue}`
+      })
+    },
+    
+    // 名字跳转 + 查询参数
+    nameQueryJump() {
+      this.$router.push({
+        name: 'search',
+        query: {
+          key: this.searchValue
+        }
+      })
+    },
+    
+    // 名字跳转 + 动态传参
+    nameParamsJump() {
+      this.$router.push({
+        name: 'search',
+        params: {
+          words: this.searchValue
+        }
+      })
+    }
+  }
+}
+</script>
+```
+
+**Search.vue 组件**：
+```vue
+<template>
+  <div>
+    <h3>搜索页面</h3>
+    <p>查询参数：{{ $route.query }}</p>
+    <p>动态参数：{{ $route.params }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  created() {
+    // 接收参数
+    console.log('查询参数:', this.$route.query)
+    console.log('动态参数:', this.$route.params)
+  }
+}
+</script>
+```
+
+##### 编程式导航总结
+
+**跳转方式选择**：
+- **简单路径**：使用路径跳转 `{ path: '/path' }`
+- **复杂路径**：使用名字跳转 `{ name: 'routeName' }`
+- **需要动态参数且使用 params 对象**：必须使用名字跳转
+
+**传参方式选择**：
+- **查询参数**：两种跳转方式都支持，使用 `query` 对象
+- **动态路由参数**：
+  - 路径跳转：直接在 `path` 中拼接参数
+  - 名字跳转：使用 `params` 对象传参
+
+**兼容性原则**：
+- 所有传参方式在目标页面的接收方式保持一致
+- `query` 参数通过 `this.$route.query` 接收
+- `params` 参数通过 `this.$route.params` 接收
+
+**常见错误**：
+- ❌ 路径跳转使用 `params`
+- ❌ 忘记在路由中配置 `name` 属性
+- ❌ 动态路由参数与路径跳转混用
 
 ### 综合案例技巧
 
