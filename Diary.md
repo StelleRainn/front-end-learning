@@ -5,6 +5,10 @@
 
 ## August 2025
 
+### Aug 21st, Thu
+
+> Hello, iPhone 12 mini, 128, (PRODUCT)RED
+
 ### Aug 18th, Mon
 
 > MacBook Pro, M1, 16+512, Silver, with Active cooling system.
