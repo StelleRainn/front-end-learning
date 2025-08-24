@@ -1621,7 +1621,7 @@ graph TD
   ```bash
   # 安装 Less
   yarn add less less-loader -D
-
+  
   # 安装 Sass
   yarn add sass sass-loader -D
   ```
@@ -1629,10 +1629,10 @@ graph TD
   ```vue
   <style lang="less" scoped>
   @primary-color: #007bff;
-
+  
   .my-component {
     color: @primary-color;
-
+  
     &:hover {
       opacity: 0.8;
     }
@@ -4264,6 +4264,7 @@ export default {
 ##### 路由重定向
 
 **什么是路由重定向？**
+
 - 当用户访问某个路径时，自动跳转到另一个路径
 - 常用于设置默认页面或处理旧路径
 
@@ -4481,7 +4482,7 @@ this.$router.push({ name: 'home' })
 
 **重要原则**：编程式导航的两种跳转方式都支持传参，但传参方式有所不同。
 
-###### 路径跳转传参
+###### path路径跳转传参
 
 **1. 路径跳转 + 查询参数**：
 ```javascript
@@ -4512,9 +4513,10 @@ this.$router.push({
 })
 ```
 
-###### 名字跳转传参
+###### name名字跳转传参
 
 **1. 名字跳转 + 查询参数**：
+
 ```javascript
 this.$router.push({
   name: 'search',
@@ -4718,7 +4720,7 @@ array.splice(索引, 删除数量, 新元素); // 插入/删除
      (sum, item) => sum + item.price * item.num,
      0
    );
-
+   
    // 计算总数量
    this.totalCount = this.list.reduce((sum, item) => sum + item.num, 0);
    ```
