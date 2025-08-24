@@ -4672,6 +4672,868 @@ export default {
 - ❌ 忘记在路由中配置 `name` 属性
 - ❌ 动态路由参数与路径跳转混用
 
+### 嵌套路由
+
+#### 概念
+
+**嵌套路由**：在一个路由组件内部，再配置子级路由，实现页面的嵌套显示。常用于构建具有多层级导航结构的应用，如管理后台、移动端Tab页面等。
+
+#### 配置步骤
+
+**1. 配置嵌套路由规则**
+
+在路由配置中，通过 `children` 选项配置子路由：
+
+```javascript
+const router = new VueRouter({
+  routes: [
+    {
+      path: '/',
+      component: Layout,
+      redirect: '/article',
+      // 配置子路由
+      children: [
+        {
+          path: '/article',
+          component: Article
+        },
+        {
+          path: '/collect', 
+          component: Collect
+        },
+        {
+          path: '/like',
+          component: Like
+        },
+        {
+          path: '/user',
+          component: User
+        }
+      ]
+    }
+  ]
+})
+```
+
+**2. 在父组件中配置路由出口**
+
+在父级组件模板中添加 `<router-view>` 作为子路由的显示区域：
+
+```vue
+<template>
+  <div class="layout">
+    <!-- 子路由显示区域 -->
+    <router-view></router-view>
+    
+    <!-- 导航菜单 -->
+    <nav class="tabbar">
+      <router-link to="/article">面经</router-link>
+      <router-link to="/collect">收藏</router-link>
+      <router-link to="/like">喜欢</router-link>
+      <router-link to="/user">我的</router-link>
+    </nav>
+  </div>
+</template>
+```
+
+#### 嵌套路由特点
+
+- **路径匹配**：子路由的完整路径 = 父路由路径 + 子路由路径
+- **组件嵌套**：子组件会渲染在父组件的 `<router-view>` 中
+- **导航高亮**：`router-link` 的高亮功能在嵌套路由中同样有效
+- **重定向支持**：可以在父路由中配置 `redirect` 指定默认子路由
+
+### 组件缓存 keep-alive
+
+#### 概念
+
+**keep-alive** 是 Vue 的内置组件，用于缓存动态组件或路由组件，避免重复创建和销毁，提升性能并保持组件状态。
+
+#### 基本使用
+
+**语法**：
+
+```vue
+<template>
+  <div>
+    <!-- 缓存路由组件 -->
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
+    
+    <!-- 缓存动态组件 -->
+    <keep-alive>
+      <component :is="currentComponent"></component>
+    </keep-alive>
+  </div>
+</template>
+```
+
+#### 配置属性
+
+**include**：指定需要缓存的组件（根据组件的 `name` 选项）
+
+```vue
+<!-- 缓存指定组件 -->
+<keep-alive :include="['ArticlePage', 'UserPage']">
+  <router-view></router-view>
+</keep-alive>
+
+<!-- 字符串形式 -->
+<keep-alive include="ArticlePage,UserPage">
+  <router-view></router-view>
+</keep-alive>
+```
+
+**exclude**：指定不需要缓存的组件
+
+```vue
+<keep-alive :exclude="['LoginPage']">
+  <router-view></router-view>
+</keep-alive>
+```
+
+**max**：限制缓存组件的最大数量
+
+```vue
+<keep-alive :max="5">
+  <router-view></router-view>
+</keep-alive>
+```
+
+#### 生命周期钩子
+
+使用 `keep-alive` 缓存的组件会获得两个额外的生命周期钩子：
+
+```javascript
+export default {
+  name: 'ArticlePage',
+  
+  // 组件被激活时调用（从缓存中恢复）
+  activated() {
+    console.log('组件被激活');
+    // 可以在这里刷新数据、重新绑定事件等
+  },
+  
+  // 组件被停用时调用（被缓存）
+  deactivated() {
+    console.log('组件被停用');
+    // 可以在这里清理定时器、取消请求等
+  }
+}
+```
+
+#### 注意事项
+
+**组件命名**：
+- `include` 和 `exclude` 匹配的是组件的 `name` 选项
+- 组件的 `name` 优先级高于文件名
+- 确保需要缓存的组件都有明确的 `name` 属性
+
+**生命周期变化**：
+- 被缓存的组件不会触发 `created`、`mounted`、`destroyed` 等钩子
+- 使用 `activated` 和 `deactivated` 代替相应逻辑
+
+**内存管理**：
+- 合理使用 `max` 属性限制缓存数量
+- 对于不常用的页面，考虑使用 `exclude` 排除缓存
+
+#### 实战示例
+
+```vue
+<!-- 父组件 Layout.vue -->
+<template>
+  <div class="h5-wrapper">
+    <div class="content">
+      <!-- 缓存指定组件，提升用户体验 -->
+      <keep-alive :include="['ArticlePage']">
+        <router-view></router-view>
+      </keep-alive>
+    </div>
+    <nav class="tabbar">
+      <router-link to="/article">面经</router-link>
+      <router-link to="/collect">收藏</router-link>
+      <router-link to="/like">喜欢</router-link>
+      <router-link to="/user">我的</router-link>
+    </nav>
+  </div>
+</template>
+```
+
+```javascript
+// 子组件 Article.vue
+export default {
+  name: 'ArticlePage', // 重要：与 keep-alive 的 include 匹配
+  
+  data() {
+    return {
+      articles: []
+    }
+  },
+  
+  async created() {
+    // 首次创建时获取数据
+    await this.fetchArticles();
+  },
+  
+  activated() {
+    // 从缓存恢复时的逻辑
+    console.log('欢迎回到文章页面');
+  },
+  
+  deactivated() {
+    // 离开页面时的清理逻辑
+    console.log('离开文章页面');
+  },
+  
+  methods: {
+    async fetchArticles() {
+      const res = await axios.get('/api/articles');
+      this.articles = res.data.result.rows;
+    }
+  }
+}
+```
+
+### 路由导航方法
+
+#### $router.back()
+
+**概念**：`$router.back()` 是 Vue Router 提供的编程式导航方法，用于返回到浏览器历史记录的上一页，等同于 `history.back()`。
+
+**语法**：
+
+```javascript
+// 返回上一页
+this.$router.back()
+
+// 等同于
+this.$router.go(-1)
+```
+
+**使用场景**：
+- 详情页返回列表页
+- 表单页面的取消操作
+- 移动端的返回按钮
+
+**示例**：
+
+```vue
+<template>
+  <div class="detail-page">
+    <header>
+      <button @click="goBack">← 返回</button>
+      <h1>文章详情</h1>
+    </header>
+    <div class="content">
+      <!-- 详情内容 -->
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  methods: {
+    goBack() {
+      // 返回上一页
+      this.$router.back();
+    }
+  }
+}
+</script>
+```
+
+**其他导航方法**：
+
+```javascript
+// 前进一页
+this.$router.forward()
+
+// 前进/后退指定步数
+this.$router.go(n)  // n为正数前进，负数后退
+
+// 替换当前页面（不会在历史记录中留下记录）
+this.$router.replace('/path')
+```
+
+## Vue CLI 项目创建
+
+### Vue CLI 简介
+
+**Vue CLI** 是 Vue.js 官方提供的标准化开发工具，用于快速搭建 Vue.js 项目脚手架。它提供了项目模板、构建配置、开发服务器等完整的开发环境。
+
+**主要功能**：
+- 快速创建 Vue 项目
+- 内置 Webpack 构建配置
+- 支持热重载开发服务器
+- 集成常用插件和工具
+- 支持自定义配置
+
+### 创建自定义项目
+
+#### 基本命令
+
+```bash
+# 全局安装 Vue CLI
+npm install -g @vue/cli
+
+# 创建新项目
+vue create project-name
+```
+
+#### 配置选择
+
+在创建项目时，选择 **"Manually select features"** 进行自定义配置：
+
+**1. 功能选择**
+
+```bash
+? Check the features needed for your project:
+ ◉ Babel              # ES6+ 语法转换
+ ◯ TypeScript          # TypeScript 支持
+ ◯ Progressive Web App # PWA 功能
+ ◉ Router              # Vue Router 路由
+ ◯ Vuex                # Vuex 状态管理
+ ◉ CSS Pre-processors  # CSS 预处理器
+ ◉ Linter / Formatter  # 代码检查和格式化
+ ◯ Unit Testing        # 单元测试
+ ◯ E2E Testing         # 端到端测试
+```
+
+**推荐选择**：`Babel`、`Router`、`CSS Pre-processors`、`Linter / Formatter`、`Vuex`（根据项目需要）
+
+**2. Vue 版本选择**
+
+```bash
+? Choose a version of Vue.js:
+ ◉ 2.x  # Vue 2.x 版本（当前学习版本）
+ ◯ 3.x  # Vue 3.x 版本（未来版本）
+```
+
+**3. 路由模式选择**
+
+```bash
+? Use history mode for router?
+  Yes  # History 模式（推荐）
+  No   # Hash 模式
+```
+
+**4. CSS 预处理器选择**
+
+```bash
+? Pick a CSS pre-processor:
+ ◯ Sass/SCSS (with dart-sass)
+ ◯ Sass/SCSS (with node-sass)
+ ◉ Less                # 推荐选择
+ ◯ Stylus
+```
+
+**5. 代码检查配置**
+
+```bash
+? Pick a linter / formatter config:
+ ◯ ESLint with error prevention only
+ ◉ ESLint + Standard config    # 推荐：无分号规范
+ ◯ ESLint + Prettier
+```
+
+**6. 检查时机**
+
+```bash
+? Pick additional lint features:
+ ◉ Lint on save        # 保存时检查（推荐）
+ ◯ Lint and fix on commit
+```
+
+**7. 配置文件存放**
+
+```bash
+? Where do you prefer placing config files?
+ ◯ In package.json
+ ◉ In dedicated config files  # 推荐：独立配置文件
+```
+
+#### ESLint Standard 配置说明
+
+**Standard 规范特点**：
+- **无分号**：语句末尾不使用分号
+- **单引号**：字符串使用单引号
+- **2空格缩进**：使用2个空格进行缩进
+- **严格检查**：对代码格式要求严格
+
+**常见规范示例**：
+
+```javascript
+// ✅ 正确写法
+const message = 'Hello World'
+const user = {
+  name: 'Vue',
+  age: 18
+}
+
+function greet() {
+  console.log(message)
+}
+
+// ❌ 错误写法
+const message = "Hello World";  // 使用了分号和双引号
+const user = {
+    name: "Vue",               // 4空格缩进
+    age: 18,
+};
+
+function greet( ) {            // 函数名后多余空格
+    console.log( message );    // 括号内多余空格
+}
+```
+
+**自动格式化配置**：
+
+在 VS Code 中安装 ESLint 插件，配置保存时自动格式化：
+
+```json
+// settings.json
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": [
+    "javascript",
+    "vue"
+  ]
+}
+```
+
+#### 项目结构
+
+创建完成后的项目结构：
+
+```
+project-name/
+├── public/
+│   ├── index.html
+│   └── favicon.ico
+├── src/
+│   ├── assets/          # 静态资源
+│   ├── components/      # 组件
+│   ├── router/          # 路由配置
+│   ├── store/           # Vuex 状态管理（如果选择了）
+│   ├── views/           # 页面组件
+│   ├── App.vue          # 根组件
+│   └── main.js          # 入口文件
+├── .eslintrc.js         # ESLint 配置
+├── babel.config.js      # Babel 配置
+├── package.json         # 项目依赖
+└── vue.config.js        # Vue CLI 配置（可选）
+```
+
+#### 常用命令
+
+```bash
+# 启动开发服务器
+npm run serve
+
+# 构建生产版本
+npm run build
+
+# 运行代码检查
+npm run lint
+
+# 安装依赖
+npm install
+
+# 添加插件
+vue add <plugin-name>
+```
+
+#### 版本对应关系
+
+**重要口诀**：**233, 344**
+- **Vue 2** → **Router 3** → **Vuex 3**
+- **Vue 3** → **Router 4** → **Vuex 4**
+
+```bash
+# Vue 2.x 项目依赖版本
+"vue": "^2.x.x"
+"vue-router": "^3.x.x"
+"vuex": "^3.x.x"
+
+# Vue 3.x 项目依赖版本
+"vue": "^3.x.x"
+"vue-router": "^4.x.x"
+"vuex": "^4.x.x"
+```
+
+#### 注意事项
+
+**开发环境**：
+- 确保 Node.js 版本 >= 12.0.0
+- 推荐使用 npm 或 yarn 作为包管理器
+- 配置好编辑器的 ESLint 插件
+
+**项目配置**：
+- 根据项目需求选择合适的功能
+- ESLint 规范有助于团队协作
+- 合理使用 CSS 预处理器提升开发效率
+
+**性能优化**：
+- 生产环境构建会自动进行代码压缩
+- 支持代码分割和懒加载
+- 内置了现代浏览器的优化配置
+
+## Vuex 状态管理
+
+### Vuex 简介
+
+**Vuex** 是 Vue.js 官方的状态管理模式和库。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。
+
+**核心概念**：
+- **State**：存储应用的状态数据
+- **Mutations**：同步修改状态的方法
+- **Actions**：异步操作，提交 mutations
+- **Getters**：从 state 中派生出一些状态
+- **Modules**：将 store 分割成模块
+
+**使用场景**：
+- 多个组件需要共享状态
+- 组件层级较深，传值复杂
+- 需要全局状态管理
+
+### Vuex 安装和配置
+
+#### 1. 安装 Vuex
+
+```bash
+# Vue 2.x 项目
+npm install vuex@3
+
+# Vue 3.x 项目
+npm install vuex@4
+```
+
+#### 2. 创建 Store 文件
+
+**目录结构**：
+```
+src/
+├── store/
+│   └── index.js    # Vuex 配置文件
+├── main.js         # 入口文件
+└── ...
+```
+
+**store/index.js**：
+```javascript
+// 1. 导入 Vue 和 Vuex
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+// 2. 安装 Vuex 插件
+Vue.use(Vuex)
+
+// 3. 创建并导出 store 实例
+export default new Vuex.Store({
+  // 开启严格模式（开发环境推荐）
+  strict: true,
+  
+  // 状态数据
+  state: {
+    count: 100,
+    title: 'Hello Vuex'
+  },
+  
+  // 同步修改状态的方法
+  mutations: {
+    // 修改 count
+    addCount(state) {
+      state.count++
+    },
+    
+    // 修改 count（带参数）
+    addCountFive(state, num) {
+      state.count += num
+    },
+    
+    // 修改 title
+    changeTitle(state, newTitle) {
+      state.title = newTitle
+    }
+  },
+  
+  // 异步操作
+  actions: {
+    // 异步修改 count
+    asyncAddCount(context) {
+      setTimeout(() => {
+        context.commit('addCount')
+      }, 1000)
+    }
+  },
+  
+  // 计算属性
+  getters: {
+    // 获取 count 的平方
+    countSquare(state) {
+      return state.count * state.count
+    }
+  }
+})
+```
+
+#### 3. 在 main.js 中挂载
+
+```javascript
+import Vue from 'vue'
+import App from './App.vue'
+import store from '@/store/index'  // 导入 store
+
+Vue.config.productionTip = false
+
+new Vue({
+  render: h => h(App),
+  store  // 挂载到 Vue 实例
+}).$mount('#app')
+```
+
+### State 数据提供和访问
+
+#### 1. State 数据定义
+
+**State** 是 Vuex 的核心，用于存储应用的状态数据：
+
+```javascript
+// store/index.js
+state: {
+  count: 100,           // 计数器
+  title: 'Hello Vuex',  // 标题
+  userInfo: {           // 用户信息
+    name: 'Vue',
+    age: 18
+  },
+  list: [1, 2, 3, 4, 5] // 列表数据
+}
+```
+
+#### 2. 访问 State 数据
+
+**方式一：直接访问**
+
+```vue
+<template>
+  <div>
+    <!-- 直接通过 $store.state 访问 -->
+    <h1>{{ $store.state.title }}</h1>
+    <p>计数器：{{ $store.state.count }}</p>
+    <p>用户名：{{ $store.state.userInfo.name }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  computed: {
+    // 在计算属性中访问
+    count() {
+      return this.$store.state.count
+    },
+    title() {
+      return this.$store.state.title
+    }
+  }
+}
+</script>
+```
+
+**方式二：mapState 辅助函数**
+
+```vue
+<template>
+  <div>
+    <!-- 直接使用映射后的计算属性 -->
+    <h1>{{ title }}</h1>
+    <p>计数器：{{ count }}</p>
+    <p>用户名：{{ userName }}</p>
+  </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  computed: {
+    // 方式1：数组形式（属性名与 state 中的名称一致）
+    ...mapState(['count', 'title']),
+    
+    // 方式2：对象形式（可以重命名）
+    ...mapState({
+      userName: state => state.userInfo.name,
+      userAge: 'userInfo.age',  // 字符串形式
+      list: state => state.list
+    })
+  }
+}
+</script>
+```
+
+#### 3. State 数据特点
+
+**响应式**：
+- State 中的数据是响应式的
+- 当 State 发生变化时，依赖它的组件会自动更新
+
+**单一数据源**：
+- 整个应用的状态存储在一个对象树中
+- 便于调试和状态追踪
+
+**只读性**：
+- 不能直接修改 State 中的数据
+- 必须通过 Mutations 来修改状态
+
+```javascript
+// ❌ 错误：直接修改 state
+this.$store.state.count++
+
+// ✅ 正确：通过 mutations 修改
+this.$store.commit('addCount')
+```
+
+#### 4. 严格模式
+
+**开启严格模式**：
+```javascript
+export default new Vuex.Store({
+  strict: true,  // 开启严格模式
+  // ...
+})
+```
+
+**严格模式作用**：
+- 检测状态修改是否通过 mutations
+- 如果直接修改 state，会抛出错误
+- 仅在开发环境使用，生产环境会影响性能
+
+**条件开启**：
+```javascript
+export default new Vuex.Store({
+  strict: process.env.NODE_ENV !== 'production',
+  // ...
+})
+```
+
+#### 5. 实战示例
+
+**父组件（App.vue）**：
+```vue
+<template>
+  <div id="app">
+    <h1>Vuex 状态管理示例</h1>
+    
+    <!-- 显示状态数据 -->
+    <div class="state-display">
+      <h2>{{ title }}</h2>
+      <p>当前计数：{{ count }}</p>
+    </div>
+    
+    <!-- 子组件 -->
+    <Son1 />
+    <Son2 />
+  </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+import Son1 from './components/Son1.vue'
+import Son2 from './components/Son2.vue'
+
+export default {
+  name: 'App',
+  components: {
+    Son1,
+    Son2
+  },
+  computed: {
+    // 使用 mapState 映射状态
+    ...mapState(['count', 'title'])
+  }
+}
+</script>
+```
+
+**子组件1（Son1.vue）**：
+```vue
+<template>
+  <div class="son1">
+    <h3>子组件1</h3>
+    <p>计数器：{{ count }}</p>
+    
+    <!-- 修改状态的按钮 -->
+    <button @click="handleAdd">+1</button>
+    <button @click="handleAddFive">+5</button>
+    <button @click="handleChangeTitle">修改标题</button>
+  </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  name: 'Son1',
+  computed: {
+    ...mapState(['count'])
+  },
+  methods: {
+    handleAdd() {
+      // 通过 commit 调用 mutations
+      this.$store.commit('addCount')
+    },
+    handleAddFive() {
+      // 传递参数
+      this.$store.commit('addCountFive', 5)
+    },
+    handleChangeTitle() {
+      this.$store.commit('changeTitle', '新的标题')
+    }
+  }
+}
+</script>
+```
+
+**子组件2（Son2.vue）**：
+```vue
+<template>
+  <div class="son2">
+    <h3>子组件2</h3>
+    <!-- 直接访问 state -->
+    <p>计数器：{{ $store.state.count }}</p>
+    <p>标题：{{ $store.state.title }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Son2'
+}
+</script>
+```
+
+#### 6. 注意事项
+
+**数据流向**：
+- **单向数据流**：State → View → Actions → Mutations → State
+- 组件不能直接修改 State，必须通过 Mutations
+
+**性能优化**：
+- 使用 mapState 减少重复代码
+- 合理设计 State 结构，避免嵌套过深
+- 在计算属性中访问 State，利用缓存机制
+
+**调试工具**：
+- 使用 Vue DevTools 查看 Vuex 状态
+- 可以追踪状态变化的历史记录
+- 支持时间旅行调试
+
+
+
+
 ### 综合案例技巧
 
 #### 数组操作方法
