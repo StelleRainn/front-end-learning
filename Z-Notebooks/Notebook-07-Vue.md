@@ -1,12 +1,8 @@
-# 知识手册 第二辑
+# Vue 2/3 
 
-<details><summary>Vue</summary>
+## Vue 基础概念
 
-## Vue
-
-### Vue 基础概念
-
-#### 创建 Vue 实例
+### 创建 Vue 实例
 
 **概念**：Vue 实例是 Vue 应用的根实例，通过 new Vue()创建，它将数据和 DOM 进行绑定，实现响应式的数据驱动视图更新。
 
@@ -83,7 +79,7 @@ const app = new Vue({
 });
 ```
 
-#### 响应式特征
+### 响应式特征
 
 Vue 的核心特性之一是响应式数据绑定：
 
@@ -92,9 +88,7 @@ Vue 的核心特性之一是响应式数据绑定：
 - 访问数据：`实例.属性`，如 `app.msg`
 - 修改数据：`实例.属性 = '值'`，如 `app.msg = 'hello'`
 
-### Vue 模板语法
-
-#### 插值表达式
+## Vue 插值表达式
 
 **概念**：插值表达式是 Vue 的核心模板语法，使用双大括号`{{ }}`将 Vue 实例中的数据渲染到 HTML 模板中，实现数据的动态显示。
 
@@ -159,11 +153,11 @@ data: {
 }
 ```
 
-### Vue 指令
+## Vue 指令
 
 Vue 指令是带有`v-`前缀的特殊属性，不同属性对应不同的功能。
 
-#### v-html
+### v-html
 
 动态设置元素的 innerHTML。
 
@@ -179,7 +173,7 @@ data: {
 }
 ```
 
-#### v-show 和 v-if
+### v-show 和 v-if
 
 都可以控制元素的显示隐藏。
 
@@ -196,7 +190,7 @@ data: {
 <div v-if="flag" v-html="msg"></div>
 ```
 
-#### v-else 和 v-else-if
+### v-else 和 v-else-if
 
 辅助`v-if`进行条件渲染。
 
@@ -214,7 +208,7 @@ data: {
 <p v-else>成绩评定D：惩罚一周不能玩手机</p>
 ```
 
-#### v-on 事件监听
+### v-on 事件监听
 
 **概念**：v-on 指令用于监听 DOM 事件，当事件触发时执行相应的 JavaScript 代码或调用方法。
 
@@ -279,7 +273,7 @@ methods: {
 }
 ```
 
-#### v-bind 属性绑定
+### v-bind 属性绑定
 
 **概念**：v-bind 指令用于**动态**绑定 HTML 属性，可以将 Vue 实例的数据绑定到元素的属性上，实现**属性值的动态更新**。
 
@@ -319,7 +313,7 @@ data: {
 }
 ```
 
-#### v-for 列表渲染
+### v-for 列表渲染
 
 **概念**：v-for 指令用于基于数组、对象或数字进行循环渲染，可以将数据列表渲染为 DOM 元素列表。
 
@@ -398,7 +392,7 @@ data: {
 <li v-for="(item, index) in list" :key="index">{{ item.name }}</li>
 ```
 
-#### v-model 双向数据绑定
+### v-model 双向数据绑定
 
 **概念**：v-model 是 Vue 提供的**双向数据绑定指令**，**专门用于表单元素**，实现数据与视图的同步更新。
 
@@ -629,184 +623,9 @@ data: {
 }
 ```
 
-### 计算属性 computed
+## Vue 实例配置项
 
-**概念**：计算属性是基于现有数据计算出来的新属性，具有缓存特性，只有当依赖的数据发生变化时才会重新计算。
-
-**模板语法**：
-
-```javascript
-computed: {
-  计算属性名() {
-    // 基于现有数据的计算逻辑
-    return 计算结果;
-  }
-}
-```
-
-**基础示例**：
-
-```javascript
-computed: {
-  totalCount() {
-    // 计算礼物总数
-    return this.list.reduce((prev, curr) => prev + curr.num, 0);
-  }
-}
-```
-
-```html
-<p>礼物总数：{{ totalCount }} 个</p>
-```
-
-#### 计算属性 vs 方法
-
-**计算属性特点**：
-
-- 基于响应式依赖进行缓存
-- 只有相关响应式依赖发生改变时才会重新求值
-- 多次访问会立即返回之前的计算结果
-- 作为属性使用：`{{ 计算属性名 }}`
-
-**方法特点**：
-
-- 每次调用都会重新执行
-- 没有缓存机制
-- 作为方法调用：`{{ 方法名() }}`
-
-**对比示例**：
-
-```javascript
-// 计算属性 - 有缓存
-computed: {
-  totalCount() {
-    console.log('计算属性执行'); // 只打印一次
-    return this.list.reduce((sum, item) => sum + item.num, 0);
-  }
-},
-// 方法 - 无缓存
-methods: {
-  totalCountFn() {
-    console.log('方法执行'); // 每次调用都打印
-    return this.list.reduce((acc, item) => acc + item.num, 0);
-  }
-}
-```
-
-#### 计算属性完整写法
-
-**模板语法**：
-
-```javascript
-computed: {
-  计算属性名: {
-    // 获取值时调用
-    get() {
-      return 计算结果;
-    },
-    // 设置值时调用
-    set(newValue) {
-      // 处理设置逻辑
-    }
-  }
-}
-```
-
-**示例**：
-
-```javascript
-computed: {
-  fullName: {
-    get() {
-      return this.firstName + this.lastName;
-    },
-    set(val) {
-      this.firstName = val.slice(0, 1);
-      this.lastName = val.slice(1);
-    }
-  }
-}
-```
-
-### 侦听器 watch
-
-**概念**：侦听器用于观察和响应 Vue 实例上数据的变化，当被侦听的数据发生变化时，会执行相应的回调函数。
-
-#### 简单写法
-
-**模板语法**：
-
-```javascript
-watch: {
-  // 侦听根级别属性
-  属性名(newVal, oldVal) {
-    // 处理逻辑
-  },
-  // 侦听对象中的属性（需要加引号）
-  'obj.属性名'(newVal, oldVal) {
-    // 处理逻辑
-  }
-}
-```
-
-**示例**：
-
-```javascript
-watch: {
-  'obj.words'(newVal) {
-    // 防抖处理
-    if (this.timer) clearTimeout(this.timer);
-    this.timer = setTimeout(async () => {
-      const res = await axios({
-        url: 'https://api.example.com/translate',
-        params: { words: newVal }
-      });
-      this.result = res.data.data;
-    }, 300);
-  }
-}
-```
-
-#### 完整写法
-
-**模板语法**：
-
-```javascript
-watch: {
-  属性名: {
-    deep: true,      // 深度监听
-    immediate: true, // 立即执行
-    handler(newVal, oldVal) {
-      // 处理逻辑
-    }
-  }
-}
-```
-
-**配置选项**：
-
-- `deep: true` - 深度监听，监听对象内部值的变化
-- `immediate: true` - 立即执行一次 handler
-- `handler` - 具体的处理函数
-
-**示例**：
-
-```javascript
-watch: {
-  obj: {
-    deep: true,
-    immediate: true,
-    handler(newVal) {
-      // 只要obj中任意属性发生变化都会触发
-      localStorage.setItem('data', JSON.stringify(newVal));
-    }
-  }
-}
-```
-
-### Vue 实例配置项
-
-#### data 数据
+### data 数据
 
 **概念**：data 选项用于声明组件的响应式数据，Vue 会将 data 中的属性转换为响应式属性。
 
@@ -857,7 +676,7 @@ data() {
 }
 ```
 
-#### methods 方法
+### methods 方法
 
 **概念**：methods 选项用于定义组件的方法，方法内的`this`自动绑定到 Vue 实例。
 
@@ -891,7 +710,7 @@ methods: {
 }
 ```
 
-#### computed 计算属性
+### computed 计算属性
 
 **概念**：computed 选项用于定义计算属性，基于现有数据计算出新的属性值。
 
@@ -905,7 +724,7 @@ computed: {
 }
 ```
 
-#### watch 侦听器
+### watch 侦听器
 
 **概念**：watch 选项用于侦听数据变化，当数据发生变化时执行相应的回调函数。
 
@@ -919,9 +738,186 @@ watch: {
 }
 ```
 
-### Vue 实例生命周期
+## 计算属性 computed
 
-#### 概念
+**概念**：计算属性是基于现有数据计算出来的新属性，具有缓存特性，只有当依赖的数据发生变化时才会重新计算。
+
+**模板语法**：
+
+```javascript
+computed: {
+  计算属性名() {
+    // 基于现有数据的计算逻辑
+    return 计算结果;
+  }
+}
+```
+
+**基础示例**：
+
+```javascript
+computed: {
+  totalCount() {
+    // 计算礼物总数
+    return this.list.reduce((prev, curr) => prev + curr.num, 0);
+  }
+}
+```
+
+```html
+<p>礼物总数：{{ totalCount }} 个</p>
+```
+
+### 计算属性 vs 方法
+
+**计算属性特点**：
+
+- 基于响应式依赖进行缓存
+- 只有相关响应式依赖发生改变时才会重新求值
+- 多次访问会立即返回之前的计算结果
+- 作为属性使用：`{{ 计算属性名 }}`
+
+**方法特点**：
+
+- 每次调用都会重新执行
+- 没有缓存机制
+- 作为方法调用：`{{ 方法名() }}`
+
+**对比示例**：
+
+```javascript
+// 计算属性 - 有缓存
+computed: {
+  totalCount() {
+    console.log('计算属性执行'); // 只打印一次
+    return this.list.reduce((sum, item) => sum + item.num, 0);
+  }
+},
+// 方法 - 无缓存
+methods: {
+  totalCountFn() {
+    console.log('方法执行'); // 每次调用都打印
+    return this.list.reduce((acc, item) => acc + item.num, 0);
+  }
+}
+```
+
+### 计算属性完整写法
+
+**模板语法**：
+
+```javascript
+computed: {
+  计算属性名: {
+    // 获取值时调用
+    get() {
+      return 计算结果;
+    },
+    // 设置值时调用
+    set(newValue) {
+      // 处理设置逻辑
+    }
+  }
+}
+```
+
+**示例**：
+
+```javascript
+computed: {
+  fullName: {
+    get() {
+      return this.firstName + this.lastName;
+    },
+    set(val) {
+      this.firstName = val.slice(0, 1);
+      this.lastName = val.slice(1);
+    }
+  }
+}
+```
+
+## 侦听器 watch
+
+**概念**：侦听器用于观察和响应 Vue 实例上数据的变化，当被侦听的数据发生变化时，会执行相应的回调函数。
+
+### 简单写法
+
+**模板语法**：
+
+```javascript
+watch: {
+  // 侦听根级别属性
+  属性名(newVal, oldVal) {
+    // 处理逻辑
+  },
+  // 侦听对象中的属性（需要加引号）
+  'obj.属性名'(newVal, oldVal) {
+    // 处理逻辑
+  }
+}
+```
+
+**示例**：
+
+```javascript
+watch: {
+  'obj.words'(newVal) {
+    // 防抖处理
+    if (this.timer) clearTimeout(this.timer);
+    this.timer = setTimeout(async () => {
+      const res = await axios({
+        url: 'https://api.example.com/translate',
+        params: { words: newVal }
+      });
+      this.result = res.data.data;
+    }, 300);
+  }
+}
+```
+
+### 完整写法
+
+**模板语法**：
+
+```javascript
+watch: {
+  属性名: {
+    deep: true,      // 深度监听
+    immediate: true, // 立即执行
+    handler(newVal, oldVal) {
+      // 处理逻辑
+    }
+  }
+}
+```
+
+**配置选项**：
+
+- `deep: true` - 深度监听，监听对象内部值的变化
+- `immediate: true` - 立即执行一次 handler
+- `handler` - 具体的处理函数
+
+**示例**：
+
+```javascript
+watch: {
+  obj: {
+    deep: true,
+    immediate: true,
+    handler(newVal) {
+      // 只要obj中任意属性发生变化都会触发
+      localStorage.setItem('data', JSON.stringify(newVal));
+    }
+  }
+}
+```
+
+
+
+## Vue 实例生命周期
+
+### 四个阶段
 
 **概念**：Vue 实例从创建到销毁的过程，每个阶段都有特定的钩子函数可以调用。Vue 生命周期是指 Vue 实例从创建到销毁的整个过程，在这个过程中会自动执行一些函数，这些函数被称为生命周期钩子函数。
 
@@ -932,9 +928,7 @@ watch: {
 3. **更新阶段**：修改数据，更新视图
 4. **销毁阶段**：销毁 Vue 实例
 
-![vue生命周期](assets-for-notebook/1682065991013.png)
-
-#### 生命周期钩子（hook）
+### 生命周期钩子（hook）
 
 Vue 生命周期过程中，会**自动运行一些函数**，被称为【**生命周期钩子**】→ 让开发者可以在【**特定阶段**】运行**自己的代码**
 
@@ -1024,7 +1018,7 @@ const app = new Vue({
 });
 ```
 
-#### created 应用场景
+### created 应用场景
 
 **概念**：created 钩子在 Vue 实例创建完成后立即调用，此时数据观测和事件配置已完成，但 DOM 还未挂载。
 
@@ -1078,7 +1072,7 @@ const app = new Vue({
 </ul>
 ```
 
-#### mounted 应用场景
+### mounted 应用场景
 
 **概念**：mounted 钩子在 Vue 实例挂载完成后调用，此时 DOM 已经渲染完成，可以进行 DOM 操作。
 
@@ -1163,7 +1157,7 @@ const app = new Vue({
 });
 ```
 
-#### 生命周期综合案例 - 小黑记账清单
+### 生命周期综合案例 - 小黑记账清单
 
 **功能需求**：
 
@@ -1340,9 +1334,9 @@ const app = new Vue({
 </div>
 ```
 
-### 工程化开发与脚手架
+## 工程化开发与脚手架
 
-#### 开发 Vue 的两种方式
+**开发 Vue 的两种方式**
 
 - 核心包传统开发模式：基于 html / css / js 文件，直接引入核心包，开发 Vue。
 - **工程化开发模式：基于构建工具（例如：webpack）的环境中开发 Vue。**
@@ -1354,7 +1348,7 @@ const app = new Vue({
 - 支持模块化开发，方便代码的拆分和复用。
 - 提供了丰富的插件和工具，满足不同项目的需求。
 
-#### 脚手架 Vue CLI
+### 脚手架 Vue CLI
 
 **基本介绍**
 
@@ -1425,9 +1419,9 @@ Vue CLI 是 Vue 官方提供的一个**全局命令工具**
   - Unit Testing：单元测试
   - E2E Testing：端到端测试
 
-#### 项目结构与运行流程
+### 项目结构与运行流程
 
-##### 项目目录结构
+#### 项目目录结构
 
 ```
 project-name/
@@ -1462,14 +1456,14 @@ project-name/
 └── vue.config.js          # Vue CLI配置文件（可选）
 ```
 
-##### 核心文件说明
+#### 核心文件说明
 
 - **src/main.js**：项目入口文件，负责创建 Vue 实例并挂载到 DOM
 - **src/App.vue**：根组件，所有其他组件的父组件
 - **public/index.html**：HTML 模板，Vue 应用最终会挂载到这里
 - **package.json**：项目配置文件，包含依赖、脚本命令等信息
 
-##### 重点文件详解
+**重点文件详解**
 
 1. **main.js** - 项目入口文件
 
@@ -1515,7 +1509,7 @@ project-name/
    </html>
    ```
 
-##### 项目运行流程
+#### 项目运行流程
 
 ```mermaid
 graph TD
@@ -1537,9 +1531,9 @@ graph TD
 6. 浏览器接收处理后的 HTML、CSS、JS 文件并显示页面
 7. 开发服务器启动热重载，文件变化时自动刷新页面
 
-#### 组件化开发
+## 组件化开发
 
-##### 基本介绍
+**基本介绍**
 
 组件化开发是指将一个复杂的应用拆分成多个组件，每个组件负责完成特定的功能，组件之间可以组合起来完成整个应用的功能。
 
@@ -1558,7 +1552,7 @@ graph TD
 
 整个应用最上层的组件，包裹所有的小组件（类似树的根节点）
 
-##### 组件的三个组成部分
+### 组件的三个组成部分
 
 1. **`<template>`**：组件的模板，定义组件的结构和内容
 
@@ -1602,7 +1596,7 @@ graph TD
    </style>
    ```
 
-##### 样式作用域和预处理器
+### 样式作用域和预处理器
 
 - **scoped 属性**：使样式只作用于当前组件
   ```vue
@@ -1640,7 +1634,7 @@ graph TD
   </style>
   ```
 
-##### 普通组件的注册使用-局部注册
+### 普通组件的注册使用-局部注册
 
 顾名思义，只能在注册的组件内使用。
 
@@ -1666,7 +1660,7 @@ graph TD
    ```
    _p.s. 组件命名规范：大驼峰命名法_
 
-##### 普通组件的注册使用-全局注册
+### 普通组件的注册使用-全局注册
 
 全局注册的组件，在项目的**任何组件**中都可以使用。
 
@@ -1688,7 +1682,7 @@ graph TD
 
 _p.s. 通常在 IDE 内，可以先完成步骤 3，语法补全会自动引入步骤 2 中的代码_
 
-##### 组件开发最佳实践
+### 组件开发最佳实践
 
 **1. 组件命名规范**
 
@@ -1714,7 +1708,7 @@ src/
 │       └── ProductList.vue
 ```
 
-##### 组件化开发 综合案例 小兔鲜组件化
+### 组件化开发 综合案例 小兔鲜组件化
 
 ```html
 <!-- App.vue -->
@@ -1836,9 +1830,9 @@ import BaseGoodsItem from "@/components/BaseGoodsItem.vue";
 Vue.component("BaseGoodsItem", BaseGoodsItem);
 ```
 
-#### 常用开发命令与调试技巧
+### 常用开发命令与调试技巧
 
-##### package.json 脚本命令
+#### package.json 脚本命令
 
 ```json
 {
@@ -1851,7 +1845,7 @@ Vue.component("BaseGoodsItem", BaseGoodsItem);
 }
 ```
 
-##### 常用开发命令
+#### 常用开发命令
 
 ```bash
 # 开发环境
@@ -1867,7 +1861,7 @@ vue inspect         # 查看 webpack 配置
 vue ui              # 启动图形化界面
 ```
 
-##### 开发调试技巧
+#### 开发调试技巧
 
 **1. Vue DevTools**
 
@@ -1907,9 +1901,9 @@ export default {
 };
 ```
 
-### Vue 组件通信
+## Vue 组件通信
 
-#### 父子组件通信概述
+### 父子组件通信概述
 
 **概念**：在 Vue 组件化开发中，组件之间需要进行数据传递和事件通信。父子组件通信是最常见的通信方式，包括父组件向子组件传递数据（Props）和子组件向父组件传递消息（$emit）。
 
@@ -2796,9 +2790,11 @@ export default {
 - 不要过度使用，会增加组件间的耦合度
 - 适合稳定的、不经常变化的数据
 
-### v-model 进阶
+## v-model 进阶
 
-#### v-model 原理
+基于组件通信，我们可以对 v-model 有全新的认识。
+
+### v-model 原理
 
 **概念**：v-model 是 Vue 提供的语法糖，本质上是属性绑定和事件监听的组合写法，实现双向数据绑定。
 
@@ -2850,7 +2846,7 @@ export default {
 - `$event.target.value`：获取输入框的当前值
 - 用于在内联事件处理中访问原生事件
 
-#### 自定义组件的 v-model
+### 自定义组件的 v-model
 
 **概念**：在自定义组件上使用 v-model，需要组件内部配合实现特定的 props 和事件约定。
 
@@ -2946,7 +2942,7 @@ export default {
 2. 子组件通过`$emit('input', newValue)`通知父组件
 3. 父组件使用`v-model`实现双向绑定
 
-#### .sync 修饰符
+### .sync 修饰符
 
 **概念**：.sync 修饰符是 Vue 提供的语法糖，用于实现父子组件间的双向绑定，相比 v-model 更加灵活，可以自定义属性名。
 
@@ -3049,9 +3045,9 @@ this.$emit("update:属性名", 新值);
 - 弹框、开关等组件使用`.sync`
 - 需要多个双向绑定属性时使用`.sync`
 
-### ref 和 $refs
+## ref 和 $refs
 
-#### 获取 DOM 元素
+### 获取 DOM 元素
 
 **概念**：ref 是 Vue 提供的特殊属性，用于给元素或组件注册引用信息，通过$refs 可以直接访问 DOM 元素或组件实例。
 
@@ -3117,7 +3113,7 @@ this.$refs.引用名
 - 避免冲突：不会受到其他组件同名元素的干扰
 - 性能更好：直接引用，无需 DOM 查询
 
-#### 获取组件实例
+### 获取组件实例
 
 **概念**：ref 不仅可以获取 DOM 元素，还可以获取子组件的实例，从而调用子组件的方法或访问子组件的数据。
 
@@ -3211,9 +3207,9 @@ this.$refs.childRef.方法名()
 - 建议在 mounted 生命周期中使用
 - 不要过度使用，优先考虑 props 和事件通信
 
-### Vue 异步更新和 $nextTick
+## Vue 异步更新和 $nextTick
 
-#### Vue 异步更新机制
+### Vue 异步更新机制
 
 **概念**：Vue 在更新 DOM 时是异步执行的。当数据发生变化时，Vue 会开启一个队列，缓冲在同一事件循环中发生的所有数据变更，然后在下一个事件循环中统一更新 DOM。
 
@@ -3231,7 +3227,7 @@ this.isShow = true;
 this.$refs.input.focus(); // 此时DOM还未更新，会报错
 ```
 
-#### $nextTick 的作用
+### $nextTick 的作用
 
 **概念**：$nextTick 是 Vue 提供的方法，用于在下次 DOM 更新循环结束之后执行延迟回调。简单说就是当数据更新后，要等 DOM 更新完成后再执行某些操作。
 
@@ -3348,9 +3344,9 @@ this.$nextTick(() => {
 - 可以与 async/await 结合使用，提高代码可读性
 - 在组件销毁前取消未完成的$nextTick 回调
 
-### Vue 自定义指令
+## Vue 自定义指令
 
-#### 自定义指令概念
+### 基本概念与用法
 
 **概念**：自定义指令是 Vue 提供的一种扩展机制，允许开发者封装对 DOM 元素的底层操作，实现代码复用和逻辑封装。自定义指令主要用于操作 DOM，如自动聚焦、权限控制、加载状态等。
 
@@ -3360,8 +3356,6 @@ this.$nextTick(() => {
 - 权限控制显示隐藏
 - 加载状态的视觉反馈
 - 拖拽、缩放等交互效果
-
-#### 自定义指令基础语法
 
 **模板语法**：
 
@@ -3405,7 +3399,7 @@ Vue.directive("focus", {
 <input v-focus type="text" />
 ```
 
-#### 指令的值传递
+### 指令的值传递
 
 **概念**：自定义指令可以接收动态值，通过 `binding.value` 获取指令绑定的值，实现更灵活的功能。
 
@@ -3456,7 +3450,7 @@ data() {
 }
 ```
 
-#### 自定义指令钩子函数
+### 自定义指令钩子函数
 
 **钩子函数类型**：
 
@@ -3476,7 +3470,7 @@ data() {
   - `arg`：传给指令的参数
   - `modifiers`：包含修饰符的对象
 
-#### v-loading 指令实战
+### v-loading 指令实战
 
 **概念**：v-loading 是一个实用的自定义指令，用于在数据加载时显示加载动画，提升用户体验。
 
@@ -3548,9 +3542,7 @@ export default {
 };
 ```
 
-### Vue 插槽 (Slot)
-
-#### 插槽概念
+## Vue 插槽 (Slot)
 
 **概念**：插槽是 Vue 组件的一种内容分发机制，允许父组件向子组件传递模板内容，实现组件内部结构的自定义。插槽让组件更加灵活和可复用，是组件化开发的重要特性。
 
@@ -3561,7 +3553,7 @@ export default {
 - 实现内容的动态分发
 - 支持复杂的组件组合
 
-#### 默认插槽
+### 默认插槽
 
 **概念**：默认插槽是最基础的插槽类型，用于在组件中预留一个内容插入位置，父组件可以向这个位置传入任意内容。
 
@@ -3620,7 +3612,7 @@ export default {
 </template>
 ```
 
-#### 具名插槽
+### 具名插槽
 
 **概念**：具名插槽允许在一个组件中定义多个插槽，每个插槽都有自己的名称，父组件可以向指定名称的插槽传入内容。
 
@@ -3689,7 +3681,7 @@ export default {
 </template>
 ```
 
-#### 作用域插槽
+### 作用域插槽
 
 **概念**：作用域插槽是插槽的一种传参语法，允许子组件向插槽传递数据，父组件可以接收这些数据并在模板中使用。这种机制实现了子组件向父组件的数据传递。
 
@@ -3778,7 +3770,7 @@ methods: {
 }
 ```
 
-#### 插槽综合应用
+### 插槽综合应用
 
 **概念**：在实际开发中，插槽常与其他 Vue 特性结合使用，如 v-model、自定义指令等，构建复杂的可复用组件。
 
@@ -3847,9 +3839,9 @@ export default {
 </template>
 ```
 
-### 路由 Vue Router
+## 路由 Vue Router
 
-#### 单页应用程序 (SPA)
+### 单页应用程序 (SPA)
 
 **概念**：单页应用程序（Single Page Application，SPA）是一种Web应用程序架构，整个应用只有一个HTML页面，通过JavaScript动态更新页面内容，而不需要重新加载整个页面。
 
@@ -3880,9 +3872,9 @@ Vue Router是Vue.js官方的路由管理器，它让构建单页应用变得易�
 - 管理应用的导航状态
 - 支持嵌套路由、路由参数、路由守卫等高级功能
 
-#### 基本使用步骤（5+2）
+### Router 基本使用步骤（5+2）
 
-##### 固定 5 步
+#### 固定 5 步
 
 1. 安装 Vue Router（Vue2 → 3.x 版本）
 
@@ -3918,7 +3910,7 @@ new Vue({
 
 完成固定的 5 步以后，可以发现地址栏处新增了 `#` 符号，这是 Vue Router 实现路由的基础。
 
-##### 核心 2 步
+#### 核心 2 步
 
 1. 在`src/views`文件夹下创建组件，然后**配置路由规则**
 
@@ -3960,7 +3952,7 @@ _p.s. `@/` 标识符指代 `src/` 文件夹，可以直接从此寻找文件。�
 - 复用组件：放在`src/components`文件夹下，方便复用
 - 本质上都是.vue 文件，这是一种规范。
 
-#### 路由模块封装
+### 路由模块封装
 
 **为什么要封装路由模块？**
 - 当路由规则很多时，main.js 文件会变得臃肿
@@ -4016,7 +4008,7 @@ new Vue({
 - **便于维护**：修改路由只需要修改 router/index.js
 - **团队协作**：多人开发时减少冲突
 
-#### router-link 导航链接
+### router-link 导航链接
 
 **什么是 router-link？**
 - Vue Router 提供的组件，用于创建导航链接
@@ -4129,14 +4121,14 @@ const router = new VueRouter({
 </style>
 ```
 
-#### 路由传参
+### 路由传参
 
 **为什么需要路由传参？**
 - 页面间需要传递数据
 - 根据参数显示不同内容
 - 实现动态路由功能
 
-**路由传参的两种方式**：
+#### **路由传参的两种方式**：
 
 ##### 方式一：查询参数传参
 
@@ -4259,9 +4251,9 @@ export default {
 }
 ```
 
-#### 路由重定向与404页面
+### 路由重定向与404页面
 
-##### 路由重定向
+#### 路由重定向
 
 **什么是路由重定向？**
 
@@ -4287,7 +4279,7 @@ const router = new VueRouter({
 - **路径变更**：旧路径重定向到新路径
 - **权限控制**：未登录用户重定向到登录页
 
-##### 404页面（通配符路由）
+#### 404页面（通配符路由）
 
 **什么是404页面？**
 - 当用户访问不存在的路径时显示的页面
@@ -4330,11 +4322,11 @@ const router = new VueRouter({
 - 通配符路由 `*` 必须放在路由配置的最后
 - 它会匹配所有未被其他路由匹配的路径
 
-#### 路由模式设置
+### 路由模式设置
 
 **Vue Router 的两种模式**：
 
-##### Hash 模式（默认）
+#### Hash 模式（默认）
 
 **特点**：
 - URL 中包含 `#` 符号
@@ -4356,7 +4348,7 @@ const router = new VueRouter({
 })
 ```
 
-##### History 模式
+#### History 模式
 
 **特点**：
 - URL 中没有 `#` 符号，更美观
@@ -4380,7 +4372,7 @@ const router = new VueRouter({
 **服务器配置要求**：
 使用 history 模式时，服务器需要配置：当访问不存在的路径时，返回 index.html
 
-##### 两种模式对比
+#### 两种模式对比
 
 | 对比项 | Hash 模式 | History 模式 |
 |--------|-----------|-------------|
@@ -4419,7 +4411,7 @@ const router = new VueRouter({
 export default router
 ```
 
-#### 编程式导航
+### 编程式导航
 
 **什么是编程式导航？**
 - 通过 JavaScript 代码控制路由跳转
@@ -4433,11 +4425,11 @@ export default router
 | **声明式** | `<router-link to="/path">` | 用户点击链接跳转 |
 | **编程式** | `this.$router.push('/path')` | 代码逻辑控制跳转 |
 
-##### 编程式导航的两种跳转语法
+#### 编程式导航的两种跳转语法
 
 **核心方法**：`this.$router.push()`
 
-###### 方式一：路径跳转
+##### 方式一：路径跳转
 
 **简写形式**：
 ```javascript
@@ -4453,7 +4445,7 @@ this.$router.push({ path: '/search' })
 this.$router.push({ path: '/home' })
 ```
 
-###### 方式二：路由名字跳转
+##### 方式二：路由名字跳转
 
 **前提条件**：路由规则中需要配置 `name` 属性
 ```javascript
@@ -4478,11 +4470,11 @@ this.$router.push({ name: 'home' })
 - **动态路径**：路径中包含参数时更方便
 - **路径变更**：修改路径时只需改路由配置
 
-##### 编程式导航传参
+#### 编程式导航传参
 
 **重要原则**：编程式导航的两种跳转方式都支持传参，但传参方式有所不同。
 
-###### path路径跳转传参
+##### path路径跳转传参
 
 **1. 路径跳转 + 查询参数**：
 ```javascript
@@ -4513,7 +4505,7 @@ this.$router.push({
 })
 ```
 
-###### name名字跳转传参
+##### name名字跳转传参
 
 **1. 名字跳转 + 查询参数**：
 
@@ -4549,7 +4541,7 @@ console.log(this.$route.params.words)  // '黑马'
 - 路径跳转使用 `params` 对象传参无效，动态传参需要直接在 `path` 中拼接
 - 名字跳转可以使用 `params` 对象传参，更加灵活
 
-##### 完整实战示例
+#### 完整实战示例
 
 **路由配置**：
 ```javascript
@@ -4649,7 +4641,7 @@ export default {
 </script>
 ```
 
-##### 编程式导航总结
+#### 编程式导航总结
 
 **跳转方式选择**：
 - **简单路径**：使用路径跳转 `{ path: '/path' }`
@@ -4672,9 +4664,66 @@ export default {
 - ❌ 忘记在路由中配置 `name` 属性
 - ❌ 动态路由参数与路径跳转混用
 
-### 嵌套路由
+### 其他路由导航方法 $router.back()
 
-#### 概念
+**概念**：`$router.back()` 是 Vue Router 提供的编程式导航方法，用于返回到浏览器历史记录的上一页，等同于 `history.back()`。
+
+**语法**：
+
+```javascript
+// 返回上一页
+this.$router.back()
+
+// 等同于
+this.$router.go(-1)
+```
+
+**使用场景**：
+- 详情页返回列表页
+- 表单页面的取消操作
+- 移动端的返回按钮
+
+**示例**：
+
+```vue
+<template>
+  <div class="detail-page">
+    <header>
+      <button @click="goBack">← 返回</button>
+      <h1>文章详情</h1>
+    </header>
+    <div class="content">
+      <!-- 详情内容 -->
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  methods: {
+    goBack() {
+      // 返回上一页
+      this.$router.back();
+    }
+  }
+}
+</script>
+```
+
+**其他导航方法**：
+
+```javascript
+// 前进一页
+this.$router.forward()
+
+// 前进/后退指定步数
+this.$router.go(n)  // n为正数前进，负数后退
+
+// 替换当前页面（不会在历史记录中留下记录）
+this.$router.replace('/path')
+```
+
+### 嵌套路由
 
 **嵌套路由**：在一个路由组件内部，再配置子级路由，实现页面的嵌套显示。常用于构建具有多层级导航结构的应用，如管理后台、移动端Tab页面等。
 
@@ -4743,13 +4792,11 @@ const router = new VueRouter({
 - **导航高亮**：`router-link` 的高亮功能在嵌套路由中同样有效
 - **重定向支持**：可以在父路由中配置 `redirect` 指定默认子路由
 
-### 组件缓存 keep-alive
-
-#### 概念
+## 组件缓存 keep-alive
 
 **keep-alive** 是 Vue 的内置组件，用于缓存动态组件或路由组件，避免重复创建和销毁，提升性能并保持组件状态。
 
-#### 基本使用
+### 基本使用
 
 **语法**：
 
@@ -4769,7 +4816,7 @@ const router = new VueRouter({
 </template>
 ```
 
-#### 配置属性
+### 配置属性
 
 **include**：指定需要缓存的组件（根据组件的 `name` 选项）
 
@@ -4801,7 +4848,7 @@ const router = new VueRouter({
 </keep-alive>
 ```
 
-#### 生命周期钩子
+### 生命周期钩子
 
 使用 `keep-alive` 缓存的组件会获得两个额外的生命周期钩子：
 
@@ -4823,7 +4870,7 @@ export default {
 }
 ```
 
-#### 注意事项
+### 注意事项
 
 **组件命名**：
 - `include` 和 `exclude` 匹配的是组件的 `name` 选项
@@ -4838,7 +4885,7 @@ export default {
 - 合理使用 `max` 属性限制缓存数量
 - 对于不常用的页面，考虑使用 `exclude` 排除缓存
 
-#### 实战示例
+### 实战示例
 
 ```vue
 <!-- 父组件 Layout.vue -->
@@ -4895,70 +4942,8 @@ export default {
 }
 ```
 
-### 路由导航方法
 
-#### $router.back()
-
-**概念**：`$router.back()` 是 Vue Router 提供的编程式导航方法，用于返回到浏览器历史记录的上一页，等同于 `history.back()`。
-
-**语法**：
-
-```javascript
-// 返回上一页
-this.$router.back()
-
-// 等同于
-this.$router.go(-1)
-```
-
-**使用场景**：
-- 详情页返回列表页
-- 表单页面的取消操作
-- 移动端的返回按钮
-
-**示例**：
-
-```vue
-<template>
-  <div class="detail-page">
-    <header>
-      <button @click="goBack">← 返回</button>
-      <h1>文章详情</h1>
-    </header>
-    <div class="content">
-      <!-- 详情内容 -->
-    </div>
-  </div>
-</template>
-
-<script>
-export default {
-  methods: {
-    goBack() {
-      // 返回上一页
-      this.$router.back();
-    }
-  }
-}
-</script>
-```
-
-**其他导航方法**：
-
-```javascript
-// 前进一页
-this.$router.forward()
-
-// 前进/后退指定步数
-this.$router.go(n)  // n为正数前进，负数后退
-
-// 替换当前页面（不会在历史记录中留下记录）
-this.$router.replace('/path')
-```
-
-## Vue CLI 项目创建
-
-### Vue CLI 简介
+## Vue CLI 创建自定义项目
 
 **Vue CLI** 是 Vue.js 官方提供的标准化开发工具，用于快速搭建 Vue.js 项目脚手架。它提供了项目模板、构建配置、开发服务器等完整的开发环境。
 
@@ -5104,7 +5089,7 @@ function greet( ) {            // 函数名后多余空格
 }
 ```
 
-#### 项目结构
+### 项目结构
 
 创建完成后的项目结构：
 
@@ -5127,7 +5112,7 @@ project-name/
 └── vue.config.js        # Vue CLI 配置（可选）
 ```
 
-#### 常用命令
+### 常用命令
 
 ```bash
 # 启动开发服务器
@@ -5146,7 +5131,7 @@ npm install
 vue add <plugin-name>
 ```
 
-#### 版本对应关系
+### 版本对应关系
 
 **重要口诀**：**233, 344**
 - **Vue 2** → **Router 3** → **Vuex 3**
@@ -5164,7 +5149,7 @@ vue add <plugin-name>
 "vuex": "^4.x.x"
 ```
 
-#### 注意事项
+### 注意事项
 
 **开发环境**：
 - 确保 Node.js 版本 >= 12.0.0
@@ -5187,7 +5172,8 @@ vue add <plugin-name>
 
 **Vuex** 是 Vue.js 官方的状态管理模式和库。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。
 
-**核心概念**：
+**5大核心概念**：
+
 - **State**：存储应用的状态数据
 - **Mutations**：同步修改状态的方法
 - **Actions**：异步操作，提交 mutations
@@ -5201,7 +5187,7 @@ vue add <plugin-name>
 
 ### Vuex 安装和配置
 
-#### 1. 安装 Vuex
+**1. 安装 Vuex**
 
 ```bash
 # Vue 2.x 项目
@@ -5211,7 +5197,7 @@ npm install vuex@3
 npm install vuex@4
 ```
 
-#### 2. 创建 Store 文件
+**2. 创建 Store 文件**
 
 **目录结构**：
 ```
@@ -5280,7 +5266,7 @@ export default new Vuex.Store({
 })
 ```
 
-#### 3. 在 main.js 中挂载
+**3. 在 main.js 中挂载**
 
 ```javascript
 import Vue from 'vue'
@@ -5295,9 +5281,9 @@ new Vue({
 }).$mount('#app')
 ```
 
-### State 数据提供和访问
+### Vuex 5大核心概念详解
 
-#### 1. State 数据定义
+### 1. State 数据定义
 
 **State** 是 Vuex 的核心，用于存储应用的状态数据：
 
@@ -5314,7 +5300,7 @@ state: {
 }
 ```
 
-#### 2. 访问 State 数据
+### 2. 访问 State 数据
 
 **方式一：直接访问**
 
@@ -5374,7 +5360,7 @@ export default {
 </script>
 ```
 
-#### 3. State 数据特点
+### 3. State 数据特点
 
 **响应式**：
 - State 中的数据是响应式的
@@ -5396,7 +5382,7 @@ this.$store.state.count++
 this.$store.commit('addCount')
 ```
 
-#### 4. 严格模式
+### 4. 严格模式
 
 **开启严格模式**：
 ```javascript
@@ -5419,7 +5405,7 @@ export default new Vuex.Store({
 })
 ```
 
-#### 5. 实战示例
+### 5. 实战示例
 
 **父组件（App.vue）**：
 ```vue
@@ -5515,7 +5501,7 @@ export default {
 </script>
 ```
 
-#### 6. 注意事项
+### 6. 注意事项
 
 **数据流向**：
 - **单向数据流**：State → View → Actions → Mutations → State
@@ -5534,9 +5520,9 @@ export default {
 
 
 
-### 综合案例技巧
+## 综合案例技巧
 
-#### 数组操作方法
+### 数组操作方法
 
 **模板方法**：
 
@@ -5587,7 +5573,7 @@ array.splice(索引, 删除数量, 新元素); // 插入/删除
    this.totalCount = this.list.reduce((sum, item) => sum + item.num, 0);
    ```
 
-#### 表单验证技巧
+### 表单验证技巧
 
 **模板方法**：
 
@@ -5640,7 +5626,7 @@ add() {
 }
 ```
 
-#### 条件显示优化
+### 条件显示优化
 
 **模板方法**：
 
@@ -5682,7 +5668,7 @@ add() {
 </div>
 ```
 
-#### 本地存储技巧
+### 本地存储技巧
 
 **模板方法**：
 
@@ -5717,7 +5703,7 @@ data: {
 }
 ```
 
-#### 防抖处理技巧
+### 防抖处理技巧
 
 **模板方法**：
 

@@ -424,7 +424,7 @@
        */
       async: true,
       /**
-       * Exposed for legacy reasons
+       * Exposed for z-legacy reasons
        */
       _lifecycleHooks: LIFECYCLE_HOOKS
   };
@@ -2390,14 +2390,14 @@
   }
   /**
    * @internal use manual type def because public setup context type relies on
-   * legacy VNode types
+   * z-legacy VNode types
    */
   function useSlots() {
       return getContext().slots;
   }
   /**
    * @internal use manual type def because public setup context type relies on
-   * legacy VNode types
+   * z-legacy VNode types
    */
   function useAttrs() {
       return getContext().attrs;
@@ -2405,7 +2405,7 @@
   /**
    * Vue 2 only
    * @internal use manual type def because public setup context type relies on
-   * legacy VNode types
+   * z-legacy VNode types
    */
   function useListeners() {
       return getContext().listeners;
