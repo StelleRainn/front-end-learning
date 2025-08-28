@@ -5283,24 +5283,86 @@ new Vue({
 
 ### Vuex 5大核心概念详解
 
-### 1. State 数据定义
+#### 核心概念总览
 
-**State** 是 Vuex 的核心，用于存储应用的状态数据：
+**Vuex 架构图**：
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Vue Components                       │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    │
+│  │  Component  │    │  Component  │    │  Component  │    │
+│  │      A      │    │      B      │    │      C      │    │
+│  └─────────────┘    └─────────────┘    └─────────────┘    │
+└─────────────┬───────────────┬───────────────┬─────────────┘
+              │               │               │
+              │ Dispatch      │ Commit        │ Render
+              ▼               ▼               ▲
+┌─────────────────────────────────────────────────────────────┐
+│                         Vuex Store                         │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    │
+│  │   Actions   │───▶│  Mutations  │───▶│    State    │    │
+│  │  (异步操作)   │    │  (同步修改)   │    │  (状态数据)   │    │
+│  └─────────────┘    └─────────────┘    └─────────────┘    │
+│                                              ▲             │
+│  ┌─────────────┐                            │             │
+│  │   Getters   │────────────────────────────┘             │
+│  │  (计算属性)   │                                          │
+│  └─────────────┘                                          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**五大核心概念对比**：
+
+| 核心概念 | 作用 | 特点 | 访问方式 | 使用场景 |
+|---------|------|------|----------|----------|
+| **State** | 存储状态数据 | 响应式、单一数据源、只读 | `$store.state` / `mapState` | 组件间共享数据 |
+| **Mutations** | 同步修改状态 | 必须同步、可追踪、唯一修改方式 | `$store.commit` / `mapMutations` | 直接状态变更 |
+| **Actions** | 异步操作处理 | 可异步、通过 commit 调用 mutations | `$store.dispatch` / `mapActions` | API 调用、复杂业务逻辑 |
+| **Getters** | 计算衍生状态 | 有缓存、类似计算属性 | `$store.getters` / `mapGetters` | 状态的计算和过滤 |
+| **Modules** | 模块化管理 | 命名空间、独立作用域 | 模块路径访问 | 大型应用状态分割 |
+
+**数据流向规则**：
+
+```
+View ──dispatch──▶ Actions ──commit──▶ Mutations ──mutate──▶ State ──render──▶ View
+                      ▲                                        │
+                      │                                        ▼
+                   Backend API                              Getters
+```
+
+#### State 状态管理
+
+##### State 数据定义
+
+**概念**：State 是 Vuex 的核心，用于存储应用的状态数据，所有组件共享的数据都存储在这里。
+
+**模板代码**：
 
 ```javascript
 // store/index.js
-state: {
-  count: 100,           // 计数器
-  title: 'Hello Vuex',  // 标题
-  userInfo: {           // 用户信息
-    name: 'Vue',
-    age: 18
-  },
-  list: [1, 2, 3, 4, 5] // 列表数据
-}
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
+  strict: true,  // 开启严格模式
+  state: {
+    count: 100,           // 计数器
+    title: '大标题',       // 标题
+    userInfo: {           // 用户信息
+      name: 'StelleRainn',
+      age: 18
+    },
+    list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] // 列表数据
+  }
+})
+
+export default store
 ```
 
-### 2. 访问 State 数据
+##### 访问 State 数据
 
 **方式一：直接访问**
 
@@ -5324,6 +5386,10 @@ export default {
     title() {
       return this.$store.state.title
     }
+  },
+  created() {
+    // 在生命周期中访问
+    console.log(this.$store.state.count)
   }
 }
 </script>
@@ -5360,7 +5426,7 @@ export default {
 </script>
 ```
 
-### 3. State 数据特点
+##### State 数据特点
 
 **响应式**：
 - State 中的数据是响应式的
@@ -5382,7 +5448,820 @@ this.$store.state.count++
 this.$store.commit('addCount')
 ```
 
-### 4. 严格模式
+##### State 设计原则
+
+**状态归一化**：
+- 避免嵌套过深的对象结构
+- 使用扁平化的数据结构
+- 复杂关系用 ID 引用而非嵌套对象
+
+```javascript
+// ❌ 不推荐：嵌套过深
+state: {
+  users: {
+    1: {
+      profile: {
+        personal: {
+          address: {
+            city: 'Beijing'
+          }
+        }
+      }
+    }
+  }
+}
+
+// ✅ 推荐：扁平化结构
+state: {
+  users: { 1: { name: 'Alice', profileId: 1 } },
+  profiles: { 1: { personalId: 1 } },
+  personalInfo: { 1: { addressId: 1 } },
+  addresses: { 1: { city: 'Beijing' } }
+}
+```
+
+**状态分类**：
+
+| 状态类型 | 描述 | 示例 | 存储位置 |
+|---------|------|------|----------|
+| **应用级状态** | 全局共享的核心数据 | 用户信息、权限、主题 | 根 store |
+| **页面级状态** | 特定页面的数据 | 列表数据、表单状态 | 页面模块 |
+| **组件级状态** | 组件内部的临时数据 | 输入框值、开关状态 | 组件 data |
+| **会话级状态** | 用户会话相关 | 登录状态、购物车 | 持久化模块 |
+
+#### Mutations 状态修改
+
+##### Mutations 基本使用
+
+**概念**：Mutations 是修改 Vuex 状态的唯一方式，必须是同步函数，用于确保状态变化的可追踪性。
+
+**核心特征**：
+
+| 特征 | 说明 | 原因 |
+|------|------|------|
+| **同步执行** | 所有 mutation 必须是同步函数 | 确保状态变化的可预测性和可调试性 |
+| **纯函数** | 不应有副作用，相同输入产生相同输出 | 便于测试和调试 |
+| **原子操作** | 每个 mutation 应该是一个完整的状态变更 | 保证状态的一致性 |
+| **命名规范** | 使用大写常量命名 | 便于团队协作和维护 |
+
+**Mutation 类型常量**：
+
+```javascript
+// mutation-types.js
+export const INCREMENT = 'INCREMENT'
+export const DECREMENT = 'DECREMENT'
+export const SET_USER_INFO = 'SET_USER_INFO'
+export const RESET_STATE = 'RESET_STATE'
+
+// store/index.js
+import * as types from './mutation-types'
+
+const mutations = {
+  [types.INCREMENT](state) {
+    state.count++
+  },
+  [types.SET_USER_INFO](state, userInfo) {
+    state.userInfo = { ...userInfo }
+  }
+}
+```
+
+**模板代码**：
+
+```javascript
+// store/index.js
+const store = new Vuex.Store({
+  state: {
+    count: 100,
+    title: '大标题'
+  },
+  mutations: {
+    // 所有 mutation 函数的第一个参数都是 state
+    addCount(state) {
+      state.count += 1
+    },
+    changeTitle(state) {
+      state.title = '小标题'
+    },
+    // 携带参数的 mutation（提交载荷 payload）
+    addCountWithParams(state, obj) {
+      console.log(obj)
+      state.count += obj.count
+    },
+    subCountWithParams(state, n) {
+      state.count -= n
+    },
+    changeCount(state, n) {
+      state.count = n
+    }
+  }
+})
+```
+
+##### 调用 Mutations
+
+**方式一：直接调用**
+
+```vue
+<template>
+  <div>
+    <p>计数器：{{ count }}</p>
+    <button @click="handleClick">值 + 1</button>
+    <button @click="changeTitle">改成小标题</button>
+    <button @click="handleClickWithParams(10)">值 + 10</button>
+    <button @click="handleClickWithParams(20)">值 + 20</button>
+  </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  computed: {
+    ...mapState(['count'])
+  },
+  methods: {
+    handleClick() {
+      // 调用 mutation：this.$store.commit('mutation函数名')
+      this.$store.commit('addCount')
+    },
+    changeTitle() {
+      this.$store.commit('changeTitle')
+    },
+    handleClickWithParams(n) {
+      // 携带参数调用：this.$store.commit('mutation函数名', 参数)
+      this.$store.commit('addCountWithParams', {
+        count: n,
+        msg: 'a test message'
+      })
+    }
+  }
+}
+</script>
+```
+
+**方式二：mapMutations 辅助函数**
+
+```vue
+<template>
+  <div>
+    <p>计数器：{{ count }}</p>
+    <!-- 直接当成 methods 使用，并携带参数 -->
+    <button @click="subCountWithParams(1)">值 - 1</button>
+    <button @click="subCountWithParams(5)">值 - 5</button>
+    <button @click="subCountWithParams(10)">值 - 10</button>
+  </div>
+</template>
+
+<script>
+import { mapState, mapMutations } from 'vuex'
+
+export default {
+  computed: {
+    ...mapState(['count', 'title'])
+  },
+  methods: {
+    // 数组内填入在 store/index.js 中所配置的 mutation 函数名
+    ...mapMutations(['subCountWithParams'])
+  }
+}
+</script>
+```
+
+##### 实时联动案例
+
+**输入框与 Vuex 数据实时同步**：
+
+```vue
+<template>
+  <div>
+    <h1>根组件 - {{ count }} - {{ title }}</h1>
+    <!-- 拆分 v-model 的功能：:value 和 @input -->
+    <input type="text" :value="count" @input="changeCount">
+  </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  computed: {
+    ...mapState(['count', 'title'])
+  },
+  methods: {
+    // 通过事件 e 获取输入值
+    changeCount(e) {
+      // 转换为数字类型
+      const num = +e.target.value
+      this.$store.commit('changeCount', num)
+    }
+  }
+}
+</script>
+```
+
+#### Actions 异步操作
+
+##### Actions 基本使用
+
+**概念**：Actions 用于处理异步操作，不能直接修改状态，必须通过提交 mutations 来修改状态。
+
+**Actions vs Mutations 对比**：
+
+| 对比项 | Actions | Mutations |
+|--------|---------|----------|
+| **执行方式** | 异步 | 同步 |
+| **调用方法** | `dispatch` | `commit` |
+| **状态修改** | 通过 commit mutations | 直接修改 state |
+| **参数** | context 对象 | state 对象 |
+| **用途** | API 调用、复杂逻辑 | 简单状态变更 |
+| **可追踪性** | 不直接追踪 | DevTools 可追踪 |
+
+**Context 对象详解**：
+
+```javascript
+actions: {
+  async fetchUserData(context, userId) {
+    // context 对象包含以下属性：
+    const {
+      state,      // 等同于 store.state，若在模块中则为局部状态
+      rootState,  // 等同于 store.state，只存在于模块中
+      commit,     // 等同于 store.commit
+      dispatch,   // 等同于 store.dispatch
+      getters,    // 等同于 store.getters
+      rootGetters // 等同于 store.getters，只存在于模块中
+    } = context
+    
+    try {
+      const response = await api.getUserById(userId)
+      commit('SET_USER_INFO', response.data)
+      return response.data
+    } catch (error) {
+      commit('SET_ERROR', error.message)
+      throw error
+    }
+  }
+}
+```
+
+**Actions 最佳实践**：
+
+```javascript
+// ✅ 推荐：返回 Promise
+actions: {
+  async login({ commit }, credentials) {
+    commit('SET_LOADING', true)
+    try {
+      const user = await authAPI.login(credentials)
+      commit('SET_USER', user)
+      commit('SET_LOADING', false)
+      return user
+    } catch (error) {
+      commit('SET_ERROR', error.message)
+      commit('SET_LOADING', false)
+      throw error
+    }
+  }
+}
+
+// 组件中使用
+async handleLogin() {
+  try {
+    await this.$store.dispatch('login', this.credentials)
+    this.$router.push('/dashboard')
+  } catch (error) {
+    this.showError(error.message)
+  }
+}
+```
+
+**模板代码**：
+
+```javascript
+// store/index.js
+const store = new Vuex.Store({
+  state: {
+    count: 100
+  },
+  mutations: {
+    changeCount(state, n) {
+      state.count = n
+    }
+  },
+  // mutations 必须是同步的，便于监测数据变化
+  // 故提供 actions，以处理异步请求
+  // 注意：依旧不能直接操作 state，仍然通过 commit mutations 完成
+  actions: {
+    // context：上下文，由于未分模块，此处可以理解为 store
+    changeAfterDelay(context, num) {
+      setTimeout(() => {
+        context.commit('changeCount', num)
+      }, 1000)
+    }
+  }
+})
+```
+
+##### 调用 Actions
+
+**方式一：直接调用**
+
+```vue
+<template>
+  <div>
+    <p>计数器：{{ count }}</p>
+    <button @click="changeTo666afterDelay(666)">1s后变成666</button>
+  </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  computed: {
+    ...mapState(['count'])
+  },
+  methods: {
+    // 调用 actions：this.$store.dispatch('actionName', params)
+    changeTo666afterDelay(n) {
+      this.$store.dispatch('changeAfterDelay', n)
+    }
+  }
+}
+</script>
+```
+
+**方式二：mapActions 辅助函数**
+
+```vue
+<template>
+  <div>
+    <p>计数器：{{ count }}</p>
+    <button @click="changeAfterDelay(888)">1s后变成888</button>
+  </div>
+</template>
+
+<script>
+import { mapState, mapActions } from 'vuex'
+
+export default {
+  computed: {
+    ...mapState(['count', 'title'])
+  },
+  methods: {
+    // 近乎和之前两个 map 一样的操作
+    ...mapActions(['changeAfterDelay'])
+  }
+}
+</script>
+```
+
+#### Getters 计算属性
+
+##### Getters 基本使用
+
+**概念**：Getters 是 Vuex 的计算属性，用于对 State 中的数据进行计算处理，具有缓存特性。
+
+**Getters 特性对比**：
+
+| 特性 | Getters | 组件计算属性 | 普通方法 |
+|------|---------|-------------|----------|
+| **缓存机制** | ✅ 依赖变化时重新计算 | ✅ 依赖变化时重新计算 | ❌ 每次调用都执行 |
+| **跨组件共享** | ✅ 全局共享 | ❌ 组件内部 | ❌ 组件内部 |
+| **依赖追踪** | ✅ 自动追踪 state 依赖 | ✅ 自动追踪 data 依赖 | ❌ 无依赖追踪 |
+| **调试支持** | ✅ DevTools 支持 | ✅ Vue DevTools 支持 | ❌ 无特殊支持 |
+
+**Getters 高级用法**：
+
+```javascript
+getters: {
+  // 基础 getter
+  doneTodos: state => {
+    return state.todos.filter(todo => todo.done)
+  },
+  
+  // getter 依赖其他 getter
+  doneTodosCount: (state, getters) => {
+    return getters.doneTodos.length
+  },
+  
+  // 返回函数的 getter（不会缓存）
+  getTodoById: (state) => (id) => {
+    return state.todos.find(todo => todo.id === id)
+  },
+  
+  // 复杂计算 getter
+  expensiveCalculation: state => {
+    return state.items
+      .filter(item => item.active)
+      .map(item => ({
+        ...item,
+        computed: heavyCalculation(item)
+      }))
+      .sort((a, b) => b.priority - a.priority)
+  }
+}
+```
+
+**性能优化建议**：
+
+| 场景 | 建议 | 原因 |
+|------|------|------|
+| **简单数据过滤** | 使用 Getters | 利用缓存机制，避免重复计算 |
+| **需要参数的查询** | 返回函数的 Getter | 灵活性高，但不会缓存 |
+| **复杂计算** | 结合 Actions 预计算 | 避免阻塞 UI 渲染 |
+| **频繁变化的数据** | 组件内计算属性 | 减少 store 的复杂度 |
+
+**模板代码**：
+
+```javascript
+// store/index.js
+const store = new Vuex.Store({
+  state: {
+    count: 100,
+    title: '大标题',
+    list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  },
+  getters: {
+    // 第一个参数，依然是 state
+    filterList(state) {
+      // 必须要有返回值
+      return state.list.filter(item => item > 5)
+    }
+  }
+})
+```
+
+##### 访问 Getters
+
+**方式一：直接访问**
+
+```vue
+<template>
+  <div>
+    <p>计数器：{{ $store.state.count }}</p>
+    <!-- 访问语法：$store.getters.方法名 -->
+    <p>数组大于5的部分: {{ $store.getters.filterList }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Son1Com'
+}
+</script>
+```
+
+**方式二：mapGetters 辅助函数**
+
+```vue
+<template>
+  <div>
+    <p>计数器：{{ count }}</p>
+    <!-- 导入后直接使用 -->
+    <p>数组大于5的部分：{{ filterList }}</p>
+  </div>
+</template>
+
+<script>
+import { mapState, mapGetters } from 'vuex'
+
+export default {
+  computed: {
+    ...mapState(['count', 'title']),
+    ...mapGetters(['filterList'])
+  }
+}
+</script>
+```
+
+#### Modules 模块化
+
+##### Modules 基本使用
+
+**概念**：当应用变得复杂时，Vuex 允许将 store 分割成模块，每个模块拥有自己的 state、mutations、actions、getters。
+
+**模块化的优势**：
+
+| 优势 | 说明 | 适用场景 |
+|------|------|----------|
+| **代码组织** | 按功能模块划分，结构清晰 | 大型应用开发 |
+| **命名空间** | 避免命名冲突，独立作用域 | 多人协作开发 |
+| **按需加载** | 支持动态注册模块 | 性能优化需求 |
+| **独立测试** | 每个模块可独立测试 | 单元测试覆盖 |
+| **团队协作** | 不同团队负责不同模块 | 大型团队开发 |
+
+**模块设计模式**：
+
+```javascript
+// 标准模块结构
+const moduleTemplate = {
+  namespaced: true,
+  
+  state: () => ({
+    // 使用函数返回，确保模块复用时状态独立
+    data: null,
+    loading: false,
+    error: null
+  }),
+  
+  mutations: {
+    SET_LOADING(state, loading) {
+      state.loading = loading
+    },
+    SET_DATA(state, data) {
+      state.data = data
+    },
+    SET_ERROR(state, error) {
+      state.error = error
+    }
+  },
+  
+  actions: {
+    async fetchData({ commit }) {
+      commit('SET_LOADING', true)
+      try {
+        const data = await api.fetchData()
+        commit('SET_DATA', data)
+      } catch (error) {
+        commit('SET_ERROR', error.message)
+      } finally {
+        commit('SET_LOADING', false)
+      }
+    }
+  },
+  
+  getters: {
+    isLoading: state => state.loading,
+    hasError: state => !!state.error,
+    hasData: state => !!state.data
+  }
+}
+```
+
+**模块间通信策略**：
+
+| 通信方式 | 语法 | 适用场景 | 注意事项 |
+|---------|------|----------|----------|
+| **根级别调用** | `dispatch('action', null, { root: true })` | 调用根级别的 actions | 需要 root 参数 |
+| **其他模块调用** | `dispatch('module/action', payload, { root: true })` | 跨模块调用 | 需要完整路径 |
+| **根状态访问** | `rootState.module.data` | 访问其他模块状态 | 通过 rootState 参数 |
+| **事件总线** | `Vue.prototype.$bus` | 松耦合通信 | 需要手动管理事件 |
+
+**模块文件结构**：
+
+```
+store/
+├── index.js          # 主 store 文件
+└── modules/
+    ├── user.js       # 用户模块
+    └── setting.js    # 设置模块
+```
+
+**模块定义**：
+
+```javascript
+// store/modules/user.js
+const state = {
+  userInfo: {
+    name: 'StelleRainn',
+    age: 18,
+    gender: 'male'
+  },
+  score: 100
+}
+
+const mutations = {}
+const actions = {}
+const getters = {}
+
+export default {
+  state,
+  mutations,
+  actions,
+  getters
+}
+```
+
+```javascript
+// store/modules/setting.js
+const state = {
+  theme: 'light',
+  desc: 'A test demo'
+}
+
+const mutations = {}
+const actions = {}
+const getters = {}
+
+export default {
+  state,
+  mutations,
+  actions,
+  getters
+}
+```
+
+**主 store 配置**：
+
+```javascript
+// store/index.js
+import Vue from 'vue'
+import Vuex from 'vuex'
+import user from './modules/user'
+import setting from './modules/setting'
+
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
+  strict: true,
+  // 根级别的 state、mutations、actions、getters
+  state: {
+    count: 100,
+    title: '大标题'
+  },
+  mutations: {
+    addCount(state) {
+      state.count += 1
+    }
+  },
+  actions: {},
+  getters: {},
+  
+  // 核心概念5：modules
+  modules: {
+    user,
+    setting
+  }
+})
+
+export default store
+```
+
+##### Modules 进阶使用
+
+**开启命名空间**：
+
+```javascript
+// store/modules/user.js
+const state = {
+  userInfo: {
+    name: 'StelleRainn',
+    age: 18,
+    gender: 'male'
+  },
+  score: 100
+}
+
+const mutations = {
+  setInfo(state, newInfo) {
+    state.userInfo = newInfo
+  }
+}
+
+const actions = {
+  setInfoAfterDelay(context, newInfo) {
+    // context 指代的是本模块
+    // 默认提交的就是自己的 action 和 mutation
+    setTimeout(() => {
+      context.commit('setInfo', newInfo)
+    }, 1000)
+  }
+}
+
+const getters = {
+  UpperCaseName(state) {
+    return state.userInfo.name.toUpperCase()
+  }
+}
+
+export default {
+  namespaced: true,  // 开启命名空间
+  state,
+  mutations,
+  actions,
+  getters
+}
+```
+
+```javascript
+// store/modules/setting.js
+const state = {
+  theme: 'light',
+  desc: 'A test demo'
+}
+
+const mutations = {
+  setTheme(state, newTheme) {
+    state.theme = newTheme
+  }
+}
+
+const actions = {}
+const getters = {}
+
+export default {
+  namespaced: true,  // 开启命名空间
+  state,
+  mutations,
+  actions,
+  getters
+}
+```
+
+##### 访问模块数据
+
+**原生语法访问**：
+
+```vue
+<template>
+  <div>
+    <p>计数器：{{ $store.state.count }}</p>
+    <!-- 原生访问模块中的 state -->
+    <p>{{ $store.state.user.userInfo.name }} - {{ $store.state.user.score }}</p>
+    <p>主题：{{ $store.state.setting.theme }}</p>
+    
+    <!-- 原生访问模块中的 getters -->
+    <p>{{ $store.getters['user/UpperCaseName'] }}</p>
+    
+    <button @click="changeInfo">修改名字</button>
+    <button @click="changeTheme">修改主题色</button>
+    <button @click="changeInfoAfterDelay">1s后修改个人信息</button>
+  </div>
+</template>
+
+<script>
+export default {
+  methods: {
+    changeInfo() {
+      // 原生操作子模块的 mutations
+      this.$store.commit('user/setInfo', { name: 'Rosa', age: 22 })
+    },
+    changeTheme() {
+      this.$store.commit('setting/setTheme', 'darkcyan')
+    },
+    changeInfoAfterDelay() {
+      // 原生操作模块中的 actions
+      this.$store.dispatch('user/setInfoAfterDelay', { name: 'Rosa', age: 23 })
+    }
+  }
+}
+</script>
+```
+
+**辅助函数访问**：
+
+```vue
+<template>
+  <div>
+    <p>计数器：{{ count }}</p>
+    <!-- 根映射示例 -->
+    <p>{{ user.userInfo.name }}</p>
+    <!-- 模块映射 -->
+    <p>{{ userInfo.name }} - {{ userInfo.gender }} - {{ score }}</p>
+    <p>{{ theme }} - {{ desc }}</p>
+    <!-- 演示辅助函数访问 getters -->
+    <p>{{ UpperCaseName }}</p>
+    
+    <button @click="setInfo({name: 'Rosa', age: 20})">修改名字</button>
+    <button @click="setTheme('cyan')">修改主题色</button>
+    <button @click="setInfoAfterDelay({ name: 'Rosa', age: 22 })">1s后修改个人信息</button>
+  </div>
+</template>
+
+<script>
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+
+export default {
+  computed: {
+    // 根级别映射
+    ...mapState(['count', 'title']),
+    
+    // 根映射（访问整个模块）
+    ...mapState(['user']),
+    
+    // 模块映射（访问模块内具体属性）
+    ...mapState('user', ['userInfo', 'score']),
+    ...mapState('setting', ['theme', 'desc']),
+    
+    // 访问子模块 getters
+    ...mapGetters('user', ['UpperCaseName'])
+  },
+  methods: {
+    // 根级别 mutations 和 actions
+    ...mapMutations(['subCountWithParams']),
+    ...mapActions(['changeAfterDelay']),
+    
+    // 模块级别 mutations 和 actions
+    ...mapMutations('user', ['setInfo']),
+    ...mapMutations('setting', ['setTheme']),
+    ...mapActions('user', ['setInfoAfterDelay'])
+  }
+}
+</script>
+```
+
+### Vuex 严格模式
 
 **开启严格模式**：
 ```javascript
@@ -5405,117 +6284,29 @@ export default new Vuex.Store({
 })
 ```
 
-### 5. 实战示例
-
-**父组件（App.vue）**：
-```vue
-<template>
-  <div id="app">
-    <h1>Vuex 状态管理示例</h1>
-    
-    <!-- 显示状态数据 -->
-    <div class="state-display">
-      <h2>{{ title }}</h2>
-      <p>当前计数：{{ count }}</p>
-    </div>
-    
-    <!-- 子组件 -->
-    <Son1 />
-    <Son2 />
-  </div>
-</template>
-
-<script>
-import { mapState } from 'vuex'
-import Son1 from './components/Son1.vue'
-import Son2 from './components/Son2.vue'
-
-export default {
-  name: 'App',
-  components: {
-    Son1,
-    Son2
-  },
-  computed: {
-    // 使用 mapState 映射状态
-    ...mapState(['count', 'title'])
-  }
-}
-</script>
-```
-
-**子组件1（Son1.vue）**：
-```vue
-<template>
-  <div class="son1">
-    <h3>子组件1</h3>
-    <p>计数器：{{ count }}</p>
-    
-    <!-- 修改状态的按钮 -->
-    <button @click="handleAdd">+1</button>
-    <button @click="handleAddFive">+5</button>
-    <button @click="handleChangeTitle">修改标题</button>
-  </div>
-</template>
-
-<script>
-import { mapState } from 'vuex'
-
-export default {
-  name: 'Son1',
-  computed: {
-    ...mapState(['count'])
-  },
-  methods: {
-    handleAdd() {
-      // 通过 commit 调用 mutations
-      this.$store.commit('addCount')
-    },
-    handleAddFive() {
-      // 传递参数
-      this.$store.commit('addCountFive', 5)
-    },
-    handleChangeTitle() {
-      this.$store.commit('changeTitle', '新的标题')
-    }
-  }
-}
-</script>
-```
-
-**子组件2（Son2.vue）**：
-```vue
-<template>
-  <div class="son2">
-    <h3>子组件2</h3>
-    <!-- 直接访问 state -->
-    <p>计数器：{{ $store.state.count }}</p>
-    <p>标题：{{ $store.state.title }}</p>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'Son2'
-}
-</script>
-```
-
-### 6. 注意事项
+### Vuex 最佳实践
 
 **数据流向**：
 - **单向数据流**：State → View → Actions → Mutations → State
 - 组件不能直接修改 State，必须通过 Mutations
+- 异步操作必须在 Actions 中处理
 
 **性能优化**：
-- 使用 mapState 减少重复代码
+- 使用辅助函数（mapState、mapMutations、mapActions、mapGetters）减少重复代码
 - 合理设计 State 结构，避免嵌套过深
 - 在计算属性中访问 State，利用缓存机制
+- 生产环境关闭严格模式
+
+**模块化设计**：
+- 按功能划分模块，每个模块负责特定的业务逻辑
+- 开启命名空间避免命名冲突
+- 模块间通信通过根级别的 actions 或 getters
 
 **调试工具**：
 - 使用 Vue DevTools 查看 Vuex 状态
 - 可以追踪状态变化的历史记录
 - 支持时间旅行调试
+- 在开发环境开启严格模式便于调试
 
 
 
