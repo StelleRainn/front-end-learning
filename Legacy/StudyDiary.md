@@ -2487,9 +2487,9 @@ render(arr)
 - 内容总概：依然在完成「小兔鲜儿」网页的制作，完成了footer，banner，好物，推荐，品牌，生鲜共计6个板块。总体内容跟得上，有些新的知识点或需要强调的知识点：
   -
   对于轮播图，连续放置（flex）几张图片，这会被父盒子挤压，所以设置父盒子宽度（例如为ul设置宽度300%以容纳三张图）；然后会溢出，在父盒子使用overflow:
-  hidden解决，例子见[CSS banner 轮播图](/HTML5_CSS3/Day_10_xtc-pc/css/index.css)（24行）；
+  hidden解决，例子见[CSS banner 轮播图](/01-HTML5_CSS3/Day_10_xtc-pc/css/index.css)（24行）；
     - `E:not(:hover)`:
-      意外发现的新技巧，可以实现与hover互斥的效果，在非hover状态下呈现某种样式；例如[CSS轮播图小圆点](/HTML5_CSS3/Day_10_xtc-pc/css/index.css)
+      意外发现的新技巧，可以实现与hover互斥的效果，在非hover状态下呈现某种样式；例如[CSS轮播图小圆点](/01-HTML5_CSS3/Day_10_xtc-pc/css/index.css)
       （98行）：当整个ol非hover，第一个圆点高亮；进入hover状态，原高亮消失，hover到哪儿，哪儿高亮。退出hover状态，第一个圆点恢复高亮。
     - :hover的优先级高于:not(:hover)
     - 注意margin塌陷问题，多考虑使用`overflow:hidden`来解决。

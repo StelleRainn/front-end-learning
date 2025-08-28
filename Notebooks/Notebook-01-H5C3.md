@@ -549,5 +549,5 @@ P.S. `transition`过渡效果加在原元素, 不要加在伪元素上（否则�
 
 -  将`a`标签字体隐藏, 可以使用`font-size: 0;`;
 - `obeject-fit: cover;` :和`bg-size`一个道理, 取值也相同。不过`object-fit`适用于对`img`标签的调整, `bg-size`则专注于`background`系列
-- 对于轮播图，连续放置（flex）几张图片，这会被父盒子挤压，所以设置父盒子宽度（例如为ul设置宽度300%以容纳三张图）；然后会溢出，在父盒子使用`overflow:hidden`解决，例子见[CSS banner 轮播图](/HTML5_CSS3/Day_10_xtc-pc/css/index.css)（24行）；
+- 对于轮播图，连续放置（flex）几张图片，这会被父盒子挤压，所以设置父盒子宽度（例如为ul设置宽度300%以容纳三张图）；然后会溢出，在父盒子使用`overflow:hidden`解决，例子见[CSS banner 轮播图](/01-HTML5_CSS3/Day_10_xtc-pc/css/index.css)（24行）；
 

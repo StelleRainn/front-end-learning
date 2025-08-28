@@ -12,7 +12,7 @@
 
 - [个人主页](https://stellerainn.github.io/CodeSprint40/)，借助 Github Pages 而托管，可以访问我的更多作品集。
 - [Diary.md](Diary.md)，追踪每天的学习心得。
-- [笔记合辑](Z-Notebooks)，所有的笔记现已更加直观了当，按技术栈区分。
+- [笔记合辑](Notebooks)，所有的笔记现已更加直观了当，按技术栈区分。
 
 ## 一些鼓励自己的话
 
