@@ -5951,7 +5951,7 @@ export default {
 | **独立测试** | 每个模块可独立测试 | 单元测试覆盖 |
 | **团队协作** | 不同团队负责不同模块 | 大型团队开发 |
 
-**模块设计模式**：
+##### **标准模块结构**
 
 ```javascript
 // 标准模块结构
@@ -6066,6 +6066,7 @@ export default {
 
 ```javascript
 // store/index.js
+// 在主store导入并配置在modules中
 import Vue from 'vue'
 import Vuex from 'vuex'
 import user from './modules/user'
@@ -6307,6 +6308,13 @@ export default new Vuex.Store({
 - 可以追踪状态变化的历史记录
 - 支持时间旅行调试
 - 在开发环境开启严格模式便于调试
+
+
+
+今日学习内容（笔记）
+
+- state的函数访问
+- json-server
 
 
 

@@ -1,0 +1,46 @@
+<template>
+  <div class="app-container">
+    <!-- Header 区域 -->
+    <cart-header></cart-header>
+
+    <!-- 商品 Item 项组件 -->
+    <cart-item v-for="(item) in list" :key="item.id" :item="item"></cart-item>
+
+    <!-- Footer 区域 -->
+    <cart-footer></cart-footer>
+  </div>
+</template>
+
+<script>
+import CartHeader from '@/components/cart-header.vue'
+import CartFooter from '@/components/cart-footer.vue'
+import CartItem from '@/components/cart-item.vue'
+
+import { mapState } from 'vuex'
+
+export default {
+  name: 'App',
+  components: {
+    CartHeader,
+    CartFooter,
+    CartItem
+  },
+
+  // 1.1 在页面创建时，便请求渲染数据（异步，传入actions中）
+  created () {
+    this.$store.dispatch('cart/getList')
+  },
+
+  computed: {
+    // 1.3 获取最新数据，然后用 v-for 动态渲染, 同时完成父传子的数据同步
+    ...mapState('cart', ['list'])
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.app-container {
+  padding: 50px 0;
+  font-size: 14px;
+}
+</style>
