@@ -6311,10 +6311,43 @@ export default new Vuex.Store({
 
 
 
-今日学习内容（笔记）
+## 智慧商城项目
 
-- state的函数访问
-- json-server
+### 新的组件
+
+#### json-server
+
+参阅 [json-server官网](https://www.npmjs.com/package/json-server/v/0.7.19)，可以伪造后端接口，配合本地数据，可以模拟一个低配数据库。用以与后端接口有关的练习
+
+#### vant组件库
+
+参阅[vant2官网](https://vant.pro/vant/v2/#/zh-CN/home)，是专用于移动端的UI库。在智慧商城项目中，我们选用了**vant2**，并选择**按需导入**
+
+#### postcss插件
+
+参阅[vant2官网中对于postcss插件的使用说明](https://vant.pro/vant/v2/#/zh-CN/advanced-usage)，位于***浏览器适配***章节，通过配置此插件，可以实现在less中使用`px`单位后被自动转换为`vw`单位的效果
+
+### 开发思路
+
+1. 基于脚手架，手动创建项目。将项目结构调整为我们所需要的结构：
+
+```
+project-root/
+├── src/
+│   ├── api/          # API接口管理
+│   ├── assets/       # 静态资源
+│   ├── components/   # 公共组件
+│   ├── router/       # 路由配置
+│   ├── views/        # 页面组件
+│   ├── store/        # 状态管理
+│   ├── utils/        # 工具函数
+│   ├── main.js       # 入口文件
+│   └── App.vue       # 根组件
+├── babel.config.js   # Babel配置（需修改）
+└── postcss.config.js # PostCSS配置（需创建）
+```
+
+然后，配置vant组件库（按需导入模式）和postcss插件（修改`babel.config.js`与创建`postcss.config.js`，详情分别查阅官网）
 
 
 
@@ -6528,4 +6561,3 @@ watch: {
 }
 ```
 
-</details>
