@@ -6329,7 +6329,9 @@ export default new Vuex.Store({
 
 ### 开发思路
 
-1. 基于脚手架，手动创建项目。将项目结构调整为我们所需要的结构：
+#### 基于脚手架，手动创建项目。
+
+将项目结构调整为我们所需要的结构：
 
 ```
 project-root/
@@ -6348,6 +6350,43 @@ project-root/
 ```
 
 然后，配置vant组件库（按需导入模式）和postcss插件（修改`babel.config.js`与创建`postcss.config.js`，详情分别查阅官网）
+
+#### 配置一级路由和二级路由
+
+以及使用vant库中的`tabbar`组件。
+
+创建好对应的views，并在路由`@/router/index.js`中配置一级和二级路由规则、重定向等。`App.vue`以及其他相关视图要添加***路由出口***，`@/views/layout.vue`中为tabbar添加路由属性，$router.，配置子组件的路由路径`to="/xxx"`，完成二级路由配置
+
+#### 登录页
+
+##### 样式
+
+新建`@/style/commom.less`文件以重置默认样式，在`main.js`中引用该文件即可.
+
+##### 图片验证码
+
+封装独立的请求模块`@utils/request.js`，在其中创建一个新的***axios实例***，添加响应拦截器，然后导出。更多信息参阅[axios文档](https://www.axios-http.cn/docs/intro)。
+
+在`@views/login/index.vue`中，发起请求（`getCode`函数独立封装），然后根据接收到的图片地址**动态**生成验证码图片；添加点击事件，实现点击刷新验证码
+
+```html
+<img v-if="validCodeImg" :src="validCodeImg" @click="getCode" alt="">
+```
+
+```js
+async created () {
+  this.getCode()
+},
+methods: {
+  async getCode () {
+    // 已导入封装好的axios实例 → import request from '@/utils/request'
+    const res = await request.get('captcha/image')
+    const { data: { base64, key } } = res.data
+    this.validCodeKey = key // 唯一的图片标识
+    this.validCodeImg = base64 // 图片地址
+  }
+}
+```
 
 
 
