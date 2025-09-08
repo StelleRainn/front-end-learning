@@ -6327,66 +6327,136 @@ export default new Vuex.Store({
 
 参阅[vant2官网中对于postcss插件的使用说明](https://vant.pro/vant/v2/#/zh-CN/advanced-usage)，位于***浏览器适配***章节，通过配置此插件，可以实现在less中使用`px`单位后被自动转换为`vw`单位的效果
 
-### 开发思路
+### 遇到的问题&如何解决
 
-#### 基于脚手架，手动创建项目。
+#### 控制非负数
 
-将项目结构调整为我们所需要的结构：
+在实现商品数量加/减时，需要控制不能出现负数。加减按钮使用同一个method，通过参数（信号量1和-1）控制。
 
-```
-project-root/
-├── src/
-│   ├── api/          # API接口管理
-│   ├── assets/       # 静态资源
-│   ├── components/   # 公共组件
-│   ├── router/       # 路由配置
-│   ├── views/        # 页面组件
-│   ├── store/        # 状态管理
-│   ├── utils/        # 工具函数
-│   ├── main.js       # 入口文件
-│   └── App.vue       # 根组件
-├── babel.config.js   # Babel配置（需修改）
-└── postcss.config.js # PostCSS配置（需创建）
+```vue
+<template>
+  <div class="count-box">
+    <button class="minus" @click="changeConsumeCount(-1)">-</button>
+    <input class="inp" type="text" :value="value" @change="handleChange">
+    <button class="add" @click="changeConsumeCount(1)">+</button>
+  </div>
+</template>
 ```
 
-然后，配置vant组件库（按需导入模式）和postcss插件（修改`babel.config.js`与创建`postcss.config.js`，详情分别查阅官网）
-
-#### 配置一级路由和二级路由
-
-以及使用vant库中的`tabbar`组件。
-
-创建好对应的views，并在路由`@/router/index.js`中配置一级和二级路由规则、重定向等。`App.vue`以及其他相关视图要添加***路由出口***，`@/views/layout.vue`中为tabbar添加路由属性，$router.，配置子组件的路由路径`to="/xxx"`，完成二级路由配置
-
-#### 登录页
-
-##### 样式
-
-新建`@/style/commom.less`文件以重置默认样式，在`main.js`中引用该文件即可.
-
-##### 图片验证码
-
-封装独立的请求模块`@utils/request.js`，在其中创建一个新的***axios实例***，添加响应拦截器，然后导出。更多信息参阅[axios文档](https://www.axios-http.cn/docs/intro)。
-
-在`@views/login/index.vue`中，发起请求（`getCode`函数独立封装），然后根据接收到的图片地址**动态**生成验证码图片；添加点击事件，实现点击刷新验证码
-
-```html
-<img v-if="validCodeImg" :src="validCodeImg" @click="getCode" alt="">
-```
+**问题：**在做条件判断时，以下语句`return`会被eslint提示“**非必要的return语句**”并报错
 
 ```js
-async created () {
-  this.getCode()
-},
-methods: {
-  async getCode () {
-    // 已导入封装好的axios实例 → import request from '@/utils/request'
-    const res = await request.get('captcha/image')
-    const { data: { base64, key } } = res.data
-    this.validCodeKey = key // 唯一的图片标识
-    this.validCodeImg = base64 // 图片地址
+  // 点击 + 或 - 号修改
+    changeConsumeCount (flag) {
+      if (flag === 1) {
+        this.$emit('input', this.value + 1)
+      } else {
+        if (this.value === 1) {
+          return
+        } else {
+          this.$emit('input', this.value - 1)
+        }
+      }
+    }
+```
+
+合理的解决办法：优化逻辑，凡大于1者才可以进行减操作。
+
+```js
+  // 点击 + 或 - 号修改
+    changeConsumeCount (flag) {
+      if (flag === 1) {
+        this.$emit('input', this.value + 1)
+      } else {
+        if (this.value > 1) {
+          this.$emit('input', this.value - 1)
+        }
+      }
+    }
+```
+
+#### Vuex数据同步更新
+
+在实现“加入购物车”功能时，需要验证token（存于localStorage，由Vuex读取），没有则需要登录。
+
+**问题：**登录后跳转回商品页，选择“加入购物车”依旧显示没有token，需要登录。此时Application中可以看到已经有了userInfo，Vue Dev tools并没有看到userInfo数据。需要手动刷新页面，才会显示token已验证，Vuex加载数据。
+
+合理的解决办法：
+
+在`@/store/modules/user.js`的mutations中，补充语句`state.userInfo = payload`，从而既同步更新了当前的Vuex，又setInfo函数持久化到了本地。
+
+```js
+import { setInfo, getInfo } from '@/utils/storage'
+
+const state = {
+  // 改为由本地存储获取
+  // 避免每次刷新后 vuex 数据丢失 → vuex 持久化管理
+  userInfo: getInfo()
+}
+
+const mutations = {
+  setUserInfo (state, payload) {
+    state.userInfo = payload // 同步更新当前userInfo
+    setInfo(payload)
   }
 }
 ```
+
+#### 返回逻辑优化&登录回跳
+
+**问题：**还是加入购物车模块，第一，在用户登录完毕后，应当可以**跳转回**原商品页；第二，登录后回到商品页，此时如果返回，会返回到登录页，但我们期望的是返回到**商品列表**页。
+
+这里，使用`router.replace`方法和`backUrl`，`route.fullPath`解决
+
+```js
+// proDetail/index.vue
+
+// console.log('no token, logging in...')
+  this.$dialog.confirm({
+    title: '温馨提示',
+    message: '需要先登录才能继续哦',
+    confirmButtonText: '去登录',
+    cancelButtonText: '再逛逛'
+  })
+    .then(() => {
+      // replace 方法能够销毁当下页面，相比push方法，避免了用户返回逻辑不合理的情况
+      this.$router.replace({
+        path: '/login',
+        // 传入一个backUrl参数，实现在登录后返回当前页面（需要在login页面修改相关逻辑）
+        // fullPath可以提供当前的路径，包含参数
+        query: {
+          backUrl: this.$route.fullPath
+        }
+      })
+    })
+    .catch(() => {
+      this.$dialog.close()
+    })
+```
+
+跳转到login page后，地址栏可见：
+
+```
+http://localhost:8080/#/login?backUrl=%2Fpro-detail%2F10039
+```
+
+在login.index中，修改登录成功的逻辑：
+
+```js
+async login() {
+  // ... 
+  // this.$router.push({ path: '/home' })
+  // 更新 → 若用户从其他页面因需要登录跳转而来，在成功登录后应返回对应页面
+  const destination = this.$route.query.backUrl || '/home'
+  this.$router.replace({
+    path: destination
+  })
+}
+```
+
+
+
+
 
 
 
