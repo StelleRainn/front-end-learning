@@ -313,7 +313,7 @@ e.g.
 function getMax(a, b) {
     return a > b ? a : b
   }
-  let max = getMax(201, 200)
+let max = getMax(201, 200)
 console.log(max)
 ```
 - **return多个值**: 

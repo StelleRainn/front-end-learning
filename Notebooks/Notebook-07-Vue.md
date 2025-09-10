@@ -1,4 +1,4 @@
-# Vue 2/3 
+# Vue 2
 
 ## Vue 基础概念
 
@@ -6321,7 +6321,56 @@ export default new Vuex.Store({
 
 #### vant组件库
 
-参阅[vant2官网](https://vant.pro/vant/v2/#/zh-CN/home)，是专用于移动端的UI库。在智慧商城项目中，我们选用了**vant2**，并选择**按需导入**
+参阅[vant2官网](https://vant.pro/vant/v2/#/zh-CN/home)，是专用于移动端的UI库。在智慧商城项目中，我们选用了**vant2**，并选择**按需导入**。
+
+在本项目中，存在感最强的当属 `Toast`组件。其既可以直接使用：`Toast('messages')`，又可以在实例中使用：`this.$toast('message')`。另外，我们将其添加到了**请求配置**中（响应/请求拦截器），每次发请求，都可以看到“加载中”的等待图案，增强了用户体验。
+
+```javascript
+// @/utils/request
+
+// 自定义请求/响应拦截器
+// 添加请求拦截器
+instance.interceptors.request.use(function (config) {
+  // 在发送请求之前做些什么
+
+  // 添加loading样式
+  // p.s. Toast是单例模式，同一时间只能存在一个，后续的Toast可以直接覆盖前面的
+  Toast.loading({
+    message: '加载中...',
+    forbidClick: true, // 禁止背景点击
+    loadingType: 'spinner', // 加载样式
+    duration: 0 // 持续时间，设置为0表示不自动消失
+  })
+
+  // 补充一个header参数（不能在create中添加）
+  config.headers['Access-Token'] = store.state.user.userInfo.token
+
+  return config
+}, function (error) {
+  // 对请求错误做些什么
+  return Promise.reject(error)
+})
+
+// 添加响应拦截器
+instance.interceptors.response.use(function (response) {
+  // 2xx 范围内的状态码都会触发该函数。
+  // 对响应数据做点什么
+  const res = response.data
+  if (res.status !== 200) {
+    // 1. 给提示
+    Toast(res.message)
+    // 2. 抛出错误提示
+    return Promise.reject(res.message)
+  }
+  Toast.clear()
+  return response
+}, function (error) {
+  // 超出 2xx 范围的状态码都会触发该函数。
+  // 对响应错误做点什么
+  return Promise.reject(error)
+})
+```
+
 
 #### postcss插件
 
@@ -6343,7 +6392,7 @@ export default new Vuex.Store({
 </template>
 ```
 
-**问题：**在做条件判断时，以下语句`return`会被eslint提示“**非必要的return语句**”并报错
+**问题：** 在做条件判断时，以下语句`return`会被eslint提示“**非必要的return语句**”并报错
 
 ```js
   // 点击 + 或 - 号修改
@@ -6379,7 +6428,7 @@ export default new Vuex.Store({
 
 在实现“加入购物车”功能时，需要验证token（存于localStorage，由Vuex读取），没有则需要登录。
 
-**问题：**登录后跳转回商品页，选择“加入购物车”依旧显示没有token，需要登录。此时Application中可以看到已经有了userInfo，Vue Dev tools并没有看到userInfo数据。需要手动刷新页面，才会显示token已验证，Vuex加载数据。
+**问题：** 登录后跳转回商品页，选择“加入购物车”依旧显示没有token，需要登录。此时Application中可以看到已经有了userInfo，Vue Dev tools并没有看到userInfo数据。需要手动刷新页面，才会显示token已验证，Vuex加载数据。
 
 合理的解决办法：
 
@@ -6404,7 +6453,7 @@ const mutations = {
 
 #### 返回逻辑优化&登录回跳
 
-**问题：**还是加入购物车模块，第一，在用户登录完毕后，应当可以**跳转回**原商品页；第二，登录后回到商品页，此时如果返回，会返回到登录页，但我们期望的是返回到**商品列表**页。
+**问题：** 还是加入购物车模块，第一，在用户登录完毕后，应当可以**跳转回**原商品页；第二，登录后回到商品页，此时如果返回，会返回到登录页，但我们期望的是返回到**商品列表**页。
 
 这里，使用`router.replace`方法和`backUrl`，`route.fullPath`解决
 
@@ -6434,13 +6483,13 @@ const mutations = {
     })
 ```
 
-跳转到login page后，地址栏可见：
+跳转到`login page`后，地址栏可见：
 
 ```
 http://localhost:8080/#/login?backUrl=%2Fpro-detail%2F10039
 ```
 
-在login.index中，修改登录成功的逻辑：
+在`login.index`中，修改登录成功的逻辑：
 
 ```js
 async login() {
@@ -6454,18 +6503,358 @@ async login() {
 }
 ```
 
+#### mixin混入或复用
 
+**优化：** 对于部分需要重复使用的函数，可以考虑独立封装并提取到`@/mixin/`下，然后，在对应的页面中调用。
 
+就像`...params`展开运算符一样，将整个函数直接完整提到页面中。
 
+例如，本项目中，将**检查Token状态**抽离了出来：
 
+```javascript
+// @/mixins/CheckTokenStatus.js
+export default {
+  methods: {
+    checkTokenStatus () {
+      const token = this.$store.state.user.userInfo.token
+      if (!token) {
+        // console.log('no token, logging in...')
+        this.$dialog.confirm({
+          title: '温馨提示',
+          message: '需要先登录才能继续哦',
+          confirmButtonText: '去登录',
+          cancelButtonText: '再逛逛'
+        })
+          .then(() => {
+            // replace 方法能够销毁当下页面，相比push方法，避免了用户返回逻辑不合理的情况
+            this.$router.replace({
+              path: '/login',
+              // 传入一个backUrl参数，实现在登录后返回当前页面（需要在login页面修改相关逻辑）
+              // fullPath可以提供当前的路径，包含参数
+              query: {
+                backUrl: this.$route.fullPath
+              }
+            })
+          })
+          .catch(() => {
+            this.$dialog.close()
+          })
+        return true
+      }
+      return false
+    }
+  }
+}
+```
 
+然后在页面中，可以很轻松地重复使用：
+
+```js
+import checkTokenStatus from '@/mixins/checkTokenStatus'
+
+export default {
+  mixins: [checkTokenStatus],
+  
+  // ... 
+  
+  // 加入购物车
+  async confirmAddToCart () {
+    // 检查 token 状态的方法优化为使用 mixin 混入
+    // 因为后续点击“立即购买”也需要检查token状态
+    if (this.checkTokenStatus()) {
+    return
+    }
+    // ...
+  },
+
+  // 点击“立即购买”，跳转到订单页
+  goBuyNow () {
+    if (this.checkTokenStatus()) {
+    return
+    }
+    this.$router.push({
+      // ... 
+    })
+  }
+  }
+```
+
+#### 订单结算-封装通用接口
+
+**问题：** 在订单结算时，接口根据模式（cart 或 buyNow）需要不同的参数，需要设计一个通用接口，同时满足两种模式的需求。
+
+**解决办法：** 利用**展开运算符**实现对不同参数的解构。
+
+```javascript
+// @/api/orders
+
+export const submitOrderApi = (mode, obj) => {
+  /**
+   * mode: buyNow -> {goodsId, goodsNum, goodsSkuId, remark}
+   * mode: cart -> {cartIds, remark}
+   */
+  return request.post('checkout/submit', {
+    mode,
+    delivery: 10,
+    couponId: 0,
+    isUsePoints: 0,
+    payType: 10,
+    ...obj // 动态接受不同参数
+  })
+}
+```
+
+从而，在传参数时，就能针对性地传参：
+
+```javascript
+// 提交订单
+async submitOrder () {
+  if (this.mode === 'cart') {
+    await submitOrderApi(this.mode, {
+      cartIds: this.cartIds,
+      remark: this.remark
+    })
+  }
+  if (this.mode === 'buyNow') {
+    await submitOrderApi(this.mode, {
+      goodsId: this.goodsId,
+      goodsNum: this.goodsNum,
+      goodsSkuId: this.goodsSkuId,
+      remark: this.remark
+    })
+  }
+  this.$toast.success('支付成功')
+  this.$router.replace('/myorder')
+}
+```
+
+#### 路由管理-全局前置守卫
+
+**需求：** 网页中的大部分界面应该能够被游客访问，但某些页面，例如订单，应当让游客登录后才能允许访问。
+
+使用**全局前置守卫**解决此问题：
+
+1.所有的路由一旦被匹配到，都会先经过全局前置守卫
+
+2.只有全局前置守卫放行，才会真正解析渲染组件，才能看到页面内容
+
+```javascript
+// @/router/index
+
+// 全局前置守卫 → 更多请查阅 Vue router 官网
+/**
+ * @param {VueRouter} to - 即将要进入的目标 路由对象
+ * @param {VueRouter} from - 当前导航正要离开的路由
+ * @param {function} next - 是否放行的函数，
+ *    i.  next()表示直接放行到 to 所指向的路径
+ *    ii. next(path) 则将进行拦截与导航
+ */
+
+// 定义需要权限的页面
+const authUrls = ['/pay', '/order']
+
+router.beforeEach((to, from, next) => {
+  // 如果是不需要权限的界面
+  if (!authUrls.includes(to.path)) {
+    next()
+    // 否则需要验证是否已经登录
+    // 访问子模块的语法：store.state.subModuleName.properties
+  } else if (store.state.user.userInfo.token) {
+    next()
+  } else {
+    next('/login')
+  }
+})
+```
+
+#### 路由懒加载
+
+不让所有组件在首次进入网站时就被请求完毕，而是按需、异步加载，从而优化用户体验。
+
+只需在路由配置中，将部分界面改为异步组件即可。
+
+```javascript
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+
+import Login from '@/views/login/index.vue'
+import Search from '@/views/search/index.vue'
+import List from '@/views/search/list.vue'
+import ProDetail from '@/views/proDetail/index.vue'
+import Pay from '@/views/pay/index.vue'
+import Order from '@/views/order/index.vue'
+
+import store from '@/store/'
+
+// 路由懒加载
+// 以下为默认加载，而上方的import则为按需加载
+// 改造为异步组件
+const Layout = () => import('@/views/layout/index.vue')
+const Home = () => import('@/views/layout/home.vue')
+const category = () => import('@/views/layout/category.vue')
+const Cart = () => import('@/views/layout/cart.vue')
+const User = () => import('@/views/layout/user.vue')
+
+Vue.use(VueRouter)
+```
+
+#### 补充headers参数
+
+我们在 `@/utils/request`中配置了`axios`实例并导出，在 `create`方法中可以添加`headers`请求头。然而在本项目里，有些请求头并不能在该方法配置，而是在**请求拦截器**中完成。
+
+核心原因：实例化时机问题 & 静态/动态配置问题
+
+- `axios.create()` 在应用启动时就执行了，此时用户可能还没有登录
+- `store.state.user.userInfo.token` 在实例化时可能为空或未定义
+- 如果在 `create` 中直接设置 `Access-Token` ，会获取到初始值（通常是空值）
+
+```javascript
+import axios from 'axios'
+import { Toast } from 'vant'
+import store from '@/store'
+
+// 自定义axios实例
+
+// ❌ 静态配置 - 只在实例化时获取一次值
+const instance = axios.create({
+  baseURL: 'https://smart-shop.itheima.net/index.php?s=/api',
+  timeout: 5000,
+  headers: {
+    platform: 'H5'
+  }
+
+})
+
+// 自定义请求/响应拦截器
+// 添加请求拦截器
+
+// ✅ 动态配置 - 每次请求时都重新获取最新值
+instance.interceptors.request.use(function (config) {
+  // ...
+
+  // 补充一个header参数（不能在create中添加）
+  config.headers['Access-Token'] = store.state.user.userInfo.token
+
+  return config
+}, function (error) {
+  return Promise.reject(error)
+})
+
+// 添加响应拦截器
+// ... 
+
+export default instance
+```
+
+#### 典例之全选反选
+
+首先是小选自身的切换，我们定义`toggleCheck`方法实现点击某购物车内商品，该商品的选中状态就切换（取反）
+
+```JSX
+// @/views/layout/cart
+<van-checkbox :value="item.isChecked" @click="toggleChecked(item.goods_id)"></van-checkbox>
+    
+toggleChecked (goodsId) {
+  this.$store.commit('cart/toggleChecked', goodsId)
+},
+
+// @/store/modules/cart 
+mutations: {
+// 根据传过来的id，找到对应的购物车内的商品然后修改其isChecked值
+  toggleChecked (state, goodsId) {
+    const goods = state.cartList.find(item => item.goods_id === goodsId)
+    if (goods) goods.isChecked = !goods.isChecked
+  },
+}
+```
+
+其次是大选。
+
+首先，我们通过动态设置其`value`值，实现了小选的全选状态对大选的影响。我们在`@/store/modules/cart`仓库中定义了一个`getters` → `isAllChecked`，它遍历数组来获取小选的选中状态，返回布尔值（数组every方法）。
+
+然后，我们通过方法`toggleAllChecked`实现大选对小选的影响，通过将取反后的自身的选中状态赋值给所有小选即可（数组forEach方法）。
+
+```JSX
+// @/views/layout/cart
+<div @click="toggleAllChecked" class="all-check">
+  <van-checkbox :value="isAllChecked"  icon-size="18"></van-checkbox>
+  全选
+</div>
+
+...mapGetters('cart', ['isAllChecked'])
+
+toggleAllChecked () {
+  this.$store.commit('cart/toggleAllChecked', !this.isAllChecked)
+},
+
+// @/store/modules/cart 
+mutations: {
+  // 大全选按钮可以同步设置所有的小选择按钮
+  toggleAllChecked (state, status) {
+    state.cartList.forEach(item => { item.isChecked = status })
+  },
+},
+
+getters: {
+// 是否全选 → 以小按钮影响大按钮
+isAllChecked: state => state.cartList.every(item => item.isChecked)
+}
+```
+
+#### 闭包的相关应用
+
+首先，简单回顾JS中的闭包：
+
+**闭包 = 函数 + 它能访问的外部变量**
+
+简单说，就是一个函数能够"记住"并**访问它被创建时的环境中的变量**，即使这个函数在其他地方被调用。
+
+本项目中的实际应用：
+
+在购物车`@/views/layout/cart`中，方法`updateCount`需要获取多个参数。然而通过自实现的 `v-model`中，`@input`所得到的第一个参数由子组件传递，那么其他参数要怎么获取呢？由此，提出了应用闭包的解决办法：
+
+```JSX
+// 在 v-for 中
+<div v-for="item in cartList" :key="item.goods_id">
+<!-- 新技巧！既要取得原来的子传父形参（这里是goods_num）， -->
+<!-- 又要多获取id和sku_id → 封装一层函数 -->
+  <CountBox 
+    :value="item.goods_num" 
+    @input="(value) => updateCount(value, item.goods_id, item.goods_sku_id)">
+  </CountBox>
+</div>
+
+updateCount (value, goodsId, goodsSkuId) {
+  this.$store.dispatch('cart/updateCount', {
+    goodsId,
+    goodsNum: value,
+    goodsSkuId
+  })
+}
+```
+
+闭包分析：
+
+```JSX
+// 每次循环都创建一个新的箭头函数
+// 假设当前循环 item = { goods_id: 101, goods_sku_id: 201 }
+const arrowFunction = (value) => updateCount(value, item.goods_id, item.goods_sku_id);
+//                                                  ↑            ↑
+//                                               这些变量被"闭包捕获"
+
+// 即使循环继续，这个函数仍然"记住"了当前item的值
+// 等价于：
+const arrowFunction = (value) => updateCount(value, 101, 201);
+```
+
+这样，`updateCount`除了能拿到`value`，还同时拿到了**每次循环中对应**的`item`里的某些数据。
+
+更多可以查阅和`Claude`的聊天记录。
 
 
 ## 综合案例技巧
 
 ### 数组操作方法
-
-**模板方法**：
 
 ```javascript
 // 常用数组方法模板
@@ -6477,46 +6866,7 @@ array.push(新元素); // 末尾添加
 array.unshift(新元素); // 开头添加
 array.splice(索引, 删除数量, 新元素); // 插入/删除
 ```
-
-**实用示例**：
-
-1. **filter 方法**：过滤数组，常用于删除功能
-
-   ```javascript
-   // 删除指定id的项目
-   this.list = this.list.filter((item) => item.id !== id);
-
-   // 筛选已选中的项目
-   this.selectedItems = this.list.filter((item) => item.isChecked);
-   ```
-
-2. **unshift 方法**：在数组最前面添加元素
-
-   ```javascript
-   // 添加新项目到列表开头
-   this.list.unshift({
-     id: +new Date(),
-     name: this.inputValue,
-     createTime: new Date().toLocaleString(),
-   });
-   ```
-
-3. **reduce 方法**：累计计算，常用于统计
-
-   ```javascript
-   // 计算总价
-   this.totalPrice = this.list.reduce(
-     (sum, item) => sum + item.price * item.num,
-     0
-   );
-   
-   // 计算总数量
-   this.totalCount = this.list.reduce((sum, item) => sum + item.num, 0);
-   ```
-
-### 表单验证技巧
-
-**模板方法**：
+### 表单验证
 
 ```javascript
 // 表单验证模板
@@ -6531,85 +6881,7 @@ if (typeof 数值 !== "number") {
 }
 ```
 
-**实用示例**：
-
-```javascript
-// 综合验证示例
-add() {
-  // 去除空格验证
-  if (this.subject.trim() === '') {
-    alert('请输入科目');
-    return;
-  }
-
-  // 数字类型验证
-  if (typeof this.score !== 'number') {
-    alert('请输入正确成绩');
-    return;
-  }
-
-  // 数值范围验证
-  if (this.score < 0 || this.score > 100) {
-    alert('成绩应在0-100之间');
-    return;
-  }
-
-  // 验证通过，执行添加逻辑
-  this.list.unshift({
-    id: +new Date(),
-    subject: this.subject,
-    score: this.score
-  });
-
-  // 重置表单
-  this.subject = '';
-  this.score = '';
-}
-```
-
-### 条件显示优化
-
-**模板方法**：
-
-```html
-<!-- 条件渲染模板 -->
-<div v-if="条件">条件为真时显示</div>
-<div v-else>条件为假时显示</div>
-
-<div v-show="条件">频繁切换时使用</div>
-
-<!-- 列表为空时的处理 -->
-<div v-if="list.length > 0">
-  <!-- 有数据时的内容 -->
-</div>
-<div v-else>
-  <!-- 空状态提示 -->
-</div>
-```
-
-**实用示例**：
-
-```html
-<!-- 只有在有数据时才显示底部统计区域 -->
-<footer v-show="list.length">
-  <span>合计: <strong>{{ list.length }}</strong></span>
-  <span>总价: <strong>{{ totalPrice }}</strong></span>
-</footer>
-
-<!-- 边界按钮的显示控制 -->
-<button v-show="index > 0" @click="index--">上一页</button>
-<button v-show="index < list.length - 1" @click="index++">下一页</button>
-
-<!-- 加载状态和错误状态 -->
-<div v-if="loading">加载中...</div>
-<div v-else-if="error">加载失败，请重试</div>
-<div v-else-if="list.length === 0">暂无数据</div>
-<div v-else>
-  <!-- 正常数据展示 -->
-</div>
-```
-
-### 本地存储技巧
+### 本地存储
 
 **模板方法**：
 
@@ -6644,7 +6916,7 @@ data: {
 }
 ```
 
-### 防抖处理技巧
+### 防抖处理
 
 **模板方法**：
 
@@ -6670,3 +6942,6 @@ watch: {
 }
 ```
 
+# Vue 3
+// 使用 create-vue工具创建vue3项目，熟悉项目和相关文件
+// 组合式API
