@@ -6851,8 +6851,760 @@ const arrowFunction = (value) => updateCount(value, 101, 201);
 
 更多可以查阅和`Claude`的聊天记录。
 
+# Vue 3
 
-## 综合案例技巧
+## Vue 3 概述
+
+### 选项式 API vs 组合式 API
+
+**选项式 API（Options API）**：
+- Vue 2 的传统写法
+- 通过配置对象的方式组织代码（data、methods、computed、watch 等）
+- 代码按功能类型分离，逻辑分散在不同选项中
+
+**组合式 API（Composition API）**：
+- Vue 3 新增的编程范式
+- 通过函数的方式组织代码，逻辑更加集中
+- 更好的 TypeScript 支持
+- 更灵活的逻辑复用
+
+### 项目创建
+
+使用 `create-vue` 创建 Vue 3 项目：
+
+```bash
+npm create vue@latest my-project
+```
+
+## 组合式 API 核心概念
+
+### setup 函数
+
+**概念**：setup 是 Vue 3 组合式 API 的入口函数，用于组织组件的响应式数据、计算属性、方法等逻辑。
+
+**特点**：
+1. **执行时机**：比 beforeCreate 更早执行
+2. **this 指向**：setup 中无法获取 this（返回 undefined）
+3. **返回值**：数据和函数需要在最后 return，才能在模板中使用
+4. **语法糖**：可以使用 `<script setup>` 语法糖解决频繁 return 的问题
+
+**基础语法**：
+
+```javascript
+// 传统 setup 函数写法
+export default {
+  setup() {
+    const message = 'Hello'
+    const showMessage = () => {
+      console.log(message)
+    }
+    
+    return {
+      message,
+      showMessage
+    }
+  }
+}
+```
+
+**语法糖写法**：
+
+```vue
+<script setup>
+// 直接编写逻辑，无需 return
+const message = 'Hello'
+const showMessage = () => {
+  console.log(message)
+}
+</script>
+
+<template>
+  <div>Learn Vue3</div>
+  <div>{{ message }}</div>
+  <button @click="showMessage">Click</button>
+</template>
+```
+
+### 响应式数据
+
+#### reactive 函数
+
+**概念**：reactive 函数用于创建响应式的对象类型数据。
+
+**特点**：
+- 接收一个对象类型的数据，返回一个响应式的对象
+- 深层响应式，对象内部嵌套的属性也是响应式的
+- 只能用于对象类型（对象、数组等）
+
+**模板语法**：
+
+```javascript
+import { reactive } from 'vue'
+
+const 响应式对象 = reactive({
+  属性名: 初始值
+})
+```
+
+**实例代码**：
+
+```vue
+<script setup>
+import { reactive } from 'vue'
+
+const state = reactive({
+  count: 1
+})
+
+const addCount = () => {
+  state.count++
+}
+</script>
+
+<template>
+  <div>{{ state.count }}</div>
+  <button @click="addCount">reactive +1</button>
+</template>
+```
+
+#### ref 函数
+
+**概念**：ref 函数用于创建响应式的数据，可以接收简单类型或对象类型的数据。
+
+**特点**：
+1. **数据类型**：接收简单类型或者对象类型的数据，返回一个响应式对象
+2. **实现原理**：本质上是在原有传入数据的基础上，外层包了一层对象，成为了复杂类型
+3. **底层机制**：包成复杂类型之后，再借助 reactive 实现响应式
+4. **访问方式**：
+   - 脚本内访问数据，需要加 `.value`
+   - 在 template 中访问数据，不需要加 `.value`
+
+**模板语法**：
+
+```javascript
+import { ref } from 'vue'
+
+const 响应式数据 = ref(初始值)
+
+// 脚本中访问
+响应式数据.value
+
+// 模板中访问
+{{ 响应式数据 }}
+```
+
+**实例代码**：
+
+```vue
+<script setup>
+import { ref } from 'vue'
+
+const refCount = ref(0)
+console.log(refCount)       // RefImpl 对象
+console.log(refCount.value) // 0
+
+const addRefCount = () => {
+  refCount.value++
+}
+</script>
+
+<template>
+  <div>{{ refCount }}</div>
+  <button @click="addRefCount">ref + 1</button>
+</template>
+```
+
+**推荐使用**：统一使用 ref，统一编码规范
+
+### 计算属性 computed
+
+**概念**：组合式 API 中的计算属性，用于基于响应式数据计算出新的值。
+
+**模板语法**：
+
+```javascript
+import { computed } from 'vue'
+
+// 只读计算属性
+const 计算属性名 = computed(() => {
+  return 计算逻辑
+})
+
+// 可读可写计算属性
+const 计算属性名 = computed({
+  get: () => 计算逻辑,
+  set: (val) => 设置逻辑
+})
+```
+
+**实例代码**：
+
+```vue
+<script setup>
+import { ref, computed } from 'vue'
+
+const list = ref([1, 2, 3, 4, 5, 6, 7])
+
+// 只读计算属性
+const computedList = computed(() => {
+  return list.value.filter(item => item > 2)
+})
+
+// 可读可写计算属性
+const operatedList = computed({
+  get: () => list.value.filter(item => item > 2),
+  set: (val) => list.value.push(val)
+})
+
+operatedList.value = 10 // 向原数组添加 10
+</script>
+
+<template>
+  <div>Original Array: {{ list }}</div>
+  <div>ComputedArray: {{ computedList }}</div>
+  <div>operatedList: {{ operatedList }}</div>
+</template>
+```
+
+**最佳实践**：
+1. **避免副作用**：计算属性中不该有"副作用"（异步请求/DOM操作）
+2. **避免直接修改**：尽量避免直接修改计算属性的值，特殊情况配置 get 和 set
+
+### 侦听器 watch
+
+**概念**：watch 用于侦听响应式数据的变化，当数据发生变化时执行相应的回调函数。
+
+**模板语法**：
+
+```javascript
+import { watch } from 'vue'
+
+// 监听单个数据
+watch(ref对象, (newVal, oldVal) => {
+  // 处理逻辑
+})
+
+// 监听多个数据
+watch([ref1, ref2, ...], (newValArray, oldValArray) => {
+  // 处理逻辑
+})
+
+// 配置选项
+watch(ref对象, callback, {
+  immediate: true, // 立即执行
+  deep: true      // 深度监听
+})
+```
+
+**基础用法**：
+
+```vue
+<script setup>
+import { ref, watch } from 'vue'
+
+const count = ref(0)
+const name = ref('Rainn')
+
+// 监听单个数据
+watch(count, (newVal, oldVal) => {
+  console.log('新值：', newVal, '旧值：', oldVal)
+})
+
+// 监听多个数据
+watch([count, name], (newValArray, oldValArray) => {
+  console.log('新值组：', newValArray, '旧值组：', oldValArray)
+})
+
+// immediate 选项
+watch(name, (newVal, oldVal) => {
+  console.log(newVal, oldVal)
+}, { immediate: true })
+</script>
+```
+
+**深度监听**：
+
+```javascript
+// 深度监听复杂数据类型
+const userInfo = ref({
+  name: 'StelleRainn',
+  age: 21
+})
+
+// 方式1：开启 deep 选项
+watch(userInfo, (newVal, oldVal) => {
+  console.log('new: ', newVal, 'old: ', oldVal)
+}, { deep: true })
+
+// 方式2：精确侦听（不开启 deep）
+watch(() => userInfo.value.name, (newVal, oldVal) => {
+  console.log('Precise new: ', newVal, ' Precise old: ', oldVal)
+})
+```
+
+**特点说明**：
+- **浅层监听**：watch 默认为浅层监听，只能监听简单数据类型的变化
+- **复杂类型监听**：对于复杂数据类型，监听的是地址（refObj.value），除非整个对象被替换
+- **深度监听**：设置 `deep: true` 可以监听复杂数据类型中子属性的变化
+- **精确监听**：通过函数返回具体属性的方式，实现对特定属性的精确监听
+
+### 生命周期 API
+
+**概念**：组合式 API 中的生命周期钩子函数，用于在组件的不同阶段执行特定逻辑。
+
+**对应关系**：
+
+| 选项式 API | 组合式 API |
+|------------|------------|
+| beforeCreate | setup() |
+| created | setup() |
+| beforeMount | onBeforeMount |
+| mounted | onMounted |
+| beforeUpdate | onBeforeUpdate |
+| updated | onUpdated |
+| beforeUnmount | onBeforeUnmount |
+| unmounted | onUnmounted |
+
+**模板语法**：
+
+```javascript
+import { onMounted, onUpdated, onUnmounted } from 'vue'
+
+// 在 setup 中调用
+onMounted(() => {
+  // 挂载完成后的逻辑
+})
+
+onUpdated(() => {
+  // 更新完成后的逻辑
+})
+
+onUnmounted(() => {
+  // 卸载前的清理逻辑
+})
+```
+
+**实例代码**：
+
+```vue
+<script setup>
+import { onMounted } from 'vue'
+
+// beforeCreate & created 的逻辑直接放在 setup 中
+const getList = () => {
+  console.log('Fetching list')
+}
+getList()
+
+// 挂载完成后的逻辑
+onMounted(() => {
+  console.log('Logic 1 now Mounted.')
+})
+
+// 可以调用多次，按顺序依次执行
+onMounted(() => {
+  console.log('Logic 2 now mounted')
+})
+</script>
+```
+
+**特点**：
+- **早期生命周期**：beforeCreate 和 created 的代码直接放在 setup 中
+- **函数形式**：写成函数的形式，可以调用多次，不会冲突
+- **执行顺序**：多次调用同一生命周期钩子时，按顺序依次执行
+
+## 组件通信
+
+### 父子通信
+
+**概念**：组合式 API 中的父子组件通信，通过 props 和 emits 实现数据传递。
+
+#### 父传子（Props）
+
+**模板语法**：
+
+```javascript
+// 子组件中接收 props
+const props = defineProps({
+  属性名: 类型,
+  属性名: {
+    type: 类型,
+    default: 默认值
+  }
+})
+
+// 访问 props 数据
+props.属性名
+```
+
+**实例代码**：
+
+```vue
+<!-- 父组件 -->
+<script setup>
+import SonComponent from '@/components/SonComponent.vue'
+import { ref } from 'vue'
+
+const count = ref(100)
+const addCount = () => {
+  count.value += 10
+}
+</script>
+
+<template>
+  <h3>Father component</h3>
+  <button @click="addCount">addCount</button>
+  <SonComponent :count="count" car="AMG GT" />
+</template>
+```
+
+```vue
+<!-- 子组件 -->
+<script setup>
+// 通过 defineProps 编译器宏接收数据
+const props = defineProps({
+  count: Number,
+  car: String
+})
+
+// 通过 props.xxx 访问数据
+console.log(props.count, props.car)
+</script>
+
+<template>
+  <div class="son">
+    count: {{ count }}, car: {{ car }}
+  </div>
+</template>
+```
+
+#### 子传父（Emits）
+
+**模板语法**：
+
+```javascript
+// 子组件中定义和触发事件
+const emit = defineEmits(['事件名'])
+
+// 触发事件并传递参数
+const 处理函数 = () => {
+  emit('事件名', 参数)
+}
+```
+
+**实例代码**：
+
+```vue
+<!-- 子组件 -->
+<script setup>
+// 声明要触发的事件
+const emit = defineEmits(['consumeCount'])
+
+// 触发事件，传递参数
+const consumeCountMsg = () => {
+  emit('consumeCount', 5)
+}
+</script>
+
+<template>
+  <button @click="consumeCountMsg">消费</button>
+</template>
+```
+
+```vue
+<!-- 父组件 -->
+<script setup>
+// 监听子组件事件，获取传递的参数
+const handleConsume = (val) => {
+  console.log('param from son compo:', val)
+  count.value -= val
+}
+</script>
+
+<template>
+  <SonComponent @consumeCount="handleConsume" />
+</template>
+```
+
+### 模板引用 ref
+
+**概念**：通过 ref 标识获取真实的 DOM 对象或组件实例对象。
+
+**使用步骤**：
+1. 调用 ref 函数得到 ref 对象
+2. 通过 ref 标识绑定 ref 对象
+3. 通过 ref对象.value 访问到 DOM 对象或组件实例
+
+**模板语法**：
+
+```javascript
+import { ref, onMounted } from 'vue'
+
+// 1. 创建 ref 对象
+const 引用名 = ref(null)
+
+// 3. 在合适的时机访问（通常在 onMounted 中）
+onMounted(() => {
+  console.log(引用名.value) // DOM 元素或组件实例
+})
+```
+
+**DOM 引用示例**：
+
+```vue
+<script setup>
+import { onMounted, ref } from 'vue'
+
+const inp = ref(null)
+
+onMounted(() => {
+  console.log(inp.value) // <input type="text">
+  // 页面加载完成后自动聚焦
+  // inp.value.focus()
+})
+
+// 点击聚焦
+const toFocus = () => {
+  inp.value.focus()
+}
+</script>
+
+<template>
+  <input ref="inp" type="text">
+  <button @click="toFocus">聚焦</button>
+</template>
+```
+
+**组件引用示例**：
+
+```vue
+<script setup>
+import { ref } from 'vue'
+import TestCom from './components/TestCom.vue'
+
+// 获取子组件实例
+const testcom = ref(null)
+
+const callTest = () => {
+  console.log(testcom.value) // 组件实例
+  console.log(testcom.value.count) // 访问子组件数据
+  testcom.value.testFn() // 调用子组件方法
+}
+</script>
+
+<template>
+  <TestCom ref="testcom" />
+  <button @click="callTest">调用子组件</button>
+</template>
+```
+
+#### defineExpose 宏函数
+
+**概念**：默认情况下在 `<script setup>` 语法糖中，组件内部的属性和方法不开放给父组件访问，可以使用 defineExpose 编译宏指定哪些属性或方法可以开放给父组件。
+
+**模板语法**：
+
+```javascript
+// 子组件中暴露属性和方法
+defineExpose({
+  属性名,
+  方法名
+})
+```
+
+**实例代码**：
+
+```vue
+<!-- 子组件 TestCom.vue -->
+<script setup>
+import { ref } from 'vue'
+
+const count = ref(100)
+const testFn = () => {
+  console.log('The function has been called')
+}
+
+// 通过 defineExpose 指定哪些属性/方法可以被访问
+defineExpose({
+  count,
+  testFn
+})
+</script>
+```
+
+### 跨组件通信 provide & inject
+
+**概念**：provide 和 inject 用于跨层级组件间的数据传递，可以传递普通数据、响应式数据和方法。
+
+**使用原则**：
+- **顶层组件**：使用 provide 提供数据
+- **底层组件**：使用 inject 接收数据
+- **数据管理**：遵循"谁的数据谁管理"原则
+
+**模板语法**：
+
+```javascript
+// 顶层组件 - 提供数据
+import { provide } from 'vue'
+
+provide('key', value)
+
+// 底层组件 - 接收数据
+import { inject } from 'vue'
+
+const data = inject('key')
+```
+
+**实例代码**：
+
+```vue
+<!-- 顶层组件 -->
+<script setup>
+import { provide, ref } from 'vue'
+import MiddleCom from './components/MiddleCom.vue'
+
+// 1. 普通常量
+const themeColor = 100
+provide('themeColor', themeColor)
+
+// 2. 响应式数据
+const value = ref(100)
+provide('responsiveValue', value)
+setInterval(() => {
+  value.value += 5
+}, 1000) // 每秒更新
+
+// 3. 传递方法
+const valueAdd = (params) => {
+  value.value += params
+}
+provide('valueAdd', valueAdd)
+
+// 也可以直接传递回调函数
+provide('valueDel', (params) => {
+  value.value -= params
+})
+</script>
+
+<template>
+  <h1>This is the top compo.</h1>
+  <MiddleCom />
+</template>
+```
+
+```vue
+<!-- 底层组件 -->
+<script setup>
+import { inject } from 'vue'
+
+const themeColor = inject('themeColor')
+const responsiveValue = inject('responsiveValue')
+const valueAdd = inject('valueAdd')
+const valueDel = inject('valueDel')
+</script>
+
+<template>
+  <div class="bottom">
+    <h3>This is the bottom compo.</h3>
+    <div>Receiving data from higher components:</div>
+    {{ themeColor }} - {{ responsiveValue }}
+    <button @click="valueAdd(100)">Add 100</button>
+    <button @click="valueDel(50)">Del 50</button>
+  </div>
+</template>
+```
+
+**传递类型**：
+1. **普通常量**：传递不变的数据
+2. **响应式数据**：传递可变的响应式数据
+3. **方法函数**：传递操作数据的方法，保持数据管理的统一性
+
+## 高级特性
+
+### defineOptions 宏函数
+
+**概念**：defineOptions 用于在 `<script setup>` 语法糖中定义组件选项，解决无法直接定义 name 等属性的问题。
+
+**背景说明**：
+- 在 `<script setup>` 之前，可以轻易地添加与 setup 平级的属性
+- 使用 `<script setup>` 后，无法添加平级属性
+- defineProps 和 defineEmits 只解决了 props 和 emits
+- defineOptions 可以定义任意选项（props、emits、expose、slots 除外）
+
+**模板语法**：
+
+```javascript
+defineOptions({
+  name: '组件名',
+  // 其他组件选项
+})
+```
+
+### defineModel 宏函数
+
+**概念**：defineModel 是 Vue 3.4 新增的宏函数，用于简化自定义组件中 v-model 的实现。
+
+**传统 v-model 实现**：
+1. 定义一个名为 `modelValue` 的 prop
+2. 定义一个名为 `update:modelValue` 的 emit
+3. 在需要更新时触发该事件
+
+**defineModel 优势**：
+1. 父组件可以直接通过 v-model 绑定数据
+2. 子组件通过 defineModel() 函数直接获取传递的数据
+3. 子组件可以直接"修改"该变量，无需手动 emit
+
+**模板语法**：
+
+```javascript
+// 子组件中
+const modelValue = defineModel()
+
+// 可以直接读取和修改
+console.log(modelValue.value)
+modelValue.value = '新值'
+```
+
+**实例代码**：
+
+```vue
+<!-- 父组件 -->
+<script setup>
+import TestDefineModel from './components/TestDefineModel.vue'
+import { ref } from 'vue'
+
+const txt = ref('123456')
+</script>
+
+<template>
+  <TestDefineModel v-model="txt" />
+  {{ txt }}
+</template>
+```
+
+```vue
+<!-- 子组件 TestDefineModel.vue -->
+<script setup>
+// 可以直接获取传过来的 value，并且可以直接修改
+const modelValue = defineModel()
+</script>
+
+<template>
+  <input 
+    type="text"
+    :value="modelValue"
+    @input="e => modelValue = e.target.value">
+</template>
+```
+
+**注意事项**：
+- defineModel 宏函数只能在 `<script setup>` 语法糖中使用
+- 简化了 v-model 的实现，提高了开发效率
+- 保持了数据的双向绑定特性
+
+
+
+# 综合案例技巧
 
 ### 数组操作方法
 
@@ -6942,6 +7694,3 @@ watch: {
 }
 ```
 
-# Vue 3
-// 使用 create-vue工具创建vue3项目，熟悉项目和相关文件
-// 组合式API
