@@ -7603,6 +7603,403 @@ const modelValue = defineModel()
 - 保持了数据的双向绑定特性
 
 
+## Pinia
+
+### Pinia 概述
+
+**概念**：Pinia 是 Vue 的专属状态管理库，它允许你跨组件或页面共享状态。Pinia 是 Vuex 的继任者，提供了更简洁的 API 和更好的 TypeScript 支持。
+
+**Pinia vs Vuex 对比**：
+
+| 特性 | Vuex | Pinia |
+|------|------|-------|
+| **语法复杂度** | 复杂，需要 mutations、actions 等概念 | 简洁，直接使用函数和响应式数据 |
+| **TypeScript 支持** | 需要额外配置 | 原生支持，类型推断更好 |
+| **模块化** | 需要手动配置 modules | 天然支持多 store |
+| **调试工具** | Vue DevTools 支持 | Vue DevTools 原生支持 |
+| **包大小** | 较大 | 更轻量 |
+| **学习成本** | 较高 | 较低 |
+
+**Pinia 的优势**：
+
+1. **更简洁的语法**：去除了 mutations，直接在 actions 中修改状态
+2. **更好的 TypeScript 支持**：提供完整的类型推断
+3. **模块化设计**：每个 store 都是独立的，无需嵌套
+4. **更小的包体积**：去除了不必要的概念和代码
+5. **更好的开发体验**：支持热重载、时间旅行调试等
+
+### 手动添加 Pinia 到项目
+
+**安装步骤**：
+
+```bash
+# 安装 Pinia
+npm install pinia
+
+# 安装持久化插件（可选）
+npm install pinia-plugin-persistedstate
+```
+
+**项目配置**：
+
+```javascript
+// main.js
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
+// 创建 pinia 实例
+const pinia = createPinia()
+
+// 添加持久化插件
+pinia.use(piniaPluginPersistedstate)
+
+const app = createApp(App)
+
+// 使用 pinia
+app.use(pinia).mount('#app')
+```
+
+### Pinia 基本语法（核心概念）
+
+**概念**：Pinia 使用 `defineStore()` 来定义 store，支持组合式 API 写法，更贴近 Vue 3 的开发模式。
+
+#### Store 定义
+
+**模板语法**：
+
+```javascript
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+
+// 定义 store
+export const useStoreStore = defineStore('storeName', () => {
+  // state → ref()
+  const 状态变量 = ref(初始值)
+  
+  // actions → function()
+  const 方法名 = () => {
+    // 修改状态逻辑
+  }
+  
+  // getters → computed()
+  const 计算属性名 = computed(() => {
+    return 基于状态的计算结果
+  })
+  
+  // 返回需要暴露的状态和方法
+  return { 状态变量, 方法名, 计算属性名 }
+})
+```
+
+**实例代码**：
+
+```javascript
+// store/counter.js
+import { defineStore } from "pinia"
+import { computed, ref } from "vue"
+
+// defineStore() 的返回值命名建议：use开头 + Store结尾
+// 第一个参数：store 的唯一 ID
+// 第二个参数：组合式 API 函数
+export const useCounterStore = defineStore('counter', () => {
+  // state → ref()
+  const countA = ref(100)
+
+  // actions → function()
+  const add = () => countA.value += 1
+  const sub = () => countA.value -= 1
+
+  // getters → computed()
+  const doubleCountA = computed(() => countA.value * 2)
+
+  return { countA, add, sub, doubleCountA }
+})
+```
+
+#### Store 使用
+
+**模板语法**：
+
+```javascript
+// 在组件中使用
+import { useStoreStore } from '@/store/storeName'
+
+// 获取 store 实例
+const store = useStoreStore()
+
+// 访问状态
+store.状态变量
+
+// 调用方法
+store.方法名()
+
+// 访问计算属性
+store.计算属性名
+```
+
+**实例代码**：
+
+```vue
+<!-- App.vue -->
+<script setup>
+import { useCounterStore } from './store/counter'
+
+const store = useCounterStore()
+</script>
+
+<template>
+  <div>
+    <h1>计数器：{{ store.countA }} - 双倍：{{ store.doubleCountA }}</h1>
+    <button @click="store.add()">+</button>
+    <button @click="store.sub()">-</button>
+  </div>
+</template>
+```
+
+### Actions 异步写法
+
+**概念**：Pinia 中的 actions 可以直接处理异步操作，无需像 Vuex 那样区分同步和异步操作。
+
+**模板语法**：
+
+```javascript
+// 异步 action
+const 异步方法名 = async () => {
+  try {
+    const res = await axios.get('API地址')
+    // 直接修改状态
+    状态变量.value = res.data
+  } catch (error) {
+    console.error('请求失败:', error)
+  }
+}
+```
+
+**实例代码**：
+
+```javascript
+// store/channel.js
+import axios from "axios"
+import { defineStore } from "pinia"
+import { ref } from "vue"
+
+export const useChannelStore = defineStore('channel', () => {
+  const channelList = ref([])
+
+  // actions 中直接处理异步操作
+  const getChannelList = async () => {
+    try {
+      const res = await axios.get('http://geek.itheima.net/v1_0/channels')
+      console.log(res.data.data.channels)
+      // 直接修改状态，无需 mutations
+      channelList.value = res.data.data.channels
+    } catch (error) {
+      console.error('获取频道列表失败:', error)
+    }
+  }
+
+  return {
+    channelList, 
+    getChannelList
+  }
+})
+```
+
+**组件中使用异步 actions**：
+
+```vue
+<script setup>
+import { useChannelStore } from './store/channel'
+
+const channelStore = useChannelStore()
+</script>
+
+<template>
+  <div>
+    <button @click="channelStore.getChannelList()">获取频道列表</button>
+    <ul>
+      <li v-for="item in channelStore.channelList" :key="item.id">
+        {{ item.name }}
+      </li>
+    </ul>
+  </div>
+</template>
+```
+
+### storeToRefs 写法
+
+**概念**：`storeToRefs()` 是 Pinia 提供的工具函数，用于将 store 中的响应式属性转换为 refs，保持响应式的同时支持解构赋值。
+
+**问题场景**：
+
+```javascript
+// ❌ 错误写法：直接解构会破坏响应式
+const { countA, doubleCountA } = store
+// countA 和 doubleCountA 将失去响应式
+```
+
+**解决方案**：
+
+```javascript
+// ✅ 正确写法：使用 storeToRefs
+import { storeToRefs } from 'pinia'
+
+// 解构响应式属性
+const { countA, doubleCountA } = storeToRefs(store)
+
+// 解构方法（方法不需要保持响应式）
+const { add, sub } = store
+```
+
+**模板语法**：
+
+```javascript
+import { storeToRefs } from 'pinia'
+import { useStoreStore } from '@/store/storeName'
+
+const store = useStoreStore()
+
+// 解构响应式属性（状态和计算属性）
+const { 状态变量, 计算属性 } = storeToRefs(store)
+
+// 解构方法
+const { 方法名1, 方法名2 } = store
+```
+
+**实例代码**：
+
+```vue
+<script setup>
+import { storeToRefs } from 'pinia'
+import { useCounterStore } from './store/counter'
+
+const store = useCounterStore()
+
+// 解构响应式属性
+const { countA, doubleCountA } = storeToRefs(store)
+
+// 解构方法
+const { add, sub } = store
+</script>
+
+<template>
+  <div>
+    <!-- 直接使用解构后的变量 -->
+    <h1>计数器：{{ countA }} - 双倍：{{ doubleCountA }}</h1>
+    <button @click="add()">+</button>
+    <button @click="sub()">-</button>
+  </div>
+</template>
+```
+
+**使用规则**：
+
+- **响应式属性**（state 和 getters）：必须使用 `storeToRefs()` 解构
+- **方法**（actions）：可以直接从 store 解构
+- **保持响应式**：解构后的属性仍然保持与原 store 的响应式连接
+
+### Pinia 持久化
+
+**概念**：Pinia 持久化是通过插件实现的功能，可以将 store 中的状态自动保存到 localStorage 或 sessionStorage 中，页面刷新后状态不会丢失。
+
+#### 基础持久化
+
+**模板语法**：
+
+```javascript
+export const useStoreStore = defineStore('storeName', () => {
+  // store 定义...
+  
+  return { /* 返回值 */ }
+}, {
+  // 第三个参数：持久化配置
+  persist: true // 默认持久化所有状态到 localStorage
+})
+```
+
+#### 自定义持久化配置
+
+**模板语法**：
+
+```javascript
+export const useStoreStore = defineStore('storeName', () => {
+  // store 定义...
+  
+  return { /* 返回值 */ }
+}, {
+  persist: {
+    key: '自定义存储key',           // 自定义存储的 key
+    storage: sessionStorage,      // 存储位置：localStorage(默认) 或 sessionStorage
+    pick: ['属性1', '属性2'],      // 只持久化指定属性
+    omit: ['属性3', '属性4']       // 排除指定属性
+  }
+})
+```
+
+**实例代码**：
+
+```javascript
+// store/counter.js
+export const useCounterStore = defineStore('counter', () => {
+  const countA = ref(100)
+  const add = () => countA.value += 1
+  const sub = () => countA.value -= 1
+  const doubleCountA = computed(() => countA.value * 2)
+
+  return { countA, add, sub, doubleCountA }
+}, {
+  // 持久化配置
+  persist: {
+    key: 'custom-name-counter',  // 自定义存储 key
+    pick: ['countA']             // 只持久化 countA 属性
+  }
+})
+```
+
+**配置选项说明**：
+
+| 选项 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `key` | string | store.$id | 存储在 localStorage 中的 key |
+| `storage` | Storage | localStorage | 存储位置 |
+| `pick` | string[] | undefined | 只持久化指定的属性 |
+| `omit` | string[] | undefined | 排除指定的属性 |
+| `serializer` | object | JSON | 序列化方式 |
+
+**最佳实践**：
+
+1. **选择性持久化**：只持久化必要的状态，避免存储过多数据
+2. **敏感数据处理**：不要持久化敏感信息（如密码、token 等）
+3. **存储位置选择**：
+   - `localStorage`：数据永久保存，适合用户偏好设置
+   - `sessionStorage`：会话结束后清除，适合临时状态
+4. **自定义 key**：使用有意义的 key 名称，避免冲突
+
+**完整示例**：
+
+```javascript
+// 用户偏好设置 store
+export const useUserPreferenceStore = defineStore('userPreference', () => {
+  const theme = ref('light')
+  const language = ref('zh-CN')
+  const fontSize = ref(14)
+  
+  const toggleTheme = () => {
+    theme.value = theme.value === 'light' ? 'dark' : 'light'
+  }
+  
+  return { theme, language, fontSize, toggleTheme }
+}, {
+  persist: {
+    key: 'user-preferences',
+    storage: localStorage,
+    pick: ['theme', 'language', 'fontSize'] // 只持久化用户偏好，不持久化方法
+  }
+})
+```
+
 
 # 综合案例技巧
 
