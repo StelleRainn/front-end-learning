@@ -35,7 +35,8 @@
               "title": "Notebook-02-JavaScript"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -157,13 +158,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Notebook-07-Vue.md",
+                "file": "Notebook-02-JavaScript.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Notebook-07-Vue 的大纲"
+              "title": "Notebook-02-JavaScript 的大纲"
             }
           }
         ],
@@ -171,7 +172,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 364.5
+    "width": 245.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -184,10 +186,10 @@
       "bases:创建新数据库": false
     }
   },
-  "active": "ae4652454078d784",
+  "active": "35ae3a69f517048b",
   "lastOpenFiles": [
-    "Notebook-02-JavaScript.md",
     "Notebook-07-Vue.md",
+    "Notebook-02-JavaScript.md",
     "Notebook-01-H5C3.md"
   ]
 }
