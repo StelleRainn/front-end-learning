@@ -34,9 +34,50 @@
               "icon": "lucide-file",
               "title": "Notebook-02-JavaScript"
             }
+          },
+          {
+            "id": "25eef4ecd207bc14",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Notebook-03-AJAX.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Notebook-03-AJAX"
+            }
+          },
+          {
+            "id": "52dbd89efa3260a4",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Notebook-06-Git.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Notebook-06-Git"
+            }
+          },
+          {
+            "id": "c6a742b74de5513a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Notebook-01-H5C3.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Notebook-01-H5C3"
+            }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -158,13 +199,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Notebook-02-JavaScript.md",
+                "file": "Notebook-07-Vue.md",
                 "followCursor": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Notebook-02-JavaScript 的大纲"
+              "title": "Notebook-07-Vue 的大纲"
             }
           }
         ],
@@ -172,8 +213,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 245.5,
-    "collapsed": true
+    "width": 245.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -186,10 +226,12 @@
       "bases:创建新数据库": false
     }
   },
-  "active": "35ae3a69f517048b",
+  "active": "ae4652454078d784",
   "lastOpenFiles": [
-    "Notebook-07-Vue.md",
     "Notebook-02-JavaScript.md",
-    "Notebook-01-H5C3.md"
+    "Notebook-03-AJAX.md",
+    "Notebook-01-H5C3.md",
+    "Notebook-07-Vue.md",
+    "Notebook-06-Git.md"
   ]
 }

@@ -3555,7 +3555,7 @@ export default {
 
 ### 默认插槽
 
-**概念**：默认插槽是最基础的插槽类型，用于在组件中预留一个内容插入位置，父组件可以向这个位置传入任意内容。
+**概念**：默认插槽是最基础的插槽类型，用于在组件中预留**一个内容插入位置**，父组件可以向这个位置传入任意内容。
 
 **模板语法**：
 
@@ -7544,10 +7544,62 @@ defineOptions({
 
 **概念**：defineModel 是 Vue 3.4 新增的宏函数，用于简化自定义组件中 v-model 的实现。
 
-**传统 v-model 实现**：
+**Vue3 中传统 v-model 实现**：`:modeValue & @update:modelValue` **双边**
 1. 定义一个名为 `modelValue` 的 prop
 2. 定义一个名为 `update:modelValue` 的 emit
 3. 在需要更新时触发该事件
+
+参考“大事件”中的v-model实现：
+```vue
+<script setup>
+import channelSelect from './components/channelSelect.vue'
+
+// 获取文章列表-请求参数
+const params = ref({
+  pagenum: 1,
+  pagesize: 5,
+  cate_id: '',
+  state: ''
+})
+</script>
+
+<template>
+<!-- Vue 3.4 前的 v-model → :modelValue和@update:modelValue 的结合
+(两边都要拆解/命名统一, modelValue是默认命名，可以自由命名) -->
+<channelSelect
+  :modelValue="params.cate_id"
+  @update:modelValue="(val) => (params.cate_id = val)">
+</channelSelect>
+<!-- 以上，相当于： -->
+<!-- <channelSelect v-model="params.cate_id"></channelSelect> -->
+</template>
+```
+
+```vue
+<script setup> 
+// v-model 绑定
+const props = defineProps({
+  modelValue: [String, Number]
+})
+
+const emit = defineEmits(['update:modelValue'])
+</script>
+
+<template>
+<!-- v-model 绑定，同样要拆开 :modelValue 和 @update:modelValue 事件 -->
+<el-select 
+:modelValue="props.modelValue" 
+@update:modelValue="emit('update:modelValue', $event)">
+
+ <el-option
+  v-for="channel in channelList"
+  :key="channel.id"
+  :label="channel.cate_name"
+  :value="channel.id">
+ </el-option>
+</el-select>
+</template>
+```
 
 **defineModel 优势**：
 1. 父组件可以直接通过 v-model 绑定数据
