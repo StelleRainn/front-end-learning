@@ -213,7 +213,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 245.5
+    "width": 463.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -228,10 +228,10 @@
   },
   "active": "ae4652454078d784",
   "lastOpenFiles": [
-    "Notebook-02-JavaScript.md",
-    "Notebook-03-AJAX.md",
     "Notebook-01-H5C3.md",
+    "Notebook-06-Git.md",
     "Notebook-07-Vue.md",
-    "Notebook-06-Git.md"
+    "Notebook-02-JavaScript.md",
+    "Notebook-03-AJAX.md"
   ]
 }

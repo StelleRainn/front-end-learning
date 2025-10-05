@@ -4130,7 +4130,7 @@ const router = new VueRouter({
 
 #### **路由传参的两种方式**：
 
-##### 方式一：查询参数传参
+##### 查询参数传参 (query)
 
 **特点**：
 - 参数会显示在 URL 的 `?` 后面
@@ -4168,23 +4168,12 @@ const router = new VueRouter({
 })
 ```
 
-##### 方式二：动态路由传参
+##### 动态路由传参 (params)
 
 **特点**：
 - 参数是路径的一部分
 - 适合传递必需参数
 - URL 更简洁美观
-
-**路由配置**：
-```javascript
-// 需要在路由规则中配置参数占位符
-const router = new VueRouter({
-  routes: [
-    // :words 是参数占位符
-    { path: '/search/:words', component: Search }
-  ]
-})
-```
 
 **传参语法**：
 ```html
@@ -4206,6 +4195,16 @@ export default {
 }
 ```
 
+**路由配置**：
+```javascript
+// 需要在路由规则中配置参数占位符
+const router = new VueRouter({
+  routes: [
+    // :words 是参数占位符
+    { path: '/search/:words', component: Search }
+  ]
+})
+```
 ##### 两种方式对比
 
 | 对比项 | 查询参数 | 动态路由 |
@@ -4429,7 +4428,7 @@ export default router
 
 **核心方法**：`this.$router.push()`
 
-##### 方式一：路径跳转
+##### 路径跳转 (path)
 
 **简写形式**：
 ```javascript
@@ -4445,7 +4444,7 @@ this.$router.push({ path: '/search' })
 this.$router.push({ path: '/home' })
 ```
 
-##### 方式二：路由名字跳转
+##### 路由名字跳转 (name)
 
 **前提条件**：路由规则中需要配置 `name` 属性
 ```javascript
@@ -4472,11 +4471,9 @@ this.$router.push({ name: 'home' })
 
 #### 编程式导航传参
 
-**重要原则**：编程式导航的两种跳转方式都支持传参，但传参方式有所不同。
+**重要原则**：编程式导航的两种跳转方式都各自支持 **查询参数传参** 和 **动态路由传参**，但传参方式有所不同。
 
-##### path路径跳转传参
-
-**1. 路径跳转 + 查询参数**：
+##### **1. 路径跳转 + 查询参数** （path+query对象）
 ```javascript
 // 简写方式：直接在路径中拼接查询参数
 this.$router.push('/search?key=黑马')
@@ -4490,7 +4487,7 @@ this.$router.push({
 })
 ```
 
-**2. 路径跳转 + 动态传参**：
+##### **2. 路径跳转 + 动态传参**（path拼接）
 ```javascript
 // 简写方式：直接在路径中拼接参数
 this.$router.push('/search/黑马')
@@ -4505,9 +4502,8 @@ this.$router.push({
 })
 ```
 
-##### name名字跳转传参
 
-**1. 名字跳转 + 查询参数**：
+##### **3. 名字跳转 + 查询参数**（name + query）
 
 ```javascript
 this.$router.push({
@@ -4518,7 +4514,7 @@ this.$router.push({
 })
 ```
 
-**2. 名字跳转 + 动态传参**：
+##### **4. 名字跳转 + 动态传参**：（name + params）
 ```javascript
 this.$router.push({
   name: 'search',
