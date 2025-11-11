@@ -10,6 +10,108 @@
 4. 无语义标签div和span。
 5. 字符实体（`&nbsp;`、`&lt;`、`&gt;`、`&amp;`）。
 
+```html
+<!-- 1. 基本的标签, 注释, 标题标签, 段落标签, 换行/水平线, 文本格式标签, 超链接标签, 多媒体 -->
+<!-- 这是一个注释 -->
+<h1>这是一个一级标题</h1>
+<p>这是一个段落。
+<b>这是加粗文本。</b>
+<i>这是斜体文本。</i>
+<u>这是带下划线的文本。</u>
+<q>引用文本</q>
+<code>代码文本</code>
+</p>
+<hr>
+<a href="https://www.google.com" target="_blank">这是一个超链接</a> 
+<br>
+<audio src="audio.mp3" controls loop autoplay></audio>
+<img src="image.jpg" alt="示例图片" width="100"> // 宽度和高度为纯数字
+<video src="video.mp4" width="320" height="240" controls loop muted autoplay></video> // 宽高为纯数字，不带单位
+
+<!-- 2. 列表, 表格, 表单 -->
+<h2>列表</h2>
+<h3>有序列表</h3>
+<ol>
+  <li>第一项</li>
+  <li>第二项</li>
+</ol>
+<h3>无序列表</h3>
+<ul>
+  <li>项目A</li>
+  <li>项目B</li>
+</ul>
+<h3>定义列表</h3>
+<dl>
+  <dt>HTML</dt>
+  <dd>超文本标记语言</dd>
+</dl>
+
+<h2>表格</h2>
+<table border="1">
+  <caption>表格标题</caption>
+  <thead>
+    <tr>
+      <th>表头1</th>
+      <th>表头2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>单元格1</td>
+      <td>单元格2</td>
+    </tr>
+    <tr>
+      <td colspan="2">合并的单元格</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>表单</h2>
+<form>
+  <!-- 文本框和标签 -->
+  <label for="username">用户名:</label>
+  <input type="text" id="username" name="username"><br><br>
+
+  <!-- 单选按钮 -->
+  <p>请选择性别:</p>
+  <input type="radio" id="male" name="gender" value="male">
+  <label for="male">男</label><br>
+  <input type="radio" id="female" name="gender" value="female">
+  <label for="female">女</label><br><br>
+
+  <!-- 复选框 -->
+  <p>请选择你的爱好:</p>
+  <input type="checkbox" id="hobby1" name="hobby1" value="reading">
+  <label for="hobby1">阅读</label><br>
+  <input type="checkbox" id="hobby2" name="hobby2" value="sports">
+  <label for="hobby2">运动</label><br><br>
+
+  <!-- 下拉列表 -->
+  <label for="cars">选择一辆车:</label>
+  <select id="cars" name="cars">
+    <option value="volvo">沃尔沃</option>
+    <option value="saab">萨博</option>
+    <option value="mercedes">梅赛德斯</option>
+    <option value="audi">奥迪</option>
+  </select><br><br>
+
+  <!-- 3. 按钮 -->
+  <button type="button">普通按钮</button>
+  <button type="submit">提交按钮</button>
+  <button type="reset">重置按钮</button>
+</form>
+
+<!-- 4. 无语义标签 -->
+<div>这是一个div块</div>
+<span>这是一个span</span>
+
+<!-- 5. 字符实体 -->
+<p>这是一个空格：&nbsp;</p>
+<p>小于号：&lt;</p>
+<p>大于号：&gt;</p>
+<p>和号：&amp;</p>
+```
+
 ### 小重点
 
 1. 使用`label`标签增强用户体验。
@@ -52,16 +154,22 @@
    div.p { color: purple; }  /*选择所有div且类名为p的元素。*/
    ```
 
-5. 伪类选择器（如`:hover`、`:first-child`、等）
+5. 伪类选择器（如`:hover`、结构伪类`:first-child`、等）
    ```css
    a:hover { color: orange; } /*当鼠标悬停在链接上时改变颜色。*/
    ```
    ***P.S. 超链接的一些伪类: a:link、a:visited、a:hover、a:active***
+   
 
 6. 伪元素选择器（如`::before`、`::after`）
    ```css
    p::before { content: "Note: "; color: gray; } /*在每个p元素前添加文本。*/
    ```
+   需注意: 
+   - content属性必写，如果没有内容，保留""。
+   - 伪元素默认是**行内**显示模式 
+   - 权重和标签选择器相同。
+   
 
 7. **属性选择器**（选择具有特定属性的元素）
    ```css
@@ -70,7 +178,7 @@
 
 ### CSS 三大特性
 1. **层叠性**: 多个样式规则可以应用于同一元素, 浏览器会根据特定的优先级规则（如选择器的具体性）来决定最终应用哪个样式。
-2. **继承性**: 某些CSS属性会从父元素继承到子元素, 例如字体和颜色属性。如font-family、color等文字属性会被子元素继承；所以通常可以写在body标签内。
+2. **继承性**: 某些CSS属性会从父元素继承到子元素, 例如字体和颜色属性。如font-family、color等文字属性会被子元素继承；所以通常可以写在body标签内。*含默认样式的标签除外，例如`a`, `h1`等*
 3. **优先级**: CSS规则的优先级由选择器的具体性决定。**!important > 行内样式 > ID选择器 > 类选择器 > 标签选择器 > 通配符 > 继承样式**
 
 *P.S. 如遇复合选择器, 则需计算优先级。*
@@ -95,7 +203,7 @@
 2. `text`系列:
    - `text-align`: 文本对齐方式（左、中、右）
    - `text-indent`: 首行缩进
-   - `text-decoration`: 文本装饰（如下划线）
+   - `text-decoration`: 文本装饰（下划线`underline`, 删除线`line-through`, 上划线`overline`）
    - `text-transform`: 文本转换（如大写、小写）
 
 3. 颜色: 
@@ -117,7 +225,7 @@
    - **特殊写法2**:写关键字的顺序可以颠倒；
 5. `background-size`: 背景图像大小, e.g. `background-size: cover;`（覆盖整个元素, 可能图片不全）或 `contain`（保持比例缩放以适应元素, 可能背景留空）。
 6. `background-attachment`: 背景图像的滚动方式（如`scroll`、`fixed`、`local`）
-7. `background`: 复合属性, 包含上述所有背景属性。**不区分顺序, 但若需缩放, 则: `位置/缩放`。
+7. `background`: 复合属性, 包含上述所有背景属性。*不区分顺序, 但若需缩放, 则: `位置/缩放`*。
 
 ### 盒模型
 
@@ -137,6 +245,10 @@
        border: 0;
        box-sizing: border-box;
    }
+   
+   li {
+     list-style: none;
+   }
    ```
    
 2. `overflow`: 控制盒子内容溢出, 取值包括`hidden`、`scroll`、`auto`； 
@@ -155,7 +267,7 @@
    - `取消子级margin, 设置父级padding`；
    - `为父级添加overflow:hidden`；
    - `为父级添加border-top`；
-7. 行内元素的内外边距问题: 默认情况下, 垂直方向不会受到影响； 
+1. 行内元素的内外边距问题: 默认情况下, 垂直方向不会受到`margin`或`padding`影响； 添加`line-height`属性可以改变垂直位置方向。
 
 ### 浮动 float
 
@@ -177,7 +289,7 @@
    - `justify-content`: 主轴对齐方式（如`flex-start`、`flex-end`、`center`、`space-between`、`space-around`）。
    - `align-items`: 侧轴（交叉轴）对齐方式（如`center`、`stretch`、`flex-start`、`flex-end`、`center`、`baseline`）。
      - 使用`align-items`前, 记得指定`height`, 否则无法生效。
-   - `align-self`: 单个子元素的侧轴对齐方式（覆盖`align-items`）。
+   - `align-self`: 单个子元素的侧轴对齐方式（覆盖`align-items`, 给**弹性盒子**设置）。
    - `align-content`: 多行对齐方式（如`center`、`space-between`、`space-around`、`flex-start`、`flex-end`、`space-evenly`、`stretch`）。
    - `flex: 1 | 2 | 3 | ...`: 子元素的伸缩比例, 表示在剩余空间中分配的比例。
 
@@ -196,13 +308,13 @@ P.S. flex布局中, 子元素会变成弹性盒子, 因此对于`a`, 不用刻�
      - `fixed`
         - 基于浏览器视口
         - 完全脱标, 后续元素会顶上来, 可能需要为其他元素添加margin或使用空白盒子占位
-        - 转变为行内块, 需要手动处理「宽度变窄」（设置width:100%）
+        - 转变为**行内块**, 需要手动处理「宽度变窄」（设置width:100%）
      - `sticky`
-        - 基于最近的滚动父容器
+        - 基于最近的**滚动父容器**
         - 半脱离文档流, 仍然占位
         - 保留块级特性, 不一定需要设置宽度
         - 必须指定 top、bottom、left 或 right 中的一个, 不然不起作用。
-        - 父容器要有滚动（overflow: auto 或 scroll）, 而且父容器高度要大于 sticky 元素本身。
+        - **父容器要有滚动（overflow: auto 或 scroll）**, 而且父容器高度要大于 sticky 元素本身。
 
 2. `top`、`right`、`bottom`、`left`: 定位偏移量, 取数字px或百分比值, 配合`position`使用。（必需）
 3. `z-index`: 层叠顺序, 数值越大, 元素越靠上层。**注意**: 只有定位元素（`position`非`static`）才会生效。

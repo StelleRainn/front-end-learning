@@ -41,7 +41,7 @@
   - `Boolean`: 布尔类型, 只有两个值: `true`和`false`。
   - `Null`: 空值, 表示变量没有值。（将null作为尚未创建的对象）
   - `Undefined`: 未定义, 表示变量已声明但未赋值。
-  - *`undefined`与`null`不同,  例如同样 `+1` 操作, 前者返回`NaN`, 后者返回`1`*
+	  - *`undefined`与`null`不同,  例如同样 `+1` 操作, 前者返回`NaN`, 后者返回`1`*
   - `Symbol`: ES6新增的唯一值类型, 用于创建唯一标识符。
 
 #### 数据类型检测
@@ -118,10 +118,10 @@ console.log(obj1.age); // 31, obj1也被修改了
    - **短路求值(逻辑中断)**: 在逻辑运算中, 如果第一个操作数已经决定了结果, 则不会计算第二个操作数。
      - e.g. `console.log(false || 'Hello') // Hello`
      - e.g. `console.log(true && 'Hello') // Hello`
-   - **逻辑运算符的返回值**: `&&`返回第一个假值或最后一个真值；`||`返回第一个真值或最后一个假值。判断的是真假（布尔）, 但返回的是这个值本身.
+   - **逻辑运算符的返回值**: `&&`返回第一个假值或最后一个真值；`||`返回第一个真值或最后一个假值。**判断的是真假（布尔）, 但返回的是这个值本身**.
      - e.g. `console.log(0 && 'Hello') // 0`
      - e.g. `console.log('Hello' || 0) // Hello`
-```javascript
+```**javascript**
 function f(x, y) {
 x = x || 0
 y = y || 0
@@ -236,7 +236,7 @@ while (条件) {
 
 #### 数组基础知识
 
-- **数组**: 使用方括号`[]`定义的有序数据集合。
+- **数组**: 使用方括号`[]`定义的**有序**数据集合。
 ```javascript
 let array = [data1, data2, 'data3', 4, true]; // 数组可以包含不同类型的数据, 甚至嵌套数组。
 let array2 = new Array(1, 2, 3); // 另一种创建数组的方式
@@ -250,19 +250,36 @@ console.log(array.length); // 输出数组长度
 
 - **数组的增删改方法**: 
   - 增: 
-    - `push(元素)`: 在数组末尾添加一个或多个元素。返回新数组的长度。
-    - `unshift(元素)`: 在数组开头添加一个或多个元素。同样返回新数组的长度。
+    - `push(元素)`: 在数组末尾添加一个或多个元素。**返回新数组的长度**。
+    - `unshift(元素)`: 在数组开头添加一个或多个元素。**同样返回新数组的长度**。
     - `splice(位置, 0, 元素)`: 在指定位置添加一个或多个元素。
   - 删: 
-    - `pop()`: 删除数组末尾的元素, 返回被删除的元素。
-    - `shift()`: 删除数组开头的元素, 返回被删除的元素。
+    - `pop()`: 删除数组末尾的元素, **返回被删除的元素**。
+    - `shift()`: 删除数组开头的元素, **返回被删除的元素**。
     - `splice(位置, 数量)`: 从指定位置删除指定数量的元素。`数量`无参时, 删除到末尾。
   - 改: 即修改数组元素的值, 直接使用索引访问并赋值。
     - `array[index] = newValue;`: 将指定索引的元素修改为新值。
 
+```javascript
+let arr = ['a', 'b', 'c'];
+
+// 增
+arr.push('d'); // arr is now ['a', 'b', 'c', 'd']
+arr.unshift('x'); // arr is now ['x', 'a', 'b', 'c', 'd']
+arr.splice(2, 0, 'y'); // arr is now ['x', 'a', 'y', 'b', 'c', 'd']
+
+// 删
+arr.pop(); // returns 'd', arr is now ['x', 'a', 'y', 'b', 'c']
+arr.shift(); // returns 'x', arr is now ['a', 'y', 'b', 'c']
+arr.splice(1, 2); // returns ['y', 'b'], arr is now ['a', 'c']
+
+// 改
+arr[0] = 'A'; // arr is now ['A', 'c']
+```
+
 #### 常用数组方法
 
-- **map()**: 对数组中的每个元素执行指定函数(遍历+处理), **返回新数组**。
+- **map()**: 对数组中的每个元素**执行**指定函数(遍历+处理), **返回新数组**。
 
 ```javascript
 const newArr = arr.map(function (ele, index) {
@@ -281,7 +298,7 @@ console.log(newArr.join('')) // redColorblueColorgreenColor 参数为空字符�
 console.log(newArr.join('|')) // redColor|blueColor|greenColor
 ```
 
-- **forEach()**: 遍历数组中的每个元素, 执行指定函数, 但**不返回新数组**。
+- **forEach()**: **遍历**数组中的每个元素, **执行**指定函数, 但**不返回新数组**。
 
 ```javascript
 const arr = ['red', 'blue', 'green'];
@@ -297,7 +314,7 @@ const filteredArr = arr.filter((element, index, array) => element > 2); // 筛�
 
 ### 函数
 
-#### 函数定义声明与调用
+#### 具名函数（函数声明）
 
 使用`function`关键字定义函数。使用函数名和括号调用函数。
 ```javascript
@@ -330,13 +347,13 @@ let min = f(x)[1]
 - **出现相同函数名时**: 后面的函数会覆盖前面的函数。不管在哪儿调用函数, 都会以后面的为准。
 
 - **实参和形参数目不匹配**: 
-  - 若实参多于形参, 则多余的实参被舍弃, 不参与运算。函数可以输出前面参数的运算结果
+  - 若实参多于形参, 则**多余的实参被舍弃**, 不参与运算。函数可以输出前面参数的运算结果
   - 若实参少于形参, 则形参出现`undefined`, 导致出现`NaN`结果
 
 - **作用域**: 分为全局作用域与局部作用域, 由此引申出全局变量与局部(函数)变量
   - 特殊情况1: 在**函数内部未声明变量而赋值**, 该变量会成为全局变量。*强烈不建议此情况的出现*
   - 特殊情况2: 形参可以看作是一种局部变量
-  - 不同作用域中同名变量的访问原则: 就近——从当前作用域开始寻找；若无, 则向上查找父作用域, 直到全局作用域。 e.g. 
+  - 不同作用域中**同名变量**的访问原则: 就近——从当前作用域开始寻找；若无, 则向上查找父作用域, 直到全局作用域。 e.g. 
 ```javascript
 let x =10
 function f3() {
@@ -384,7 +401,7 @@ console.log(re) // 30
 !function(){...} () // 也OK
 ```
 
-#### 函数动态参数 arguments
+#### 函数动态参数 Arguments对象
 
 **本质: 伪数组, 并且只能存在于函数中**。可以接受多个参数。
 - **访问方式**: 使用`arguments[index]`访问参数, `arguments.length`获取参数个数。
@@ -421,6 +438,11 @@ console.log(getSum(2, 3)) // 5
 console.log(getSum(2, 3, 4, 5, 6)) // 20
 ```
 
+**对比总结**
+
+- 剩余参数只包含那些**没有对应形参的实参**，而 `arguments` 对象包含了传给函数的**所有实参**。
+- `arguments`对象不是一个真正的数组，而剩余参数是真正的 [`Array`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array)实例，也就是说你能够在它上面直接使用所有的数组方法，比如 [`sort`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)，[`map`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/map)，[`forEach`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)或[`pop`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)。
+
 #### 展开运算符
 
 可以将数组展开；注意区分剩余参数。典型应用场景包括数组求最值、合并数组等: 
@@ -433,11 +455,14 @@ const arr2 = [4, 5, 6]
 console.log([...arr1, ...arr2]) // [1, 2, 3, 4, 5, 6] // 合并数组
 ```
 
+
 #### 箭头函数
 
 箭头函数是ES6新增的简洁函数语法, 使用`=>`符号定义。
 
-**语法**: `(参数1, 参数2) => { 函数体 }`。若只有一个参数, 可以省略括号；若函数体只有一行代码, 可以省略大括号和`return`关键字。
+**语法**: `(参数1, 参数2) => { 函数体 }`。
+- 若只有一个参数, 可以省略括号；
+- 若函数体只有一行代码, 可以省略大括号和`return`关键字。
 
 适用于那些需要匿名函数的地方；不绑定this；属于表达式函数, 不存在变量提升。
 
@@ -472,7 +497,7 @@ console.log(f3('Rainn')) // {uname: 'Rainn'}
 
 **箭头函数中的this**
 
-箭头函数没有自己的`this`, 它会捕获定义时的`this`值, 作为自己的`this`。因此, 箭头函数不能用作构造函数, 也不能使用`arguments`对象。
+箭头函数没有自己的`this`, 它会捕获定义时的`this`值, 作为自己的`this`。因此, 箭头函数不能用作构造函数（下文提及）, 也不能使用`arguments`对象。
 
 简单来说: 箭头函数本身不生成`this`；如果在内部使用了`this`关键字, 它会沿着「作用域链」在上一级寻找`this`。 e.g. 
 
@@ -507,9 +532,11 @@ obj2.sayHi() // obj, fn上一级作用域（obj的sayHi函数中）有this, 所�
 
 #### 对象基础知识
 
-- **对象**: 使用花括号`{}`定义的无序数据集合, 包含键值对（属性和方法）。
+##### 定义
+ 
+使用花括号`{}`定义的无序数据集合, 包含键值对（属性和方法）。
 
-- **对象的声明**: 
+##### 对象的声明
 
 1. 使用花括号字面量创建对象, 键值对用逗号分隔。键名可以是字符串或符号, 若是字符串, 则可以不加引号, 但不推荐这么做。
 
@@ -555,7 +582,8 @@ function Student(name, age, gender) {
 console.log(new Student('rainn', '21', 'male'))
 ```
 
-- **对象的构成**: 
+##### 对象的构成
+
   - **属性**: 键值对中的键, 表示对象的特征或状态。**属性名: 属性值**
   - **方法**: 键值对中的值为函数, 表示对象的行为或操作。**方法名: 函数体**
   - 各属性、方法之间用逗号分隔, 最后一个属性后面不需要逗号。 e.g. 
@@ -569,8 +597,9 @@ let person = {
 };
 ```
 
-- **增删改查与方法的调用**: 
-  - **访问属性**: 使用点语法`obj.属性名`或方括号语法`obj['属性名']`。其中方括号方法的引号是必须的；另外方括号语法可以使用变量名来访问属性。
+##### 增删改查与方法的调用
+
+  - **访问属性**: **使用点语法`obj.属性名`或方括号语法`obj['属性名']`**。其中方括号方法的引号是必须的；另外方括号语法可以使用变量名来访问属性。
   - **修改属性**: 直接赋值`obj.属性名 = 新值;`。
   - **添加属性**: 直接赋值新属性`obj.新属性名 = 值;`。
   - **删除属性**: 使用`delete obj.属性名;`。
@@ -586,7 +615,7 @@ for (let key in obj) {
 ```
 
 
-- **实例成员 & 静态成员**
+##### 实例成员 & 静态成员
 
 1. **实例成员**
 
@@ -622,23 +651,50 @@ Stu.sayHi() // 指向Stu函数
 
 #### 常用对象
 
-- **内置数学对象**: JavaScript提供了内置的`Math`对象, 包含常用的数学常量和函数。
-  - 常用属性: `Math.PI`（圆周率）, `Math.E`（自然对数的底数）。
-  - 常用方法: `Math.abs(x)`（绝对值）, `Math.max(a, b, ...)`（返回最大值）, `Math.min(a, b, ...)`（返回最小值）, `Math.round(x)`（四舍五入）, `Math.random()`（生成[0,1)之间的随机小数）。
-    - Math.random()生成的随机数是[0,1)之间的浮点数, 若需要生成[min, max]范围内的随机整数, 可以使用`Math.floor(Math.random() * (max - min + 1)) + min`。
+##### 内置数学对象
 
-- **JSON对象**: JavaScript对象表示法（JSON）是一种轻量级的数据交换格式。属性和值有引号, 而且引号统一是双引号。
-  - `JSON.stringify(obj)`: 将JavaScript对象转换为JSON字符串。
-  - `JSON.parse(jsonString)`: 将JSON字符串转换为JavaScript对象。
+JavaScript提供了内置的`Math`对象, 包含常用的数学常量和函数。
 
-- **日期对象**: JavaScript提供了`Date`对象, 用于处理日期和时间。
-  - 创建日期对象: `new Date()`（当前时间）, `new Date(时间戳)`（指定时间戳）, `new Date(年, 月, 日, 时, 分, 秒)`（指定具体时间）。
-  - 时间戳: 自1970年1月1日以来的毫秒数, 三种获取方式: 
-    - `Date.now()`: 返回当前时间的时间戳。
-    - `new Date().getTime()`: 返回当前时间的时间戳。
-    - `+new Date()`: 将当前时间转换为时间戳。
-  - 格式化: `toLocaleString()`（本地化字符串）。
-  - 常用方法: 包括但不限于以下例子, 注意`getMonth`和`getDay`的返回值是从0开始的。
+| 属性或方法 | 说明 | 示例 |
+|------|------|------|
+| `Math.PI` | 圆周率 | `Math.PI // 3.141592653589793` |
+| `Math.E` | 自然对数的底数 | `Math.E // 2.718281828459045` |
+| `Math.abs(x)` | 绝对值 | `Math.abs(-3) // 3` |
+| `Math.max(a, b, ...)` | 返回最大值 | `Math.max(1, 5, 2) // 5` |
+| `Math.min(a, b, ...)` | 返回最小值 | `Math.min(1, 5, 2) // 1` |
+| `Math.round(x)` | 四舍五入 | `Math.round(4.6) // 5` |
+| `Math.random()` | 生成 [0,1) 之间的随机小数 | `Math.random() // 0.123...` |
+
+_Math.random()生成的随机数是\[0,1)之间的浮点数, 若需要生成\[min, max\]范围内的随机整数, 可以使用:_
+  
+```JavaScript
+Math.floor(Math.random() * (max - min + 1)) + min
+```
+
+##### JSON对象
+
+JavaScript 对象表示法（JSON）是一种轻量级的数据交换格式。属性和值有引号, 而且引号统一是双引号。
+
+- `JSON.stringify(obj)`: 将JavaScript对象转换为JSON字符串。
+- `JSON.parse(jsonString)`: 将JSON字符串转换为JavaScript对象。
+
+##### 日期对象
+
+JavaScript提供了`Date`对象, 用于处理日期和时间。
+
+- 创建日期对象: 
+  - `new Date()`（当前时间）
+  - `new Date(时间戳)`（指定时间戳）
+  - `new Date(年, 月, 日, 时, 分, 秒)`（指定具体时间）。
+
+- 时间戳: 自1970年1月1日以来的毫秒数, 三种获取方式: 
+  - `Date.now()`: 返回当前时间的时间戳。
+  - `new Date().getTime()`: 返回当前时间的时间戳。
+  - `+new Date()`: 将当前时间转换为时间戳。
+
+- 格式化: `toLocaleString()`（本地化字符串）。
+
+- 常用方法: 包括但不限于以下例子, 注意`getMonth`和`getDay`的返回值是从0开始的。
 ```javascript
 console.log(date.getFullYear()) // 2025 年 数字型
 console.log(date.getMonth() + 1) // 0 ~ 11, +1为实际月份
@@ -652,7 +708,7 @@ console.log(date.getDay() + 1) // 0 ~ 6, +1为实际星期几
 #### Object系列
   - `Object.keys(obj)`: 返回对象的所有属性名组成的**数组**。
   - `Object.values(obj)`: 返回对象的所有属性值组成的**数组**。
-  - `Object.entries(obj)`: 返回对象的所有键值对组成的二维数组。
+  - `Object.entries(obj)`: 返回对象的所有键值对组成的**二维数组**。
   - `Object.assign(target, ...sources)`: 将源对象的属性复制到目标对象, 返回目标对象。
 
 ```javascript
@@ -665,31 +721,42 @@ Object.assign(newObj, {school: 'GDUFS'}) // 追加
 
 已经学习过的一些**实例方法**: 
 
-1. **forEach**方法: 遍历数组: 
+- **forEach**方法: 遍历数组: 
 
 ```javascript
 arr.forEach(function (current) {...}) 
+arr.forEach( curr => console.log(curr))
 ```
 
-2. **filter**方法: 遍历并做条件过滤, 将符合条件的元素加入到新数组并返回该数组: 
+- **filter**方法: 遍历并做条件过滤, 将符合条件的元素加入到新数组并**返回该数组**: 
 
 ```javascript
 arr.filter(function (current) {...})
+arr.filter( curr => curr > 0)
 ```
 
-3. **map**方法: 遍历与迭代处理, 返回处理后的新数组: 
+- **map**方法: 遍历与迭代处理, **返回处理后的新数组**: 
 
 ```javascript
 arr.map(function (current) {...})
+arr.map( curr => curr * 2)
+```
+
+- **join**方法: 将数组元素拼接成一个字符串, **返回字符串**。参数即拼接方式, 默认逗号。
+```javascript
+console.log(arr.join('/'))
+console.log(typeof arr.join()) // string
 ```
 
 **新方法: **
 
-4. **reduce**方法: 返回累计处理的结果, 常用于求和操作等;
-    1. 参数: 回调函数, 起始值。
-    2. 回调函数中, 至少包含prev和current两个值；
-    3. 如果没有起始值, 则默认以数组第一个元素作为起始值。 p.s. 注意一个细节: 第一个元素未必是个数值, 所以建议至少填入起始值0。
-    4. 注意: 每次循环（包括首次）, **当前元素**的位置都在current上；prev可以理解为**累计值**, 每次循环后, 都会把当前return结果作为prev传递给下一次循环。
+- **reduce**方法: 返回**累计处理**的结果, 常用于**求和**操作等;
+
+  1. 参数: 回调函数, 起始值。
+  2. 回调函数中, 至少包含prev和current两个值；
+  3. 如果没有起始值, 则默认以数组第一个元素作为起始值。 
+      _p.s. 注意一个细节: 第一个元素未必是个数值(例如，遍历对象数组), 所以建议至少填入起始值0。_
+  4. 注意: 每次循环（包括首次）, **当前元素**的位置都在current上；prev可以理解为**累计值**, 每次循环后, 都会把当前return结果作为prev传递给下一次循环。
 
 ``````javascript
 const total = arr.reduce(function (previousValue, currentValue) {
@@ -701,31 +768,24 @@ const tot = arr.reduce((prev, current) => prev + current, 10)
 const totalSalary = array.reduce((prev, current) => prev + current.salary, 0)
 ``````
 
-5. **join**方法: 将数组元素拼接成一个字符串, 返回字符串。参数即拼接方式, 默认逗号。
-
-```javascript
-console.log(arr.join('/'))
-console.log(typeof arr.join()) // string
-```
-
-6. **find方法**: 返回数组中满足提供的测试函数的第一个元素的值。否则返回 undefined。
+- **find**方法: 返回数组中满足提供的测试函数的**第一个**元素的值。否则返回 **undefined**。
 
 ```javascript
 // find(callbackFn(element, index, array), thisArg)
 const apple = phones.find(value => value.name === 'Apple')
 ```
 
-7. **every**方法: 测试一个数组内的**所有元素**是否能通过指定函数的测试。返回一个布尔值。
+- **every**方法: 测试一个数组内的**所有元素**是否能通过指定函数的测试。返回一个**布尔值**。
 
 ```javascript
 console.log(numbers.every((value) => value >= 1)) // true
 ```
 
-8. **some**方法: 和every接近, 但只要有一个元素通过测试, 就能返回`true`。
+- **some**方法: 和every接近, 但只要有**一个元素**通过测试, 就能返回`true`。
 
 **静态方法from: 将伪数组转换为真数组**: 
 
-9. **Array.from(伪数组序列)**: 
+- **Array.from(伪数组序列)**: 
 
 ```javascript
 const list = document.querySelectorAll('ul li')
@@ -792,6 +852,8 @@ console.log(typeof number.toString())
 
 ### 处理this
 
+#### this的指向
+
 1. 普通函数中的`this`: **谁调用, this的值就指向谁**。
 
 ```js
@@ -843,14 +905,18 @@ fn.call(obj, 1, 2) // {name: 'rainn'} 3
 // function.call(thisArg, [参数1, ..., 参数n])
 // 必须以数组的方式传递其他参数
 // 也可以改变this的指向, 其他参数以数组的形式传入
-  fn.apply(obj, [1, 2])
+fn.apply(obj, [1, 2])
 
 // 使用场景: 求数组最大值
 const arr = [1, 2, 3]
-const max = Math.max.apply(Math, arr) // max方法本身只接受(1,2,3)这样的数据
+const max = Math.max.apply(Math, arr) 
+// max方法本身只接受(1,2,3)这样的数据
+// arr可以是任何类数组对象，有length属性即可，相当于被展开运算符展开了
 ```
 
 3. **bind()**方法: **创建一个新函数**（对原函数的拷贝, 同时改变了this的指向）, 并指定`this`的值。返回的新函数可以在以后调用。
+
+_MDN原话: 创建一个新函数，当调用该新函数时，它会调用原始函数并将其 this 关键字设置为给定的值，同时，还可以传入一系列指定的参数，这些参数会插入到调用新函数时传入的参数的前面。_
 
 ```javascript
 // function.bind(this语句, 参数1, 参数2...)

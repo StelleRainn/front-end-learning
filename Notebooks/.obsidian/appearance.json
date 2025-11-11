@@ -1,1 +1,7 @@
-{}
+{
+  "monospaceFontFamily": "SF Mono,PingFang MO",
+  "textFontFamily": "",
+  "translucency": true,
+  "baseFontSize": 16,
+  "cssTheme": "Things"
+}

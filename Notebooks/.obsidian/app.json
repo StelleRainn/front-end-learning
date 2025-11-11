@@ -1,1 +1,7 @@
-{}
+{
+  "livePreview": false,
+  "readableLineLength": false,
+  "showLineNumber": true,
+  "alwaysUpdateLinks": true,
+  "strictLineBreaks": false
+}
