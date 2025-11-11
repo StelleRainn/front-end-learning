@@ -4128,7 +4128,7 @@ const router = new VueRouter({
 - 根据参数显示不同内容
 - 实现动态路由功能
 
-#### **路由传参的两种方式**：
+#### **路由传参的两种方式**
 
 ##### 查询参数传参 (query)
 
@@ -4473,7 +4473,7 @@ this.$router.push({ name: 'home' })
 
 **重要原则**：编程式导航的两种跳转方式都各自支持 **查询参数传参** 和 **动态路由传参**，但传参方式有所不同。
 
-##### **1. 路径跳转 + 查询参数** （path+query对象）
+##### **1. 路径跳转 + 查询参数**（path+query对象）
 ```javascript
 // 简写方式：直接在路径中拼接查询参数
 this.$router.push('/search?key=黑马')
@@ -4514,7 +4514,7 @@ this.$router.push({
 })
 ```
 
-##### **4. 名字跳转 + 动态传参**：（name + params）
+##### **4. 名字跳转 + 动态传参**（name + params）
 ```javascript
 this.$router.push({
   name: 'search',
