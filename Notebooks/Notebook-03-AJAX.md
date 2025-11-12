@@ -31,7 +31,7 @@ URL，即统一资源定位符，主要构成：**协议，域名，资源路径
 
 定义：域名后的冒号后面的数字。
 作用：标记服务器的端口号，默认是80（http）或443（https），如果服务器使用了其他端口号，则需要在URL中指定。范围：0-65535，其中1023以下的端口号是**系统保留端口**，不能使用。
-常见几种服务：80（HTTP），443（HTTPS），21（FTP），3306（MySQL），8080（备用HTTP端口）等。
+**常见几种服务：80（HTTP），443（HTTPS），21（FTP），3306（MySQL），8080（备用HTTP端口）等。**
 
 
 ### 查询参数 params
@@ -303,14 +303,14 @@ promise.then(result => {
 `Promise`有三种状态：**pending（等待中）**、**fulfilled（已完成）**和**rejected（已拒绝）**。
 
 1. **pending**: `new Promise()`的初始状态；表示待定，异步操作尚未完成。
-2. **fulfilled**: 异步操作成功完成，调用`resolve()`方法后进入该状态。
-3. **rejected**: 异步操作失败，调用`reject()`方法后进入该状态。
+2. **fulfilled**: 异步操作成功完成，**调用`resolve()`方法后进入该状态**。
+3. **rejected**: 异步操作失败，**调用`reject()`方法后进入该状态**。
 
 **NOTE**：一旦由`pending`变为`fulfilled`或`rejected`状态，就不能再改变状态了。
 
 ```js
 const p = new Promise((resolve, reject) => {
-  console.log('pending状态中的函数会立即执行')
+  console.log('pending状态中的函数会立即执行（同步任务）')
 
   setTimeout(() => {
     // resolve('模拟执行成功')
@@ -332,11 +332,11 @@ p.then(result => {
 
 1. **回调函数地狱**
 
-回调函数地狱，指的是当多个异步操作需要依赖前一个操作的结果时，嵌套的回调函数会导致代码难以阅读和维护。
+回调函数地狱，指的是当**多个异步操作需要依赖前一个操作的结果**时，嵌套的回调函数会导致代码难以阅读和维护。
 
 **可读性差；耦合性严重；异常无法获取。**
 
-2. **Promise的链式调用**
+2. **Promise 的链式调用**
 
 `Promise`通过`then()`方法支持链式调用，可以将多个异步操作串联起来，使代码更清晰易读。
 
@@ -418,7 +418,7 @@ p.then(result => {
 ### 使用XHR和Promise模拟基础axios
 
 ```js
-function myAxios (config) {
+function myAxios (config) { // config: axios 配置对象
   return new Promise((resolve, reject) => {
 
     // Pt.2 支持查询参数
@@ -428,7 +428,7 @@ function myAxios (config) {
       config.url += `?${paramsString}`
     }
 
-    // Pt.1 基础部分
+    // Pt.1 基础部分（XHR的基本使用步骤）
     const xhr = new XMLHttpRequest()
     xhr.open(config.method || 'GET', config.url)
     xhr.addEventListener('loadend', () => {
@@ -452,11 +452,11 @@ function myAxios (config) {
 }
 ```
 
-***结论**：`axios`自身会返回一个`Promise`对象，可以使用`then()`和`catch()`方法处理结果和错误。*
+_**结论**：`axios`自身会返回一个`Promise`对象，可以使用`then()`和`catch()`方法处理结果和错误。_
 
-### async/await
+### async 与 await
 
-`async/await`是ES2017引入的语法糖，用于简化`Promise`的使用，使异步代码更像同步代码。
+`async & await`是ES2017引入的语法糖，用于简化`Promise`的使用，使异步代码更像同步代码。
 
 **概念**：在`async`函数内，使用`await`关键字，获取`Promise`对象"成功状态"结果值
 

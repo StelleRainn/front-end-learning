@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "90850db0258cda36",
+        "id": "72ae9e137fffa39a",
         "type": "tabs",
         "children": [
           {
-            "id": "f7979e79f05cfdc3",
+            "id": "7afd0538852a52d3",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Notebook-02-JavaScript.md",
+                "file": "Notebook-06-Git.md",
                 "mode": "preview",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "Notebook-02-JavaScript"
+              "title": "Notebook-06-Git"
             }
           }
         ]
@@ -95,7 +95,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Notebook-07-Vue.md",
+                "file": "Notebook-02-JavaScript.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -105,7 +105,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Notebook-07-Vue 的反向链接列表"
+              "title": "Notebook-02-JavaScript 的反向链接列表"
             }
           },
           {
@@ -128,8 +128,8 @@
             "state": {
               "type": "tag",
               "state": {
-                "sortOrder": "frequency",
-                "useHierarchy": true,
+                "sortOrder": "alphabetical",
+                "useHierarchy": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
@@ -138,18 +138,18 @@
             }
           },
           {
-            "id": "51bb4748bebe1d8d",
+            "id": "9261a79411c1bc7f",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "Notebook-02-JavaScript.md",
-                "followCursor": true,
+                "file": "Notebook-06-Git.md",
+                "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Notebook-02-JavaScript 的大纲"
+              "title": "Notebook-06-Git 的大纲"
             }
           }
         ],
@@ -157,7 +157,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 407.5
+    "width": 347.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -170,12 +170,18 @@
       "bases:创建新数据库": false
     }
   },
-  "active": "f7979e79f05cfdc3",
+  "active": "7afd0538852a52d3",
   "lastOpenFiles": [
-    "Notebook-01-H5C3.md",
-    "Notebook-02-JavaScript.md",
+    "Notebook-05-Webpack.md",
+    "Notebook-04-Nodejs.md",
+    "Notebook-03-AJAX.md",
     "Notebook-06-Git.md",
     "Notebook-07-Vue.md",
-    "Notebook-03-AJAX.md"
+    "Notebook-01-H5C3.md",
+    "Notebook-02-JavaScript.md",
+    "assets-for-notebook/dimensions-offset.png",
+    "assets-for-notebook/dimensions-client.png",
+    "assets-for-notebook/proto_chains.png",
+    "assets-for-notebook/1676793388695.png"
   ]
 }

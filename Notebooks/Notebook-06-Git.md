@@ -109,11 +109,21 @@ git reset --mixed <commit_id>
 
 3. **硬回退**: 清空工作区和暂存区，完全回退到指定版本。
 
-*hard模式下，回退内容先到暂存区，对比与工作区是否一致（有无存到暂存区），一致则直接删除工作区内容，不一致则保留工作区内容。*
+*hard 模式下，会将 HEAD 指针、暂存区和工作目录完全重置到指定的提交状态。这意味着所有未提交的本地修改（包括已暂存和未暂存的）都将被永久删除。*
 
 ```bash
 git reset --hard <commit_id>
 ```
+
+
+
+### `git reset` 不同模式对比总结
+
+| Reset 模式 | HEAD 指针 | 暂存区 (Index) | 工作目录 (Working Directory) |
+| :--- | :--- | :--- | :--- |
+| `--soft` | 移动到目标 commit | **保留** | **保留** |
+| `--mixed` (默认) | 移动到目标 commit | **重置**为目标 commit 的内容 | **保留** (修改变为未暂存状态) |
+| `--hard` | 移动到目标 commit | **重置**为目标 commit 的内容 | **重置**为目标 commit 的内容 (所有未提交修改将丢失) |
 
 ## Git忽略文件
 
@@ -202,4 +212,59 @@ git pull --rebase <remote_name> <branch_name>
 # 克隆远程仓库到本地
 git clone <remote_url>
 
+```
+
+## 快速查看Git命令表格
+
+```bash
+# === 基本配置与查看 ===
+git config --global user.name "Your Name"  # 设置全局用户名（写入 ~/.gitconfig）
+git config --global user.email ""          # 设置全局邮箱（写入 ~/.gitconfig）
+git config user.name "Your Name"           # 设置当前仓库用户名（仅作用于当前仓库）
+git config user.email ""                   # 设置当前仓库邮箱（仅作用于当前仓库）
+git config --list                          # 查看所有配置（包含系统/全局/本地）
+git ls-files                               # 查看当前仓库被跟踪的文件列表
+
+# === 仓库创建与克隆 ===
+git init                                   # 在当前目录初始化仓库
+git clone <remote_url>                     # 克隆远程仓库到本地
+git clone -b <branch_name> <remote_url>    # 从远程仓库克隆并直接检出指定分支
+
+# === 暂存与提交 ===
+git add <file>                             # 将指定文件加入暂存区
+git add .                                  # 将工作区所有变更加入暂存区
+git commit -m "message"                    # 提交暂存区为一个新版本快照
+
+# === 还原与取消跟踪 ===
+git restore --staged <file>                # 将文件从暂存区移回工作区（取消暂存）
+git restore <file>                         # 丢弃工作区对该文件的未提交修改
+git rm --cached <file>                     # 仅移除跟踪，不删除工作区文件
+
+# === 状态与日志 ===
+git status                                 # 查看详细状态
+git status -s                              # 查看简洁状态（短格式）
+git log --oneline                          # 简化显示提交历史（单行）
+
+# === 回退版本（reset） ===
+git reset --soft <commit_id>               # 回退到提交，仅移动HEAD，保留暂存区与工作区
+git reset --mixed <commit_id>              # 回退到提交，重置暂存区，保留工作区（默认）
+git reset --hard <commit_id>               # 回退到提交，同时重置暂存区与工作区（危险）
+
+# === 分支操作 ===
+git branch                                 # 列出本地分支并标注当前分支
+git branch <branch_name>                   # 基于当前HEAD创建新分支
+git checkout <branch_name>                 # 切换到指定分支
+git checkout -b <branch_name>              # 创建并切换到新分支
+git merge <branch_name>                    # 合并指定分支到当前分支（可能产生冲突）
+git branch -d <branch_name>                # 删除已合并的分支
+
+# === 远程仓库 ===
+git remote add <remote_name> <remote_url>  # 添加远程仓库并命名
+git remote -v                              # 查看远程仓库地址列表
+git remote remove <remote_name>            # 移除远程仓库
+git push -u <remote_name> <branch_name>    # 首次推送并设置上游跟踪
+git push --set-upstream <remote_name> <local_branch_name>:<remote_branch_name>  # 显式设置推送/跟踪分支
+git pull <remote_name> <branch_name>       # 拉取并合并远程分支到当前分支
+git fetch <remote_name> <branch_name> && git merge <remote_name>/<branch_name>  # 先抓取再手动合并
+git pull --rebase <remote_name> <branch_name>  # 拉取并使用变基方式整合历史
 ```

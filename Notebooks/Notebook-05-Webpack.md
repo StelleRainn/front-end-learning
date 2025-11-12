@@ -43,7 +43,7 @@ npm i webpack webpack-cli --save-dev
 
 ## Webpack配置文件
 
-### webpack.config.js基本结构
+### 🌟webpack.config.js基本结构
 
 ```js
 import * as path from 'node:path'
@@ -232,6 +232,7 @@ npm i css-minimizer-webpack-plugin --save-dev
 **配置**:
 
 ```js
+// 优化配置
 optimization: {
   minimizer: [
     '...', // 保留默认minimizer
@@ -291,11 +292,11 @@ theImg.src = imgObj
 document.body.appendChild(theImg)
 ```
 
-## 开发环境配置
+## 🌟开发环境配置
 
 ### webpack-dev-server
 
-**作用**: 搭建开发服务器，提供热更新功能。
+**作用**: 搭建开发服务器，提供**热更新**功能。
 
 **安装**: `npm i webpack-dev-server --save-dev`
 

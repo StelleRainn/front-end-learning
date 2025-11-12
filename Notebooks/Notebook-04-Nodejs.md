@@ -162,7 +162,7 @@ console.log(obj.arraySum([1,2,3]))
 - **导出**: `module.exports = {}`
 - **导入**: `require('模块名或路径')`
 
-### ECMAScript标准语法
+### 🌟ECMAScript标准语法
 
 使用ECMAScript模块化需要在`package.json`中设置`"type": "module"`。
 
@@ -185,7 +185,7 @@ export default {
 
 ```js
 // index.js - 基于 ECMAScript 标准语法，"默认"导入，工具属性和方法使用
-// 导入: import 变量名 from '模块名或路径'
+// 导入: import 自定义变量名 from '模块名或路径'
 import obj from './utils.js'
 
 console.log(obj)
@@ -207,24 +207,47 @@ export const getArraySum = arr => arr.reduce((sum, item) => sum += item, 0)
 
 ```js
 // index.js - 基于 ECMAScript 标准语法，"命名"导入，工具属性和方法使用
-// 导入: import 变量名 from '模块名或路径'
-import {baseURL, getArraySum} from './utils.js'
+// 导入: import { 同名变量 } from '模块名或路径'
+import { baseURL, getArraySum } from './utils.js'
 
 console.log(baseURL)
 console.log(getArraySum)
 console.log(getArraySum([1, 4, 7]))
 ```
 
-**语法总结**:
-- **默认导出**: `export default {}` 
+##### 🌟对比总结
 
-  *p.s. { }表示一个配置对象。比如，若`config`是一个配置对象，则可以使用语句`export default config`*
+- **默认导出** 
 
-- **默认导入**: `import 变量名 from '模块名或路径'`
+```js
+export default {...}
+```
 
-- **命名导出**: `export 修饰定义语句`
+`{}`表示一个配置对象。比如，若`config`是一个配置对象，则可以使用语句`export default config`。
 
-- **命名导入**: `import { 同名变量 } from '模块名或路径'`
+_p.s. 不要写错为 `export default { config }`_
+
+
+- **默认导入**: 
+
+```js
+import 自定义变量名 from '模块名或路径' 
+```
+
+
+- **命名导出**: 
+
+```js
+export const value = 1
+export const request = () => axios.get(...)
+```
+
+- **命名导入**: 
+
+```js
+import { 同名变量 } from '模块名或路径'
+import { value, request as rq } from './utils.js'
+```
 
 ## Node.js包管理
 
@@ -280,7 +303,7 @@ console.log(checkUser('123123123'))
 console.log(getArraySum([1,2,3]))
 ```
 
-### npm包管理
+### 🌟npm包管理
 
 **常用npm命令**:
 - `node xxx`: 执行js文件

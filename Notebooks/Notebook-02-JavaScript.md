@@ -934,7 +934,7 @@ btn.addEventListener('click', function () {
 
 ### 基本包装类型
 
-简单的数据类型（如字符串）也有自己的属性和方法, 这实际上是因为JS在底层自动进行了包装；字符串、数值、布尔等基本类型都有专门的构造函数, 称为包装类型。
+简单的数据类型（如字符串）也有自己的属性和方法, 这实际上是因为JS在底层自动进行了包装；字符串、数值、布尔等基本类型都有**专门的构造函数**, 称为**包装类型**。
 
 ```javascript
 const str = 'rainn'
@@ -946,7 +946,7 @@ const string = new String('rainn')
 
 ### 作用域和作用域链
 
-作用域是变量和函数的可访问范围。JavaScript有全局作用域和局部作用域（函数作用域）。作用域链是指在嵌套函数中, 内部函数可以访问外部函数的变量。
+作用域是变量和函数的可访问范围。JavaScript有**全局作用域**和**局部作用域**（函数作用域）。**作用域链**是指在嵌套函数中, **内部函数可以访问外部函数的变量**。
 
 - **全局作用域**: 在脚本的最外层定义的变量和函数, 任何地方都可以访问。
   - 写在script标签和.js文件中的代码
@@ -955,7 +955,7 @@ const string = new String('rainn')
 
 - **局部作用域**:  又分为**函数作用域**和**块级作用域**。
   - **函数作用域**: 在函数内部定义的变量和函数, 只能在该函数内部访问。
-  - **块级作用域**: 使用{}包含的代码块, 在其内部声明的变量几乎不能被外面访问；使用`let`和`const`声明的变量具有块级作用域, 只能在所在的代码块内访问。var没有块作用域。
+  - **块级作用域**: 使用{}包含的代码块, 在其内部声明的变量几乎不能被外面访问；使用`let`和`const`声明的变量具有块级作用域, 只能在所在的代码块内访问。**`var`没有块作用域**。
 
 - **作用域链**: 当访问变量时, JavaScript会从当前作用域开始查找, 如果找不到, 则向上查找父作用域, 直到全局作用域为止。
   - **本质**: 底层的「变量查找机制」
@@ -976,11 +976,11 @@ const string = new String('rainn')
 1. **引用计数算法**。核心: 定义“内存不再使用”。原理是: 多一次引用, 次数加1；减少一次引用, 次数-1；若引用为0, 回收堆空间。但存在一个缺陷, 若存在相互引用, 则引用永远不会为0, 无法回收而造成内存泄露。
 2. **标记清除法**。核心: 定时从根部出发扫描对象, 如果是可达（reachable）则保留, 否则被标记为不再使用, 回收内存。
 
-### 同步异步和事件循环
+### 🌟同步异步和事件循环
 
 - JS是单线程的；但HTML5 Web Worker标准允许JS脚本创建多个线程
 - **同步**: 程序执行顺序与任务排列顺序一致；逐行执行, 需原地等待结果后, 才继续向下执行。
-- **异步**则是可以在做一件事的同时去做另一件事；调用后耗时, 不阻塞代码继续执行（不必原地等待）, 在将来完成后触发一个回调函数来处理结果。
+- **异步**则是可以在做一件事的同时去做另一件事；调用后耗时, 不阻塞代码继续执行（不必原地等待）, 在**将来完成后触发一个回调函数来处理结果**。
 - **本质**: 流水线上各个流程的执行顺序不同
 - **同步任务**: 都在主线程执行, 形成执行栈；
 - **异步任务**, 通过回调函数实现, 被添加到任务队列中, 包括: 
@@ -993,6 +993,7 @@ const string = new String('rainn')
   - 1.先执行执行栈的同步任务；
   - 2.异步任务放到任务队列: 先放入Web API或者说浏览器API(宿主环境, 浏览器), 处理后（得到异步结果）再加入到任务队列排队（分为下文提到的**宏任务队列**和**微任务队列**）
   - 3.执行栈同步任务处理完毕, 系统读取任务队列的异步任务, 按顺序执行
+  - **事件循环机制**：**同步代码 → 微任务 → 宏任务**；且每次宏任务执行完后，都会清空微任务队列
 - **宏任务和微任务**: **优先调度微任务队列**
   - **宏任务**: 由**浏览器**环境执行的异步代码, 通常包括: 
     - `setTimeout`、`setInterval`、`setImmediate`
@@ -1000,9 +1001,38 @@ const string = new String('rainn')
     - AJAX请求完成事件
     - JS脚本执行事件（script）
   - **微任务**: 由**JS引擎**执行的异步代码, 通常包括: 
-    - `Promise`的回调函数（`then`、`catch`） *p.s. Promise本身是同步的, 但其回调函数是异步的*
+    - `Promise`的回调函数（`then`、`catch`） *p.s. Promise本身（executor函数）是**同步**的, 但其回调函数是异步的*
     - `MutationObserver`
     - `process.nextTick`（Node.js环境）
+
+```javascript
+// Promise 例子
+console.log('开始')
+
+const p = new Promise((resolve, reject) => {
+  console.log('Promise executor 同步执行')  // 立即执行
+  resolve('成功')
+  console.log('resolve 调用后继续执行')     // 也会立即执行
+})
+
+console.log('Promise 创建完成')
+
+p.then(result => {
+  console.log('then 回调:', result)  // 微任务，稍后执行
+})
+
+console.log('结束')
+
+/**
+* 输出顺序：
+* 开始
+* Promise executor 同步执行
+* resolve 调用后继续执行
+* Promise 创建完成
+* 结束
+* then 回调: 成功
+*/
+```
 
 ```javascript
 // 经典面试题
@@ -1060,8 +1090,7 @@ const ff = count()
 
 ### 变量提升和函数提升
 
-1. var声明的变量, 会存在函数提升现象（先使用再声明）。原理是: 代码在执行之前, 预解析, 把所有var声明的变量提升到「当前」作用域的最前面。p.s.
-   提升的是声明, 但赋值不会提升。
+1. var声明的变量, 会存在函数提升现象（先使用再声明）。原理是: 代码在执行之前, 预解析, 把所有var声明的变量提升到「当前」作用域的最前面。_p.s. 提升的是声明, 但赋值不会提升。_
 2. let / const 声明的变量不存在函数提升
 
 ```javascript
@@ -1070,11 +1099,11 @@ var num = 10
 console.log(num) // 10
 ```
 
-3. 函数的声明接近, 之所以可以先调用再声明, 也是因为预解析而将函数的声明提前到了「当前作用域」的最前面。同样地, 提升的只是函数的声明, 不提升调用。
+3. 函数的声明接近, 之所以可以先调用再声明, 也是因为预解析而将函数的声明提前到了「当前作用域」的最前面。同样地, **提升的只是函数的声明, 不提升调用**。
 
+### 🌟解构
 
-
-### 数组解构
+#### 数组解构
 
 将数组元素值「快速、批量」赋值给变量的简洁语法。
 
@@ -1129,11 +1158,13 @@ const [q, e, [h, s]] = [1, 2, [3, 4]]
 console.log(h, s) // 3 ,4
 ```
 
-### 对象解构
+
+
+#### 对象解构
 
 和数组解构接近, 但有几个注意点: 
 
-1. **变量名要和对象属性/方法相同**, 因为数组是**无序**的, 需要一致才能赋值；否则, 变量名输出undefined；
+1. **变量名要和对象属性/方法相同**, 因为对象是**无序**的, 需要一致才能赋值；否则, 变量名输出undefined；
 2. 解构中的变量名不要与其他、外部的变量名冲突。
 
 ```javascript
@@ -1154,8 +1185,7 @@ const {name: username} = obj
 console.log(username) // rainn
 ```
 
-对于一些嵌套关系, 如对象数组, 对象嵌套对象, 甚至嵌套对象数组, 只需记住: **解构体的结构要和被解构体相同**, 例如数组被解构, 那就
-`const [...] = [...]`；对象被解构, 就是`const {...} = {...}`；内部的结构（按需求）保持一致即可。一些例子:
+3. **嵌套关系**：对于一些嵌套关系, 如对象数组, 对象嵌套对象, 甚至嵌套对象数组, 只需记住: **解构体的结构要和被解构体相同**, 例如数组被解构, 那就`const [...] = [...]`；对象被解构, 就是`const {...} = {...}`；内部的结构（按需求）保持一致即可。一些例子:
 
 ```javascript
 // 2.解构对象数组
@@ -1207,7 +1237,7 @@ const [{name: theName, family: {mother: mo, father: fa, sister: sis}, age: theAg
 console.log(theName, mo, fa, sis, theAge) // 佩奇 猪妈妈 猪爸爸 乔治 6
 ```
 
-### 原型对象 prototype
+### 🌟原型对象 prototype
 
 #### 两种编程思想
 
@@ -1232,10 +1262,11 @@ console.log(theName, mo, fa, sis, theAge) // 佩奇 猪妈妈 猪爸爸 乔治 6
 #### 原型对象 prototype
 
 - 原型对象是JavaScript中实现继承和共享属性/方法的机制。 
-  构造函数通过**原型**分配的函数是所有对象共享的, 每个函数都有一个`prototype`属性, 指向一个对象, 这个对象就是该函数的原型。
+  构造函数通过**原型**分配的函数是所有对象共享的, **每个函数都有一个`prototype`属性, 指向一个对象,** 这个对象就是该函数的原型。
   *p.s. 通过`console.dir()可以看到是Object*
 
-- **prototype可以挂载函数**, 故可以将不变的方法直接定义在prototype对象上, 然后所有对象的实例就可以共享这些方法。
+- **prototype可以挂载函数**, 故可以将不变的**方法**直接定义在prototype对象上, 然后**所有对象的实例**就可以**共享**这些方法。
+- 当访问对象的属性或方法时，**先在当前实例对象**查找，然后**再去原型对象查找**，并且原型对象被所有实例共享（也就是说，如果构造函数和原型对象中的方法重名，则调用构造函数中的方法）
 
 **p.s. 构造函数和原型对象中的this都指向「实例化的对象」**
 
@@ -1309,11 +1340,11 @@ Student.prototype = {
 console.log(Student.prototype) // 既保留了constructor, 又追加了sing和dance方法
 ```
 
-#### 对象原型 \__proto__ 或 [[prototype]]
+#### 对象原型 \__proto__ 或 \[\[prototype\]\]
 
-每个对象都会有一个属性 `__proto__` , 称为**对象原型**, 指向构造函数的`prototype`。这就是实例对象能够使用`prototype`中方法的原因。
+每个**实例对象**都会有一个属性 `__proto__` , 称为**对象原型**, 指向**构造函数的`prototype`**。这就是实例对象能够使用`prototype`中方法的原因。
 
-`__proto__`是JS的非标准属性, **只读**；在浏览器中显示为`[[prototype]]`, 两种方式的意义相同。
+`__proto__`是JS的非标准属性, **只读**；在浏览器中显示为`[[prototype]]`, 两种形式的意义相同。
 
 ```js
 const rainn = new Student()
@@ -1345,19 +1376,22 @@ function Worker() {
 }
 
 // 继承
-Student.prototype = new Human()
+Student.prototype = new Human() // {eyes: 2, head: 1, school: 'GDUFS'}
 Student.prototype.constructor = Student // 也要记得重新声明constructor
 const Rainn = new Student()
 
-Worker.prototype = new Human()
+Worker.prototype = new Human() // {eyes: 2, head: 1, company: 'Apple'}
 Worker.prototype.constructor = Worker
 const Charlotte = new Worker()
 
 Worker.prototype.salary = function () { // 添加新方法
   console.log('发工资')
 }
-console.log(Charlotte) // 有新方法
+console.log(Charlotte) // 有新方法 
 console.log(Rainn) // 不受影响
+
+console.log(Rainn.__proto__) // { "eyes": 2, "head": 1 }
+console.log(Charlotte.__proto__) // { "eyes": 2, "head": 1, "salary": f }
 ```
 
 #### 原型链
@@ -1366,7 +1400,7 @@ console.log(Rainn) // 不受影响
 
 基于`prototype`的继承使得不同构造函数的原型对象关联在一起, 且这种关联的关系是一种链状结构。将原型对象的链状结构关系称为原型链。
 
-**原理: 原型对象prototype本身也是个对象, 是对象就有\__proto__**
+**原理: 原型对象prototype本身也是个对象, 是对象就有\__proto\__（从而可以向上链式索引）**
 
 *p.s. 最大的基类是`Object`。万物皆对象。*
 
@@ -1382,7 +1416,7 @@ console.log(Person.prototype.constructor === Person) // true
 console.log(Object.prototype.constructor === Object) // true
 ```
 
-**原型链-查找规则**: 访问一个对象的属性/方法, 先看看这个对象自身有没有；如果没有, 就沿着`__proto__`所指向的`prototype`上寻找；直到顶级构造函数`Object`的`prototype`；如果依然没有, 就返回`null`。
+**原型链-查找规则**: 访问一个对象的属性/方法, 先**看看这个对象（构造函数）自身有没有**；如果没有, 就沿着`__proto__`所指向的`prototype`上寻找；直到顶级构造函数`Object`的`prototype`；如果依然没有, 就返回`null`。
 
 意义: 为对象成员的查找机制提供一个方向或者说路线。
 
@@ -1400,7 +1434,11 @@ console.log([''] instanceof Array) // true
 console.log(Array instanceof Object) // true
 ```
 
-### 浅拷贝
+![[proto_chains.png]]
+
+### 深浅拷贝
+
+#### 浅拷贝
 
 浅拷贝是指创建一个新对象, 新对象的属性值是原对象属性值的引用。对于基本类型, 值是直接复制；对于引用类型（如数组、对象）, 则复制的是地址。
 
@@ -1425,7 +1463,7 @@ console.log(obj.age, o2.age) // 18 20 对o2的修改也不会影响到obj
 
 然而, 浅拷贝不能完成对多级（嵌套）的对象/数组的拷贝（对于其中的简单数据类型就拷贝了值, 但引用数据类型还是拷贝了地址）, 故引出**深拷贝**。
 
-### 深拷贝
+#### 深拷贝
 
 包括**递归函数实现**、**lodash库实现**和**JSON字符串**三种实现方式。
 
@@ -1438,7 +1476,7 @@ console.log(obj.age, o2.age) // 18 20 对o2的修改也不会影响到obj
 ```js
 const charlotte = {} // 新对象
 function deepCopy(target, source) {
-  for (let key in source) { // 对象遍历, key是属性名（变量）, source[key]是属性值（详见基础day7）
+  for (let key in source) { // 对象遍历, key是属性名（变量）, source[key]是属性值
     if (source[key] instanceof Array) { // 判断是否是数组（复杂数据类型）
       target[key] = [] // 让自己作为同样的数组类型, 去递归获取源对象中的这个数组属性
       deepCopy(target[key], source[key]) // 递归调用
@@ -1515,12 +1553,13 @@ fn2()
 
 **debugger**: 运行到该代码, 在浏览器中打开debugger调试程序, 相当于打断点。
 
+### 🌟防抖和节流
 
-### 防抖 debounce
+#### 防抖 debounce
 
 防抖是指在事件触发后, 延迟一段时间执行函数, 如果在这段时间内再次触发事件, 则重新计时。
 
-单位时间内频繁触发某事件, 但**只执行最后一次**；**前面的频繁触发都不作数**。（类比回城技能）
+换句话说：单位时间内频繁触发某事件, 但**只执行最后一次**；**前面的频繁触发都不作数**。（类比回城技能）
 
 使用场景包括: 搜索框搜索输入, 只需用户最后一次输入完, 再发送请求；手机号, 邮箱验证输入检测……
 
@@ -1543,6 +1582,8 @@ function mouseMove() {
 
 核心思路: 检测是否有正在运行的定时器, 如有, 就要**销毁**, 重新开启一个定时器, 在wait秒后执行fn。
 
+_换句话说：有就删除，只执行最后一个定时器_
+
 ```js
 function debounce(fn, wait) {
   let timer
@@ -1563,9 +1604,11 @@ box.addEventListener('mousemove', debounce(mouseMove, 200))
 // 理解: addEventListener我们正常绑定的是函数名, 或者用匿名函数, 但这里填入了函数调用
 // 这就意味着, box在绑定时就已经执行了这个函数, 并将其返回值作为事件处理函数
 // 所以, 在自定的debounce函数中, 我们返回一个函数（不是函数调用）；在mousemove事件后, 执行的就是这个返回的函数
+// 这就解释了为什么timer应当声明在debounce，它是唯一的，利用了闭包的性质访问
+// 否则，每次mousemove事件都会声明一个timer，这就无效了
 ```
 
-### 节流 throttle
+#### 节流 throttle
 
 单位时间内, 频繁触发事件, 但**只执行最开始那一次**；**执行期间, 任何触发都不会生效, 直到该执行完毕**（类比: 技能冷却, 换子弹等）
 
@@ -1579,7 +1622,10 @@ e.g. 鼠标经过div块, 3s后计数器加一, 期间不论怎么移动都不影
 box.addEventListener('mousemove', _.throttle(mouseMove, 3000))
 ```
 
-**手写节流: ** 和防抖结构类似, 但**核心正好相反**: 如果有正在运行的定时器, 那就放任执行, 什么也不做；如果没有定时器了, 才开启定时器并在wait秒执行代码fn, 并在最后**清空**定时器。
+**手写节流: ** 和防抖结构类似, 但**核心正好相反**: 
+- 如果有正在运行的定时器, 那就放任执行, 什么也不做；
+- 如果没有定时器了, 才开启定时器并在wait秒后执行代码fn, 并在最后**清空**定时器。
+- _换句话说：没有了才创建，只执行第一个定时器_
 
 p.s. 注意这里的用词***清空***, 因为我们是无法在定时器内部***销毁***一个定时器的, 也就是`clearTimer`不生效, 所以, 只能*清空*: 
 
@@ -1601,21 +1647,34 @@ function throttle(fn, wait) {
 box.addEventListener('mousemove', throttle(mouseMove, 3000))
 ```
 
+#### 对比总结
+
+| 特性 (Feature) | 防抖 (Debounce) | 节流 (Throttle) |
+| :--- | :--- | :--- |
+| **核心思想** | 单位时间内频繁触发，只执行最后一次 | 单位时间内频繁触发，只执行第一次 |
+| **类比** | 回城技能 | 技能冷却 |
+| **应用场景** | 搜索框输入、输入验证 | `scroll`, `resize`, `mousemove` |
+| **实现方式** | `clearTimeout` + `setTimeout` 。持续重置计时器。 | `setTimeout`。在计时器期间忽略新事件。 |
+| **白话记忆** | 有定时器就删，只执行最后一个定时器内的函数 | 没定时器才创建，只执行第一个定时器内的函数 |
+
+
 ## Web API
 
 ### 声明变量const优先
 
 - `const`的语义化更好；
-- 建议数组和对象使用const声明, 因为数组/对象名本身存储的是地址；
-- 使用数组方法或对象属性赋值时, 本身没有影响 数组/对象名 中的地址值；
+- 建议数组和对象使用 const 声明, 因为数组/对象名本身存储的是地址；
+- 使用数组方法或对象属性赋值时, 本身没有影响 数组/对象**名** 中的地址值；
 - 注意, 如果将 数组/对象名 用于声明新的 数组/对象, 那就等同于修改了地址, 就会引发常量报错
 
 ### DOM树和DOM对象
 
-DOM树是HTML文档的结构化表示, DOM对象是JavaScript对DOM树的抽象表示。可以通过`document`对象访问和操作DOM树。
+术语 DOM 是指 Document Object Model，文档对象模型。DOM 树是 HTML 文档的结构化表示, DOM对象是JavaScript对DOM树的抽象表示。可以通过`document`对象访问和操作DOM树。
 *p.s. DOM树的根节点是`document`对象（最大的DOM对象）, 所有其他节点都是其子节点。*
 
-#### DOM结点
+更多关于 DOM 的知识点，可参阅[官方文档](https://developer.mozilla.org/zh-CN/docs/Web/API/Document_Object_Model)
+
+### DOM结点及操作
 
 - **节点类型**: DOM树中的每个节点都有一个类型, 常见的节点类型包括: 
   - `Element`: 元素节点, 表示HTML标签。**（重点关注）**
@@ -1626,8 +1685,8 @@ DOM树是HTML文档的结构化表示, DOM对象是JavaScript对DOM树的抽象�
 - **查找结点**: 
   - **查找父结点**: 使用`parentNode`属性获取当前节点的父节点（只能得到最近一级的亲父亲）
   - **查找子结点**: 
-    - 使用`childNodes`属性获取当前节点的所有子节点（返回NodeList对象, 包含所有类型的子节点, 包括文本节点和注释节点）。
-    - 使用`children`属性获取当前节点的所有子元素节点（返回HTMLCollection对象, 伪数组, 只包含元素节点）。
+    - 使用`childNodes`属性获取当前节点的所有子节点（返回 NodeList 对象, 包含所有类型的子节点, 包括文本节点和注释节点）。
+    - 使用`children`属性获取当前节点的所有子元素节点（返回 HTMLCollection 对象, 伪数组, 只包含元素节点）。
   - **查找兄弟结点**: 
     - 使用`nextElementSibling`属性获取当前节点的下一个兄弟节点。
     - 使用`prevoiusElementSibling`属性获取当前节点的上一个兄弟节点。
@@ -1668,6 +1727,22 @@ ul.insertBefore(ul.children[0].cloneNode(true), ul.children[0]) // 克隆第一�
 ul.removeChild(ul.children[0]) // 删除ul的第一个子元素
 ```
 
+** 对比总结 **
+
+| 操作 (Operation) | 方法 (Method) | 描述 (Description) |
+| :--- | :--- | :--- |
+| **查找父节点** | `parentNode` | 获取当前节点的直接父节点。 |
+| **查找子节点** | `childNodes` | 获取所有类型的子节点，包括文本和注释。 |
+| | `children` | **（推荐）** 获取所有元素子节点。 |
+| **查找兄弟节点** | `nextElementSibling` | 获取下一个兄弟元素节点。 |
+| | `previousElementSibling` | 获取上一个兄弟元素节点。 |
+| **增加节点** | `createElement()` | 创建一个新的元素节点。 |
+| | `appendChild()` | 在父节点的末尾追加一个子节点。 |
+| | `insertBefore()` | 在指定的子节点前插入一个新的子节点。 |
+| **克隆节点** | `cloneNode(deep)` | 克隆一个节点。`true` 为深克隆（包括后代），`false` 为浅克隆。 |
+| **删除节点** | `removeChild()` | 从父节点中删除一个子节点。 |
+
+
 
 ### BOM
 
@@ -1679,7 +1754,7 @@ BOM（Browser Object Model）是浏览器对象模型, 提供了与浏览器窗�
 
 `location`对象表示当前文档的URL信息, 提供了获取和修改浏览器地址栏的功能。关注以下4个属性/方法: 
 
-- `location.href`: 获取或设置当前文档的完整URL。可以通过修改以实现页面跳转。
+- `location.href`: 获取或设置当前文档的完整URL。**可以通过修改以实现页面跳转**。
 ```javascript
 location.href = 'https://www.example.com'; // 跳转到指定URL
 ```
@@ -1689,7 +1764,7 @@ location.href = 'https://www.example.com'; // 跳转到指定URL
 console.log(location.search); // 输出查询字符串, 如 ?name=Alice&age=30
 ```
 
-- `location.hash`: 获取或设置URL中的锚点部分（#后面的内容）, 用于页面内跳转。
+- `location.hash`: 获取或设置URL中的锚点部分（#后面的内容）, **用于页面内跳转**。
 ```javascript
 location.hash = '#section1'; // 跳转到页面内的锚点
 ```
@@ -1709,7 +1784,7 @@ location.reload(); // 刷新页面
 
 管理历史记录, 控制后退/前进, 包括`forward()`,` back()`, `go()`; `go()`带参数, `1`前进, `-1`后退
 
-#### 本地存储localStorage
+#### 🌟本地存储localStorage
 
 `localStorage`是浏览器提供的本地存储机制, 用于在用户浏览器中存储数据。数据**以键值对的形式**存储, 将数据永久存储在本地, 除非手动删除, 否则即使页面关闭, 数据也存在。
 
@@ -1720,7 +1795,7 @@ location.reload(); // 刷新页面
   - 数据不会过期, 除非手动删除。
 
 - **常用方法**: 
-- `setItem(key, value)`: 设置键值对, 存储数据。没有`key`就是增, 有`key`就是覆盖原来的`key`, 也即**改**
+- `setItem(key, value)`: 设置键值对, 存储数据。原存储中没有对应的`key`, 就是**增**, 有`key`就是覆盖原来的`key`, 也即**改**
 ```javascript
 localStorage.setItem('username', 'Alice'); // 存储用户名
 ```
@@ -1741,8 +1816,8 @@ localStorage.clear(); // 清空所有数据
 
 - **存入复杂数据类型**: 
 
-复杂数据类型（如对象、数组）无法直接存储到`localStorage`中, 需要先将其转换为**JSON字符串**。
-- 使用`JSON.stringify()`将对象或数组转换为字符串存储, 使用`JSON.parse()`将字符串转换回对象或数组。
+	- 复杂数据类型（如对象、数组）无法直接存储到`localStorage`中, 需要先将其转换为**JSON字符串**。
+	- 使用`JSON.stringify()`将对象或数组**转换为字符串**存储, 使用`JSON.parse()`将字符串转换回对象或数组。
 ```javascript
 localStorage.setItem('obj', JSON.stringify({ name: 'Alice', age: 30 })); // 存储对象
 
@@ -1760,38 +1835,48 @@ console.log(obj.name); // 输出: Alice
 
 - `querySelector()`返回第一个匹配的元素（HTMLElement对象）, 没有则返回空；
 - `querySelectorAll()`返回所有匹配的元素集合（NodeList对象集合）；伪数组, 哪怕只有一个元素；有长度和索引号, 但没有数组方法。
-- 选择器语法与CSS选择器相同, 可以是一个或多个css选择器。
+- **选择器语法与CSS选择器相同, 可以是一个或多个css选择器**。
 - 其它选择器方法: 
   - `getElementById(id)`: 通过ID选择元素。
   - `getElementsByClassName(className)`: 通过类名选择元素, 返回HTMLCollection对象（实时更新）。
   - `getElementsByTagName(tagName)`: 通过标签名选择元素, 返回HTMLCollection对象（实时更新）。
 
-### 修改元素
+### 🌟修改元素
 
-- **修改元素内容**: 使用`innerHTML`、`textContent`或`innerText`属性。常用于双标签。
-  - `innerHTML`: 获取或设置元素的HTML内容, **支持HTML标签**。
-  - `textContent`: 获取或设置元素的文本内容, 不支持HTML标签。
+#### 修改元素内容
+
+ 使用`innerHTML`、`textContent`或`innerText`属性。常用于双标签。
+
+  - `innerHTML`: 获取或设置元素的**HTML内容**, **支持HTML标签**。
+  - `textContent`: 获取或设置元素的**文本内容**, 不支持HTML标签。
   - `innerText`: 获取或设置元素的可见文本内容, 考虑CSS样式。
 
-- **修改元素常用属性**: 修改如`src`, `href`等html标签的属性, 像**修改对象属性**一样修改。 e.g. 
+#### 修改元素常用属性
+
+ 修改如`src`, `href`等html标签的属性, 像**修改对象属性**一样修改。 e.g. 
+
 ```javascript 
 img.src = 'images/01-CommonJS导出导入.jpg'
 ```
 
-- **修改元素样式**: 包括`style`, `className`和`classList`属性。
+#### 修改元素样式
 
-`style`属性: 直接修改元素的内联样式。e.g. 
+ 包括`style`, `className`和`classList`属性。
+
+- `style`属性: 直接修改元素的内联样式。e.g. 
 
 ```javascript
 element.style.color = 'red';
-element.style.backgroundColor = 'blue'; // CSS中用了短横向的, JS中用小驼峰式命名
+element.style.backgroundColor = 'blue'; // CSS中用了短横线的, JS中用小驼峰式命名
 ```
-`className`属性: 覆盖一个新的类名。
+
+- `className`属性: **覆盖**一个新的类名。
 
 ```javascript
 div.className = 'nav box' // 若想保留原类名, 就两个一起写
 ```
-`classList`属性: 提供对元素类名的操作方法, 如`add()`、`remove()`、`toggle()`等。
+
+- `classList`属性: 提供对元素类名的操作方法, 如`add()`、`remove()`、`toggle()`等。
 
 ```javascript
 // 「追加」类名
@@ -1802,45 +1887,48 @@ box.classList.remove('box')
 box.classList.toggle('box')
 ```
 
-- **修改表单元素属性**: 本质还是修改对象属性、重新赋值
+#### 修改表单元素属性
 
-`value`属性: 获取或设置表单元素的值。
+ 本质还是修改对象属性、重新赋值。
+
+- `value`属性: 获取或设置表单元素的值。
 ```javascript
 input.value = '新值'; // 设置输入框的值
 let inputValue = input.value; // 获取输入框的值
 ```
 
-`type`属性: 获取或设置表单元素的类型（如`text`、`password`、`checkbox`等）。
+- `type`属性: 获取或设置表单元素的类型（如`text`、`password`、`checkbox`等）。
 ```javascript
 input.type = 'password'; // 设置输入框类型为密码
 ```
-`placeholder`属性: 获取或设置输入框的占位符文本。
+- `placeholder`属性: 获取或设置输入框的占位符文本。
 ```javascript
 input.placeholder = '请输入内容'; // 设置输入框的占位符
 ```
 
-`selectedIndex`属性: 获取或设置下拉列表的选中项索引。
+- `selectedIndex`属性: 获取或设置下拉列表的选中项索引。
 ```javascript
 select.selectedIndex = 1; // 设置下拉列表选中第二项
 let selectedIndex = select.selectedIndex; // 获取下拉列表选中项的索引
 ```
 
-`button`: 获取或设置按钮的文本内容。相对特殊, 因为是双标签, 所以还是使用`innerHTML`或`textContent`修改文本。
+- `button`: 获取或设置按钮的文本内容。相对特殊, 因为是双标签, 所以还是使用`innerHTML`或`textContent`修改文本。
 ```javascript
 button.innerHTML = '提交'; // 设置按钮文本内容
 button.textContent = '提交'; // 设置按钮文本内容
 ```
 
 *修改表单中的添加/移除效果, 一律用**布尔值**。*
+
 *p.s. 虽然有时填`true`字符串也生效, 但本质上他们发生了隐式转换, 以下属性只接受布尔值。生效是因为非空字符串在转换时成为了`true`*
 
-`checked`属性: 获取或设置复选框或单选按钮的选中状态。
+- `checked`属性: 获取或设置复选框或单选按钮的选中状态。
 ```javascript
 checkbox.checked = true; // 设置复选框为选中状态
 let isChecked = checkbox.checked; // 获取复选框的选中状态
 ```
 
-`disabled`属性: 获取或设置表单元素是否禁用。
+- `disabled`属性: 获取或设置表单元素是否禁用。
 ```javascript
 input.disabled = true; // 设置输入框为禁用状态
 ```
@@ -1863,7 +1951,7 @@ let idValue = element.dataset.id; // 获取自定义ID值
 
 #### 间歇函数
 
-**setInterval(f(), interval time)**: 设置一个间隔时间重复执行的函数。返回值: 定时器ID。e.g. 
+**setInterval(f(), interval time)**: 设置一个间隔时间重复执行的函数。**返回值: 定时器ID**。e.g. 
 ```javascript   
 let timer = setInterval(() => {
     console.log('每隔1秒执行一次');
@@ -1885,7 +1973,7 @@ clearInterval(timer); // 停止间隔函数
 
 #### 延时函数
 
-**setTimeout(f(), delay time)**: 设置一个延时执行的函数。返回值: 定时器ID。和`setInterval`相近, 不同点在于, 延时函数的意义是「多久后」开始, 所以只会执行一次
+**setTimeout(f(), delay time)**: 设置一个延时执行的函数。返回值: 定时器ID。和`setInterval`相近, 不同点在于, 延时函数的意义是「多久后」开始, 所以**只会执行一次**
 ```javascript
 let timer = setTimeout(() => {
     console.log('延时1秒执行一次');
@@ -1904,7 +1992,7 @@ clearTimeout(timer); // 停止延时函数
 
 #### 事件监听
 
-使用`addEventListener(event, handler)`方法为元素添加事件监听器。`event`是事件类型, `handler`是事件处理函数。
+使用 **`addEventListener(event, handler)`** 方法为元素添加事件监听器。`event`是事件类型, `handler`是事件处理函数。
 
 **三要素**: 
 
@@ -1925,44 +2013,85 @@ closeButtion.addEventListener('click', function() {
 
 #### 事件类型
 
-常用事件类型包括: 
+##### 常见事件类型
 
-- 鼠标事件: `click`、`mouseover`（鼠标悬停）、`mouseout`（鼠标移出）、`mouseenter`（鼠标进入）、`mousemove`（鼠标移动）。
-- 键盘事件: `keydown`（按下键盘）、`keyup`（松开键盘）、`keypress`（按下或松开键盘）。
-- 表单事件: `submit`（提交表单）、`change`（表单元素值改变）、`input`（输入内容变化）。
-- 焦点事件: `focus`（元素获得焦点）、`blur`（元素失去焦点）。
-- 页面加载事件: 
-  - `load`（页面加载完成, 一般用于window或某些特定资源, 如图片）
-  - `DOMContentLoaded`（DOM内容加载完成, HTML结构加载完即触发, 无需等待样式表、图片等, 速度更快）。
-- 页面滚动事件: `scroll`（页面滚动时触发）。
-  - 两个重要属性: `scrollTop`（元素顶部到可视区域顶部的距离）和`scrollLeft`（元素左侧到可视区域左侧的距离）；可读可写, 数字型, 无单位。
-  - 又分别通俗理解为: **被卷去的头部**、**被卷去的左侧**。
-  - 想知道整个页面被卷去多少, 需要获取最大元素`HTML`；方式: `doucment.documentElement.scrollTop` （返回HTML标签）或 `document.body.scrollTop`（兼容性更好）。
+| 事件类别 (Category) | 事件类型 (Type) | 描述 (Description) |
+| :--- | :--- | :--- |
+| 鼠标事件 | `click` | 单击 |
+| | `mouseover` | 悬停 |
+| | `mouseout` | 移出 |
+| | `mouseenter` | 进入 |
+| | `mousemove` | 移动 |
+| 键盘事件 | `keydown` | 按下 |
+| | `keyup` | 松开 |
+| | `keypress` | 按下或松开 |
+| 表单事件 | `submit` | 提交 |
+| | `change` | 值改变 |
+| | `input` | 内容变化 |
+| 焦点事件 | `focus` | 获得焦点 |
+| | `blur` | 失去焦点 |
+| 页面加载 | `load` | 页面及所有资源加载完成 |
+| | `DOMContentLoaded` | DOM内容加载完成, HTML结构加载完即触发, 无需等待样式表、图片等, 速度更快 |
+| 页面滚动 | `scroll` | 页面滚动时触发 |
+| 窗口事件 | `resize` | 窗口大小改变时触发 |
+
+##### 重要元素属性
+
+###### scroll 事件相关属性
+
+-   `scrollTop`: 元素顶部到可视区域顶部的距离。
+-   `scrollLeft`: 元素左侧到可视区域左侧的距离。
+
+这两个属性可读可写，值为数字，无单位。通常被通俗地理解为“被卷去的头部”和“被卷去的左侧”。
+
+要获取整个页面的滚动距离，需要访问文档根元素 (`documentElement`)：
+-   `document.documentElement.scrollTop`
+-   `document.body.scrollTop` (用于兼容旧版浏览器)
+
 ```javascript
 window.addEventListener('scroll', function() {
   console.log('页面滚动了');
-  console.log('被卷去的头部: ', document.documentElement.scrollTop);
-  console.log('被卷去的左侧: ', document.documentElement.scrollLeft);
-  
-  // （在滚动事件中）可以将页面滚动距离作为固定值
+  // 获取页面垂直滚动的距离
   const distance = document.documentElement.scrollTop;
+  console.log('被卷去的头部: ', distance);
 });
 ```
-- 窗口事件: `resize`（窗口大小改变时触发）。
-  - 元素属性: `clientWidth`（获取元素的可见宽度, 包括内边距`padding`, 但不包括滚动条和外边距`border`和`margin`）和`clientHeight`（元素的可见高度）。
-  - `offsetWidth`（元素的宽度, 包括边框和内边距, 但不包括外边距）和`offsetHeight`（元素的高度, 包括边框和内边距, 但不包括外边距）。
+
+###### resize 事件相关属性
+
+-   `clientWidth` 与 `clientHeight`: 获取元素的**可见**宽度或高度，计算方式为 `内容 + padding`。
+-   `offsetWidth` 与 `offsetHeight`: 获取元素的**总**宽度或高度，**只读**，计算方式为** `内容 + padding + border`。
+
+```javascript
+// 假设页面中有一个 class 为 .box 的元素
+const box = document.querySelector('.box'); 
+
+window.addEventListener('resize', function() {
+  console.log('窗口大小改变了');
+  if (box) {
+    console.log('元素的可见宽度 (clientWidth): ', box.clientWidth);
+    console.log('元素的可见高度 (clientHeight): ', box.clientHeight);
+    console.log('元素的总宽度 (offsetWidth): ', box.offsetWidth);
+    console.log('元素的总高度 (offsetHeight): ', box.offsetHeight);
+  }
+});
+```
+
+![[dimensions-client.png]]
+
+![[dimensions-offset.png]]
 
 
-#### 事件对象event
+#### 🌟事件对象 event
 
-事件发生时, 浏览器会创建一个事件对象, 包含有关事件的信息。可以在事件处理函数中访问该对象。
+事件发生时, 浏览器会创建一个事件对象, 包含有关事件的信息。可以**在事件处理函数中访问该对象**。
 
-- **回调函数**: 将函数f(n)作为参数, 传递给函数g(n), 称f(n)为回调函数。 e.g.
+- **回调函数**: 将函数f(n)作为参数, 传递给函数g(n), 称f(n)为回调函数。 [官方文档](https://developer.mozilla.org/zh-CN/docs/Glossary/Callback_function) 
 ```javascript
 setInterval(fn, 1000); // fn是回调函数
 ```
 
-- 事件绑定的回调函数的第一个参数就是事件对象`event`, 包含事件的相关信息。例如: 
+- **事件绑定的回调函数的_第一个参数_就是事件对象`event`**, 包含事件的相关信息。例如: 
 ```javascript
 element.addEventListener('click', function(event) {
   console.log(event) // 输出事件对象 PointerEvent对象
@@ -1973,7 +2102,7 @@ element.addEventListener('click', function(event) {
 });
 ```
 
-#### 环境对象this
+#### 🌟环境对象 this
 
 每个「函数内部」都有一个`this`对象, 指向当前函数的执行环境。普通函数中, `this`指向`window`, 事件处理函数（回调函数）中的`this`通常指向触发**事件的元素（调用者）**。
 
@@ -1995,11 +2124,11 @@ btn.addEventListener('click', function() {
 
 **事件捕获**: 在事件流的捕获阶段, 可以使用`addEventListener(event, handler, true)`来监听事件。第三个参数为`true`表示启用捕获。
 
-**事件冒泡**: 在事件流的冒泡阶段, 可以使用`addEventListener(event, handler, false)`或省略第三个参数来监听事件。第三个参数为`false`表示启用冒泡。
+**事件冒泡**: 在事件流的冒泡阶段, 可以使用`addEventListener(event, handler, false)`或**省略**第三个参数来监听事件。第三个参数为`false`表示启用冒泡。
 
 *p.s. onclick方法只有冒泡阶段, 没有捕获阶段。*
 
-**阻止事件流**: 可以使用`event.stopPropagation()`方法阻止事件继续传播。在冒泡或捕获阶段都可以使用。
+**🌟阻止事件流**: 可以使用`event.stopPropagation()`方法阻止事件继续传播。在冒泡或捕获阶段都可以使用。
 
 **mouseover / mouseout 和 mouseenter / mouseleave的区别**:
 - `over/out` 组会有冒泡效果, 例如内嵌在`father`中的`son`, 即使没有给`son`设置事件, 鼠标经过`son`时会认为离开了`father`；而`son`并没有事件, 又冒泡回来执行`father`的经过事件
@@ -2047,7 +2176,7 @@ chlid.addEventListener('click', function (event) {
 })
 ```
 
-**阻止默认行为**: 有些事件会触发浏览器的默认行为, 如链接点击、表单提交等。可以使用`event.preventDefault()`方法阻止默认行为。
+**🌟阻止默认行为**: 有些事件会触发浏览器的默认行为, 如链接点击、表单提交等。可以使用`event.preventDefault()`方法阻止默认行为。
 
 ## 技巧类
 
