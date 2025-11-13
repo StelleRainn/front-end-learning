@@ -214,7 +214,7 @@ git clone <remote_url>
 
 ```
 
-## 快速查看Git命令表格
+## 快速查看Git命令
 
 ```bash
 # === 基本配置与查看 ===

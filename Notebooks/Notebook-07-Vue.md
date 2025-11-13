@@ -2,7 +2,7 @@
 
 ## Vue 基础概念
 
-### 创建 Vue 实例
+### 🌟创建 Vue 实例
 
 **概念**：Vue 实例是 Vue 应用的根实例，通过 new Vue()创建，它将数据和 DOM 进行绑定，实现响应式的数据驱动视图更新。
 
@@ -72,7 +72,7 @@ const app = new Vue({
 
   // methods：定义方法
   methods: {
-    handleClick() {
+    handleClick() { // ES6中，对象内定义方法的简写方式
       this.isVisible = !this.isVisible;
     },
   },
@@ -108,8 +108,8 @@ Vue 的核心特性之一是响应式数据绑定：
 **使用规则**：
 
 1. 使用的数据必须在 data 中声明
-2. 支持 JavaScript 表达式，不支持语句（如 if、for、while 等）
-3. 不能在 HTML 属性中使用（需要用 v-bind）
+2. **支持 JavaScript 表达式**，不支持语句（如 if、for、while 等）
+3. 不能在 HTML **属性**中使用（需要用 v-bind）
 4. 每个插值表达式只能包含单个表达式
 
 **基础示例**：
@@ -153,7 +153,7 @@ data: {
 }
 ```
 
-## Vue 指令
+## 🌟Vue 指令
 
 Vue 指令是带有`v-`前缀的特殊属性，不同属性对应不同的功能。
 
@@ -211,6 +211,8 @@ data: {
 ### v-on 事件监听
 
 **概念**：v-on 指令用于监听 DOM 事件，当事件触发时执行相应的 JavaScript 代码或调用方法。
+
+_🌟p.s. methods 内的函数，其中的 this 指向 Vue 实例_
 
 **模板语法**：
 
@@ -315,7 +317,7 @@ data: {
 
 ### v-for 列表渲染
 
-**概念**：v-for 指令用于基于数组、对象或数字进行循环渲染，可以将数据列表渲染为 DOM 元素列表。
+**概念**：v-for 指令用于基于**数组、对象或数字**进行循环渲染，可以将数据列表渲染为 DOM 元素列表。
 
 **模板语法**：
 
@@ -406,9 +408,9 @@ data: {
 <input type="text" v-model="文本变量" />
 <input type="checkbox" v-model="布尔变量" />
 <input type="radio" v-model="选择变量" />
-<select v-model="选项变量">
-  <textarea v-model="文本变量"></textarea>
-</select>
+<select v-model="选项变量"></select>
+<textarea v-model="文本变量"></textarea>
+
 ```
 
 **作用**：
@@ -476,7 +478,7 @@ data: {
 }
 ```
 
-### Vue 指令修饰符
+### 🌟Vue 指令修饰符
 
 **概念**：指令修饰符是 Vue 指令的扩展功能，用于增强指令的行为，通过在指令后添加`.修饰符`的方式使用。
 
@@ -557,7 +559,7 @@ methods: {
 姓名：<input v-model.trim="username" /> 年龄：<input v-model.number="age" />
 ```
 
-### v-bind 样式控制
+### 🌟v-bind 样式控制
 
 **概念**：v-bind 不仅可以绑定普通属性，还可以专门用于动态控制元素的 class 和 style，实现样式的动态切换。
 
@@ -653,7 +655,7 @@ data: {
 }
 ```
 
-在后期的脚手架、组件化开发模式中，一个组件的`data`选项会被提取到组件的`data`函数中，返回一个对象。
+_在后期的脚手架、组件化开发模式中，一个组件的`data`选项会被提取到组件的`data`函数中，返回一个对象。_
 
 **目的**：
 
@@ -712,7 +714,9 @@ methods: {
 
 ### computed 计算属性
 
-**概念**：computed 选项用于定义计算属性，基于现有数据计算出新的属性值。
+#### 基本用法
+
+**概念**：computed 选项用于定义**计算属性**，计算属性是基于现有数据计算出来的新属性，具有**缓存特性**，只有当依赖的数据发生变化时才会重新计算。
 
 **模板语法**：
 
@@ -720,35 +724,6 @@ methods: {
 computed: {
   计算属性名() {
     return 基于data的计算结果;
-  }
-}
-```
-
-### watch 侦听器
-
-**概念**：watch 选项用于侦听数据变化，当数据发生变化时执行相应的回调函数。
-
-**模板语法**：
-
-```javascript
-watch: {
-  被侦听的属性名(newVal, oldVal) {
-    // 变化时的处理逻辑
-  }
-}
-```
-
-## 计算属性 computed
-
-**概念**：计算属性是基于现有数据计算出来的新属性，具有缓存特性，只有当依赖的数据发生变化时才会重新计算。
-
-**模板语法**：
-
-```javascript
-computed: {
-  计算属性名() {
-    // 基于现有数据的计算逻辑
-    return 计算结果;
   }
 }
 ```
@@ -768,7 +743,7 @@ computed: {
 <p>礼物总数：{{ totalCount }} 个</p>
 ```
 
-### 计算属性 vs 方法
+#### computed vs methods
 
 **计算属性特点**：
 
@@ -802,7 +777,7 @@ methods: {
 }
 ```
 
-### 计算属性完整写法
+#### 完整写法
 
 **模板语法**：
 
@@ -837,18 +812,19 @@ computed: {
 }
 ```
 
-## 侦听器 watch
+
+### watch 侦听器
 
 **概念**：侦听器用于观察和响应 Vue 实例上数据的变化，当被侦听的数据发生变化时，会执行相应的回调函数。
 
-### 简单写法
+#### 简单写法
 
 **模板语法**：
 
 ```javascript
 watch: {
   // 侦听根级别属性
-  属性名(newVal, oldVal) {
+  被侦听的属性名(newVal, oldVal) {
     // 处理逻辑
   },
   // 侦听对象中的属性（需要加引号）
@@ -876,7 +852,7 @@ watch: {
 }
 ```
 
-### 完整写法
+#### 完整写法
 
 **模板语法**：
 
@@ -919,7 +895,7 @@ watch: {
 
 ### 四个阶段
 
-**概念**：Vue 实例从创建到销毁的过程，每个阶段都有特定的钩子函数可以调用。Vue 生命周期是指 Vue 实例从创建到销毁的整个过程，在这个过程中会自动执行一些函数，这些函数被称为生命周期钩子函数。
+**概念**：Vue 实例从创建到销毁的过程，每个阶段都有特定的**钩子函数**可以调用。Vue 生命周期是指 Vue 实例从创建到销毁的整个过程，在这个过程中会自动执行一些函数，这些函数被称为生命周期钩子函数。
 
 **生命周期四个阶段**：① 创建 ② 挂载 ③ 更新 ④ 销毁
 
@@ -1094,7 +1070,7 @@ mounted() {
 }
 ```
 
-**实际应用 - 输入框获取焦点**：
+##### 实际应用 - 输入框获取焦点
 
 ```javascript
 const app = new Vue({
@@ -1116,7 +1092,7 @@ const app = new Vue({
 </div>
 ```
 
-**实际应用 - 初始化图表**：
+##### 实际应用 - 初始化图表(echarts)
 
 ```javascript
 const app = new Vue({
@@ -1157,14 +1133,14 @@ const app = new Vue({
 });
 ```
 
-### 生命周期综合案例 - 小黑记账清单
+### 综合案例 - 小黑记账清单
 
 **功能需求**：
 
 1. 页面加载时获取账单数据（created）
 2. DOM 渲染完成后初始化图表（mounted）
 3. 添加、删除账单功能
-4. 实时更新饼图显示
+4. 实时更新饼图显示 (echarts)
 
 **完整实现**：
 
@@ -1336,7 +1312,7 @@ const app = new Vue({
 
 ## 工程化开发与脚手架
 
-**开发 Vue 的两种方式**
+**🌟开发 Vue 的两种方式（分水岭）**
 
 - 核心包传统开发模式：基于 html / css / js 文件，直接引入核心包，开发 Vue。
 - **工程化开发模式：基于构建工具（例如：webpack）的环境中开发 Vue。**
@@ -1349,6 +1325,8 @@ const app = new Vue({
 - 提供了丰富的插件和工具，满足不同项目的需求。
 
 ### 脚手架 Vue CLI
+
+在章节[[#Vue CLI 创建自定义项目]]深入了解
 
 **基本介绍**
 
@@ -1366,37 +1344,37 @@ Vue CLI 是 Vue 官方提供的一个**全局命令工具**
 
 1. **全局安装**（只需安装一次即可）
 
-   ```bash
-   # 使用 yarn
-   yarn global add @vue/cli
-   # 或使用 npm
-   npm i @vue/cli -g
-   ```
+```bash
+# 使用 yarn
+yarn global add @vue/cli
+# 或使用 npm
+npm i @vue/cli -g
+```
 
 2. **查看版本**
 
-   ```bash
-   vue --version
-   ```
+```bash
+vue --version
+```
 
 3. **创建项目**
 
-   ```bash
-   vue create project-name
-   ```
+```bash
+vue create project-name
+```
 
    > 注意：项目名不能使用中文，建议使用小写字母和连字符
 
 4. **启动项目**
 
-   ```bash
-   # 进入项目目录
-   cd project-name
-   # 启动开发服务器
-   yarn serve
-   # 或
-   npm run serve
-   ```
+```bash
+# 进入项目目录
+cd project-name
+# 启动开发服务器
+yarn serve
+# 或
+npm run serve
+```
 
    > 具体命令可在 package.json 的 scripts 字段中查看
 
@@ -1421,7 +1399,7 @@ Vue CLI 是 Vue 官方提供的一个**全局命令工具**
 
 ### 项目结构与运行流程
 
-#### 项目目录结构
+#### 🌟项目目录结构
 
 ```
 project-name/
@@ -1467,47 +1445,47 @@ project-name/
 
 1. **main.js** - 项目入口文件
 
-   ```javascript
-   import { createApp } from "vue";
-   import App from "./App.vue";
+```javascript
+import { createApp } from "vue";
+import App from "./App.vue";
 
-   createApp(App).mount("#app");
-   ```
+createApp(App).mount("#app");
+```
 
 2. **App.vue** - 根组件
 
-   ```vue
-   <template>
-     <div id="app">
-       <!-- 应用内容 -->
-     </div>
-   </template>
+```html
+<template>
+ <div id="app">
+   <!-- 应用内容 -->
+ </div>
+</template>
 
-   <script>
-   export default {
-     name: "App",
-   };
-   </script>
+<script>
+export default {
+ name: "App",
+};
+</script>
 
-   <style>
-   /* 全局样式 */
-   </style>
-   ```
+<style>
+/* 全局样式 */
+</style>
+```
 
 3. **index.html** - HTML 模板文件
-   ```html
-   <!DOCTYPE html>
-   <html lang="">
-     <head>
-       <meta charset="utf-8" />
-       <title>Vue App</title>
-     </head>
-     <body>
-       <div id="app"></div>
-       <!-- built files will be auto injected -->
-     </body>
-   </html>
-   ```
+```html
+<!DOCTYPE html>
+<html lang="">
+ <head>
+   <meta charset="utf-8" />
+   <title>Vue App</title>
+ </head>
+ <body>
+   <div id="app"></div>
+   <!-- built files will be auto injected -->
+ </body>
+</html>
+```
 
 #### 项目运行流程
 
@@ -1554,85 +1532,85 @@ graph TD
 
 ### 组件的三个组成部分
 
-1. **`<template>`**：组件的模板，定义组件的结构和内容
+1.  **\<template\>** ：组件的模板，定义组件的结构和内容
 
-   ```vue
-   <template>
-     <div class="my-component">
-       <h1>{{ title }}</h1>
-       <p>{{ content }}</p>
-     </div>
-   </template>
-   ```
+```html
+<template>
+ <div class="my-component">
+   <h1>{{ title }}</h1>
+   <p>{{ content }}</p>
+ </div>
+</template>
+```
 
-2. **`<script>`**：JavaScript 逻辑，定义组件的行为和逻辑
+2. **\<script\>**：JavaScript 逻辑，定义组件的行为和逻辑。在`export default {}`中编码。
 
-   ```vue
-   <script>
-   export default {
-     name: "MyComponent",
-     data() {
-       return {
-         title: "组件标题",
-         content: "组件内容",
-       };
-     },
-     methods: {
-       handleClick() {
-         console.log("按钮被点击");
-       },
-     },
+```html
+<script>
+export default {
+ name: "MyComponent",
+ data() {
+   return {
+	 title: "组件标题",
+	 content: "组件内容",
    };
-   </script>
-   ```
+ },
+ methods: {
+   handleClick() {
+	 console.log("按钮被点击");
+   },
+ },
+};
+</script>
+```
 
-3. **`<style>`**：组件的样式，定义组件的外观和布局
-   ```vue
-   <style scoped>
-   .my-component {
-     padding: 20px;
-     border: 1px solid #ccc;
-   }
-   </style>
-   ```
+3. **\<style\>**：组件的样式，定义组件的外观和布局
+```html
+<style scoped>
+.my-component {
+ padding: 20px;
+ border: 1px solid #ccc;
+}
+</style>
+```
 
-### 样式作用域和预处理器
+**样式作用域和预处理器**
 
-- **scoped 属性**：使样式只作用于当前组件
-  ```vue
-  <style scoped>
-  /* 样式只在当前组件生效 */
-  </style>
-  ```
+**scoped 属性**：使样式只作用于当前组件
+```html
+<style scoped>
+/* 样式只在当前组件生效 */
+</style>
+```
 
 **原理**：
 
 - **scoped 属性**：通过在组件的样式标签上添加 `scoped` 属性，Vue 会为该组件的样式添加一个唯一的标识符（如 `data-v-hash值`），并将该标识符添加到组件的 DOM 元素上。
 - **CSS 选择器**：在组件的样式中，所有的选择器都会被添加一个前缀，如 `.my-component[data-v-hash值]`，确保样式只作用于当前组件的 DOM 元素。
 
-- **CSS 预处理器支持**：
+**CSS 预处理器支持**：
 
-  ```bash
-  # 安装 Less
-  yarn add less less-loader -D
-  
-  # 安装 Sass
-  yarn add sass sass-loader -D
-  ```
+```bash
+# 安装 Less
+yarn add less less-loader -D
 
-  ```vue
-  <style lang="less" scoped>
-  @primary-color: #007bff;
-  
-  .my-component {
-    color: @primary-color;
-  
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-  </style>
-  ```
+# 安装 Sass
+yarn add sass sass-loader -D
+```
+
+```html
+<style lang="less" scoped>
+@primary-color: #007bff;
+
+.my-component {
+color: @primary-color;
+
+&:hover {
+  opacity: 0.8;
+}
+}
+</style>
+```
 
 ### 普通组件的注册使用-局部注册
 
@@ -1642,22 +1620,22 @@ graph TD
 
 1. 在 components 目录下创建组件文件（例如：MyComponent.vue）
 2. 在需要使用的组件中引入组件文件
-   ```javascript
-   import MyComponent from "@/components/MyComponent.vue";
-   ```
+```javascript
+import MyComponent from "@/components/MyComponent.vue";
+```
 3. 在组件中注册组件
-   ```javascript
-   export default {
-     components: {
-      <!-- 同名变量简写 -->
-       MyComponent
-     }
-   }
-   ```
+```javascript
+export default {
+ components: {
+  <!-- 同名变量简写 -->
+   MyComponent
+ }
+}
+```
 4. 在组件的模板中使用组件, 当成 html 标签使用即可
-   ```html
-   <MyComponent><MyComponent /></MyComponent>
-   ```
+```html
+<MyComponent><MyComponent /></MyComponent>
+```
    _p.s. 组件命名规范：大驼峰命名法_
 
 ### 普通组件的注册使用-全局注册
@@ -1668,17 +1646,18 @@ graph TD
 
 1. 在 components 目录下创建组件文件（例如：GlobalComponent.vue）
 2. 在**_main.js_**文件中引入组件文件
-   ```javascript
-   import GlobalComponent from "@/components/GlobalComponent.vue";
-   ```
+```javascript
+// @/src/main.js
+import GlobalComponent from "@/components/GlobalComponent.vue";
+```
 3. 在**_main.js_**文件中注册组件
-   ```javascript
-   Vue.component("GlobalComponent", GlobalComponent);
-   ```
+```javascript
+Vue.component("GlobalComponent", GlobalComponent);
+```
 4. 在组件的模板中使用组件, 当成 html 标签使用即可
-   ```html
-   <GlobalComponent><GlobalComponent /></GlobalComponent>
-   ```
+```html
+<GlobalComponent><GlobalComponent /></GlobalComponent>
+```
 
 _p.s. 通常在 IDE 内，可以先完成步骤 3，语法补全会自动引入步骤 2 中的代码_
 
@@ -1926,7 +1905,7 @@ export default {
 
 - 可以传递任意数量、任意类型的 prop
 - 支持字符串、数字、布尔值、数组、对象、函数等所有 JavaScript 数据类型
-- 数据流是单向的：父组件数据变化会影响子组件，但子组件不能直接修改 props
+- **数据流是单向的：父组件数据变化会影响子组件，但子组件不能直接修改 props**
 
 **模板语法**：
 
@@ -2007,7 +1986,7 @@ export default {
 
 #### Props 校验
 
-**概念**：Props 校验是 Vue 提供的一种机制，用于验证父组件传递给子组件的数据是否符合预期的类型和格式，提高代码的健壮性和可维护性。
+**概念**：Props 校验是 Vue 提供的一种机制，用于验证父组件传递给子组件的数据是否符合**预期的类型和格式**，提高代码的健壮性和可维护性。
 
 **模板语法**：
 
@@ -2022,7 +2001,7 @@ props: {
   属性名: {
     type: 数据类型,           // 类型校验
     required: true,          // 是否必填
-    default: 默认值,         // 默认值
+    default: 默认值,         // 默认值（对象和数组的默认值必须以函数返回）
     validator(value) {       // 自定义校验函数
       return 校验逻辑;
     }
@@ -2148,18 +2127,50 @@ export default {
 
 #### $emit 子传父
 
-**概念**：$emit 是 Vue 提供的实例方法，用于子组件向父组件发送消息。子组件通过触发自定义事件的方式，将数据传递给父组件。
+**概念**：$emit 是 Vue 提供的实例方法，用于子组件向父组件发送消息。子组件通过触发**自定义事件**的方式，将数据传递给父组件。
+
+**父组件接收子组件所传递的数据**：
+
+1. 父组件的 handler 的前 n 个形参可以按序、依次接收子组件通过 $emit 所传递的 n 个数据（n ≥ 0）
+2. 如父组件的 handler 需要不来自子组件的额外参数，需要在模板中显式声明 $event，通过 $event 接收子组件数据，并传递额外参数给 handler
+3. 此时 $event 只能接收子组件传递的第一个参数
+4. 如果仍需传递多组数据，可以将数据封装成对象再传递
 
 **模板语法**：
 
 ```javascript
 // 子组件触发事件
-this.$emit("事件名", 传递的数据);
+this.$emit("自定义事件名", 传递的数据);
+
+this.$emit("自定义事件名", 数据1, 数据2, ..., 数据n); // n >= 0
 ```
 
 ```html
 <!-- 父组件监听事件 -->
-<子组件名 @事件名="处理函数"></子组件名>
+<子组件名 @同名事件="处理函数"></子组件名>
+
+<!-- 显示写 $event, 效果和不写 $event 是一样的 -->
+<子组件名 @同名事件="处理函数($event)"></子组件名>
+
+<!-- 如果处理函数需要额外的参数时，需要显示写 $event, 再写其他参数 -->
+<!-- 此时 $event 只能接收子组件传递的第一个参数-->
+<子组件名 @同名事件="处理函数($event, 其他参数)"></子组件名>
+
+<script>
+  export default {
+    methods: {
+      处理函数(newMsg) {
+        this.fatherMsg = newMsg;
+      },
+      处理函数(param1, param2, ..., paramN) {
+        // 处理函数可以接收子组件传递的多个数据
+      },
+      处理函数(childData, extraParam) {
+        // 处理函数可以接收子组件传递的多个数据，以及额外的参数
+      },
+    },
+  };
+</script>
 ```
 
 **基础示例**：
@@ -2648,9 +2659,9 @@ export default Bus;
 
 **注意事项**：
 
-- 事件名必须保持一致
+- **事件名必须保持一致**
 - 建议在组件销毁时移除事件监听，避免内存泄漏
-- EventBus 适合简单场景，复杂状态管理建议使用 Vuex
+- EventBus 适合简单场景，**复杂状态管理建议使用 Vuex**
 
 #### provide 和 inject
 
@@ -2790,7 +2801,7 @@ export default {
 - 不要过度使用，会增加组件间的耦合度
 - 适合稳定的、不经常变化的数据
 
-## v-model 进阶
+## 🌟基于组件通信的 v-model 进阶
 
 基于组件通信，我们可以对 v-model 有全新的认识。
 
@@ -2813,6 +2824,9 @@ export default {
 
 <!-- 等价于 -->
 <input :value="message" @input="message = $event.target.value" />
+<!-- 将 input 理解为一个组件，它有一个 value prop 和一个 input 事件 -->
+<!-- 各自对应 input 标签的原生 value 属性和 input 事件 -->
+<!-- 如此以来，input标签的 value 属性就处在 “监听 - 更新 - 显示” 这个循环中 -->
 ```
 
 **基础示例**：
@@ -2843,12 +2857,12 @@ export default {
 **$event 的使用**：
 
 - `$event`：在模板中获取事件对象
-- `$event.target.value`：获取输入框的当前值
+- **`$event.target.value`：获取输入框的当前值**
 - 用于在内联事件处理中访问原生事件
 
 ### 自定义组件的 v-model
 
-**概念**：在自定义组件上使用 v-model，需要组件内部配合实现特定的 props 和事件约定。
+**概念**：在自定义组件上使用 v-model，需要组件内部配合实现**特定的 props** 和**事件约定**。
 
 **实现约定**：
 
@@ -2964,6 +2978,11 @@ export default {
 **子组件实现**：
 
 ```javascript
+// 接受 props
+props: {
+  属性名: 类型,
+},
+
 // 子组件触发更新事件
 this.$emit("update:属性名", 新值);
 ```
@@ -3049,7 +3068,7 @@ this.$emit("update:属性名", 新值);
 
 ### 获取 DOM 元素
 
-**概念**：ref 是 Vue 提供的特殊属性，用于给元素或组件注册引用信息，通过$refs 可以直接访问 DOM 元素或组件实例。
+**概念**：ref 是 Vue 提供的特殊属性，用于给元素或组件注册引用信息，通过 $refs 可以直接访问 DOM 元素或组件实例。
 
 **模板语法**：
 
@@ -3059,7 +3078,10 @@ this.$emit("update:属性名", 新值);
 <input ref="inputRef" />
 
 <!-- 在组件中访问 -->
+<script>
 this.$refs.引用名
+this.$refs.inputRef
+</script>
 ```
 
 **使用场景**：
@@ -3115,7 +3137,7 @@ this.$refs.引用名
 
 ### 获取组件实例
 
-**概念**：ref 不仅可以获取 DOM 元素，还可以获取子组件的实例，从而调用子组件的方法或访问子组件的数据。
+**概念**：ref 不仅可以获取 DOM 元素，还可以获取子组件的实例，从而**调用子组件的方法**或**访问子组件的数据**。
 
 **模板语法**：
 
@@ -3124,7 +3146,7 @@ this.$refs.引用名
 <ChildComponent ref="childRef"></ChildComponent>
 
 <!-- 调用子组件方法 -->
-this.$refs.childRef.方法名()
+this.$refs.childRef.子组件内部方法名()
 ```
 
 **完整示例**：
@@ -3205,7 +3227,7 @@ this.$refs.childRef.方法名()
 
 - ref 在组件渲染完成后才能访问
 - 建议在 mounted 生命周期中使用
-- 不要过度使用，优先考虑 props 和事件通信
+- 不要过度使用，**优先考虑 props 和事件通信**
 
 ## Vue 异步更新和 $nextTick
 
@@ -3294,7 +3316,7 @@ async method() {
 </script>
 ```
 
-**常见应用场景**：
+### 常见应用场景
 
 1. **表单聚焦**：
 
@@ -3339,12 +3361,12 @@ this.$nextTick(() => {
 
 **最佳实践**：
 
-- 只在需要操作更新后的 DOM 时使用
-- 避免在$nextTick 中进行数据修改，可能导致无限循环
+- **只在需要操作更新后的 DOM 时使用**
+- **避免在$nextTick 中进行数据修改**，可能导致无限循环
 - 可以与 async/await 结合使用，提高代码可读性
 - 在组件销毁前取消未完成的$nextTick 回调
 
-## Vue 自定义指令
+## 🌟Vue 自定义指令
 
 ### 基本概念与用法
 
@@ -3359,10 +3381,12 @@ this.$nextTick(() => {
 
 **模板语法**：
 
+可局部注册或全局注册：
+
 ```javascript
 // 全局注册
-Vue.directive("指令名", {
-  // 钩子函数
+Vue.directive("自定义指令名", {
+  // 原生钩子函数，指令所在的元素被插入到页面中时触发
   inserted(el, binding) {
     // el: 指令绑定的DOM元素
     // binding: 包含指令信息的对象
@@ -3372,7 +3396,7 @@ Vue.directive("指令名", {
 // 局部注册
 export default {
   directives: {
-    指令名: {
+    自定义指令名: {
       inserted(el, binding) {
         // 指令逻辑
       },
@@ -3399,7 +3423,7 @@ Vue.directive("focus", {
 <input v-focus type="text" />
 ```
 
-### 指令的值传递
+### 指令的值传递 binding.value
 
 **概念**：自定义指令可以接收动态值，通过 `binding.value` 获取指令绑定的值，实现更灵活的功能。
 
@@ -3499,6 +3523,7 @@ directives: {
 ```
 
 ```html
+<!-- 绑定指令 -->
 <div class="box" v-loading="isLoading">
   <!-- 内容区域 -->
   <ul>
@@ -3612,9 +3637,11 @@ export default {
 </template>
 ```
 
-### 具名插槽
+### 🌟具名插槽
 
 **概念**：具名插槽允许在一个组件中定义多个插槽，每个插槽都有自己的名称，父组件可以向指定名称的插槽传入内容。
+
+_ **在子组件内，每个插槽在使用时都要多包裹一层 \<template\> 标签，配合 `v-slot:name` 来指定分发**_
 
 **模板语法**：
 
@@ -3643,7 +3670,7 @@ export default {
 
 1. 多个 slot 时，用 name 属性区分名字
 2. 一旦插槽起了名字，就是具名插槽，只能定向分发
-3. template 配合 `v-slot:name` 来分发对应标签
+3. **用 \<template\> 标签配合 `v-slot:name` 来分发对应标签**
 4. `v-slot:name` 可以简化为 `#name`
 
 **实用示例**：
@@ -3681,34 +3708,40 @@ export default {
 </template>
 ```
 
-### 作用域插槽
+### 🌟作用域插槽
 
-**概念**：作用域插槽是插槽的一种传参语法，允许子组件向插槽传递数据，父组件可以接收这些数据并在模板中使用。这种机制实现了子组件向父组件的数据传递。
+**概念**：作用域插槽是插槽的一种**传参语法**，允许子组件向插槽传递数据，父组件可以接收这些数据并在模板中使用。这种机制实现了子组件向父组件的数据传递。
 
-**模板语法**：
+**基本使用步骤**
+
+1. **子组件传递数据**
 
 ```html
-<!-- 子组件中传递数据 -->
 <template>
   <div>
-    <slot :数据名="数据值" :其他数据="其他值"></slot>
+    <slot :自定义数据1="数据值1" :自定义数据n="数据值n"></slot>
+    <slot name="footer" :year="year"></slot>
   </div>
 </template>
+```
 
-<!-- 父组件中接收数据 -->
+2. ** 父组件通过 `#default="自定义变量名"` 接收数据**，自定义变量名是一个对象，包含子组件传递的所有数据。
+
+_`default`是默认插槽的名称，如使用具名插槽，替换为实际插槽名称_
+
+```html
 <template>
   <MyComponent>
-    <template #default="slotProps"> {{ slotProps.数据名 }} </template>
-
+	<!-- 父组件中接收数据 -->
+    <template #default="customName"> {{ customName.自定义数据1 }} </template>
+    <template #footer="footerProps"> {{ footerProps.year }} </template>
     <!-- 解构语法 -->
-    <template #default="{ 数据名, 其他数据 }">
-      {{ 数据名 }} - {{ 其他数据 }}
-    </template>
+    <template #default="{ 自定义数据1, 自定义数据n }"> {{ 自定义数据1 }} - {{ 自定义数据n }} </template>
   </MyComponent>
 </template>
 ```
 
-**实用示例**：
+**实例演示**：
 
 ```html
 <!-- MyTable.vue 子组件 -->
@@ -3756,18 +3789,6 @@ export default {
     </MyTable>
   </div>
 </template>
-```
-
-```javascript
-// 父组件方法
-methods: {
-  del(id) {
-    this.list = this.list.filter(item => item.id !== id);
-  },
-  check(currRow) {
-    alert(`姓名：${currRow.name}，年龄：${currRow.age}`);
-  }
-}
 ```
 
 ### 插槽综合应用
@@ -3839,7 +3860,7 @@ export default {
 </template>
 ```
 
-## 路由 Vue Router
+## 🌟路由 Vue Router
 
 ### 单页应用程序 (SPA)
 
@@ -3931,7 +3952,7 @@ const router = new VueRouter({
 
 _p.s. `@/` 标识符指代 `src/` 文件夹，可以直接从此寻找文件。以后可以多用。_
 
-2. 在`src/App.vue`中添加路由出口
+2. 在`src/App.vue`中添加**路由出口：\<router-view\>**
 
 ```html
 <template>
@@ -4121,7 +4142,7 @@ const router = new VueRouter({
 </style>
 ```
 
-### 路由传参
+### 🌟路由传参
 
 **为什么需要路由传参？**
 - 页面间需要传递数据
@@ -4134,21 +4155,19 @@ const router = new VueRouter({
 
 **特点**：
 - 参数会显示在 URL 的 `?` 后面
-- 适合传递可选参数
-- 参数可以是任意数量
+- 适合传递**可选**参数
+- 参数可以是**任意数量**
 
 **传参语法**：
 ```html
 <!-- 声明式导航 -->
 <router-link to="/path?参数名1=值1&参数名2=值2">跳转</router-link>
 
-<!-- 具体示例 -->
 <router-link to="/search?words=黑马&age=18">搜索</router-link>
 ```
 
 **接收参数**：
 ```javascript
-// 在目标组件中接收
 export default {
   created() {
     // 获取查询参数
@@ -4158,9 +4177,8 @@ export default {
 }
 ```
 
-**路由配置**：
+**路由配置**：***查询参数不需要特殊配置***
 ```javascript
-// 查询参数不需要特殊配置
 const router = new VueRouter({
   routes: [
     { path: '/search', component: Search }
@@ -4171,8 +4189,8 @@ const router = new VueRouter({
 ##### 动态路由传参 (params)
 
 **特点**：
-- 参数是路径的一部分
-- 适合传递必需参数
+- 参数是**路径的一部分**
+- 适合传递**必需**参数
 - URL 更简洁美观
 
 **传参语法**：
@@ -4180,13 +4198,11 @@ const router = new VueRouter({
 <!-- 声明式导航 -->
 <router-link to="/path/参数值">跳转</router-link>
 
-<!-- 具体示例 -->
 <router-link to="/search/黑马">搜索黑马</router-link>
 ```
 
 **接收参数**：
 ```javascript
-// 在目标组件中接收
 export default {
   created() {
     // 获取动态路由参数
@@ -4195,9 +4211,8 @@ export default {
 }
 ```
 
-**路由配置**：
+**路由配置**：需要在路由规则中配置参数**占位符**
 ```javascript
-// 需要在路由规则中配置参数占位符
 const router = new VueRouter({
   routes: [
     // :words 是参数占位符
@@ -4259,7 +4274,7 @@ export default {
 - 当用户访问某个路径时，自动跳转到另一个路径
 - 常用于设置默认页面或处理旧路径
 
-**基本语法**：
+**基本语法**：在路由规则中配置 `redirect`
 ```javascript
 const router = new VueRouter({
   routes: [
@@ -4299,7 +4314,7 @@ const router = new VueRouter({
 ```
 
 **NotFound 组件示例**：
-```vue
+```html
 <!-- NotFound.vue -->
 <template>
   <div class="not-found">
@@ -4321,9 +4336,7 @@ const router = new VueRouter({
 - 通配符路由 `*` 必须放在路由配置的最后
 - 它会匹配所有未被其他路由匹配的路径
 
-### 路由模式设置
-
-**Vue Router 的两种模式**：
+### 路由模式 Hash & History
 
 #### Hash 模式（默认）
 
@@ -4368,7 +4381,8 @@ const router = new VueRouter({
 })
 ```
 
-**服务器配置要求**：
+**🌟服务器配置要求**：
+
 使用 history 模式时，服务器需要配置：当访问不存在的路径时，返回 index.html
 
 #### 两种模式对比
@@ -4378,7 +4392,7 @@ const router = new VueRouter({
 | **URL 形式** | `/#/path` | `/path` |
 | **美观度** | 一般 | 更美观 |
 | **兼容性** | 所有浏览器 | 现代浏览器 |
-| **服务器配置** | 无需配置 | 需要配置 |
+| **服务器配置** | 无需配置 | **需要配置** |
 | **SEO** | 不友好 | 相对友好 |
 
 **完整配置示例**：
@@ -4410,7 +4424,7 @@ const router = new VueRouter({
 export default router
 ```
 
-### 编程式导航
+### 🌟编程式导航
 
 **什么是编程式导航？**
 - 通过 JavaScript 代码控制路由跳转
@@ -4426,7 +4440,11 @@ export default router
 
 #### 编程式导航的两种跳转语法
 
-**核心方法**：`this.$router.push()`
+##### 核心方法
+
+```js
+this.$router.push()
+```
 
 ##### 路径跳转 (path)
 
@@ -4474,6 +4492,10 @@ this.$router.push({ name: 'home' })
 **重要原则**：编程式导航的两种跳转方式都各自支持 **查询参数传参** 和 **动态路由传参**，但传参方式有所不同。
 
 ##### **1. 路径跳转 + 查询参数**（path+query对象）
+
+_不需要特殊配置，注意路径拼写正确_
+
+
 ```javascript
 // 简写方式：直接在路径中拼接查询参数
 this.$router.push('/search?key=黑马')
@@ -4487,7 +4509,10 @@ this.$router.push({
 })
 ```
 
-##### **2. 路径跳转 + 动态传参**（path拼接）
+##### **2. 路径跳转 + 动态传参**（path拼接params）
+
+_需要配置参数占位符_
+
 ```javascript
 // 简写方式：直接在路径中拼接参数
 this.$router.push('/search/黑马')
@@ -4505,6 +4530,8 @@ this.$router.push({
 
 ##### **3. 名字跳转 + 查询参数**（name + query）
 
+_需要配置 name。有效降低因路径拼写问题导致的错误，推荐使用✅_
+
 ```javascript
 this.$router.push({
   name: 'search',
@@ -4515,6 +4542,9 @@ this.$router.push({
 ```
 
 ##### **4. 名字跳转 + 动态传参**（name + params）
+
+_既需要配置 name，也需要配置参数占位符，传参数目有限_
+
 ```javascript
 this.$router.push({
   name: 'search',
@@ -4551,7 +4581,7 @@ const router = new VueRouter({
 ```
 
 **Home.vue 组件**：
-```vue
+```html
 <template>
   <div>
     <h3>首页</h3>
@@ -4617,7 +4647,7 @@ export default {
 ```
 
 **Search.vue 组件**：
-```vue
+```html
 <template>
   <div>
     <h3>搜索页面</h3>
@@ -4637,28 +4667,6 @@ export default {
 </script>
 ```
 
-#### 编程式导航总结
-
-**跳转方式选择**：
-- **简单路径**：使用路径跳转 `{ path: '/path' }`
-- **复杂路径**：使用名字跳转 `{ name: 'routeName' }`
-- **需要动态参数且使用 params 对象**：必须使用名字跳转
-
-**传参方式选择**：
-- **查询参数**：两种跳转方式都支持，使用 `query` 对象
-- **动态路由参数**：
-  - 路径跳转：直接在 `path` 中拼接参数
-  - 名字跳转：使用 `params` 对象传参
-
-**兼容性原则**：
-- 所有传参方式在目标页面的接收方式保持一致
-- `query` 参数通过 `this.$route.query` 接收
-- `params` 参数通过 `this.$route.params` 接收
-
-**常见错误**：
-- ❌ 路径跳转使用 `params`
-- ❌ 忘记在路由中配置 `name` 属性
-- ❌ 动态路由参数与路径跳转混用
 
 ### 其他路由导航方法 $router.back()
 
@@ -4681,7 +4689,7 @@ this.$router.go(-1)
 
 **示例**：
 
-```vue
+```html
 <template>
   <div class="detail-page">
     <header>
@@ -4706,7 +4714,7 @@ export default {
 </script>
 ```
 
-**其他导航方法**：
+##### 更多导航方法
 
 ```javascript
 // 前进一页
@@ -4764,7 +4772,7 @@ const router = new VueRouter({
 
 在父级组件模板中添加 `<router-view>` 作为子路由的显示区域：
 
-```vue
+```html
 <template>
   <div class="layout">
     <!-- 子路由显示区域 -->
@@ -4790,13 +4798,13 @@ const router = new VueRouter({
 
 ## 组件缓存 keep-alive
 
-**keep-alive** 是 Vue 的内置组件，用于缓存动态组件或路由组件，避免重复创建和销毁，提升性能并保持组件状态。
+**keep-alive** 是 Vue 的内置组件，用于**缓存动态组件或路由组**件，避免重复创建和销毁，提升性能并保持组件状态。
 
 ### 基本使用
 
 **语法**：
 
-```vue
+```html
 <template>
   <div>
     <!-- 缓存路由组件 -->
@@ -4816,7 +4824,7 @@ const router = new VueRouter({
 
 **include**：指定需要缓存的组件（根据组件的 `name` 选项）
 
-```vue
+```html
 <!-- 缓存指定组件 -->
 <keep-alive :include="['ArticlePage', 'UserPage']">
   <router-view></router-view>
@@ -4830,7 +4838,7 @@ const router = new VueRouter({
 
 **exclude**：指定不需要缓存的组件
 
-```vue
+```html
 <keep-alive :exclude="['LoginPage']">
   <router-view></router-view>
 </keep-alive>
@@ -4838,7 +4846,7 @@ const router = new VueRouter({
 
 **max**：限制缓存组件的最大数量
 
-```vue
+```html
 <keep-alive :max="5">
   <router-view></router-view>
 </keep-alive>
@@ -4883,7 +4891,7 @@ export default {
 
 ### 实战示例
 
-```vue
+```html
 <!-- 父组件 Layout.vue -->
 <template>
   <div class="h5-wrapper">

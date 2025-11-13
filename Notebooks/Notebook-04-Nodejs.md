@@ -215,7 +215,7 @@ console.log(getArraySum)
 console.log(getArraySum([1, 4, 7]))
 ```
 
-##### 🌟对比总结
+#### 🌟对比总结
 
 - **默认导出** 
 
