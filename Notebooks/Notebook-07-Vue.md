@@ -208,11 +208,13 @@ data: {
 <p v-else>成绩评定D：惩罚一周不能玩手机</p>
 ```
 
-### v-on 事件监听
+### 🌟v-on 事件监听
 
 **概念**：v-on 指令用于监听 DOM 事件，当事件触发时执行相应的 JavaScript 代码或调用方法。
 
 _🌟p.s. methods 内的函数，其中的 this 指向 Vue 实例_
+
+_有关特殊参数 \$event，参阅本手册 [[#🌟$emit 子传父]]，或访问 [Vue3官方文档](https://cn.vuejs.org/guide/essentials/event-handling.html)了解更多_
 
 **模板语法**：
 
@@ -235,13 +237,28 @@ _🌟p.s. methods 内的函数，其中的 this 指向 Vue 实例_
 
 **语法 1 - 内联语句**：直接在模板中编写简单的 JavaScript 表达式
 
+_内联事件处理器：也可使用箭头函数，立即执行，并调用执行函数（如有）。参阅本手册[[#🌟闭包的相关应用]]了解更多。_
+
 ```html
 <button v-on:click="count--">-</button>
 <button @click="count++">+</button>
 <button @click="flag = !flag">切换</button>
+
+<!-- 使用内联箭头函数 --> 
+<button @click="(event) => warn('Form cannot be submitted yet.', event)"> Submit </button>
+
+<script>
+function warn(message, event) {
+  // 这里可以访问原生事件
+  if (event) {
+    event.preventDefault()
+  }
+  alert(message)
+}
+</script>
 ```
 
-**语法 2 - 调用方法**：调用 methods 中定义的方法
+**语法 2 - 调用方法**：调用 methods 中定义的方法 _即：方法事件处理器_
 
 ```html
 <button @click="fn">控制显隐</button>
@@ -1344,7 +1361,7 @@ Vue CLI 是 Vue 官方提供的一个**全局命令工具**
 
 1. **全局安装**（只需安装一次即可）
 
-```bash
+```sh
 # 使用 yarn
 yarn global add @vue/cli
 # 或使用 npm
@@ -1353,13 +1370,13 @@ npm i @vue/cli -g
 
 2. **查看版本**
 
-```bash
+```sh
 vue --version
 ```
 
 3. **创建项目**
 
-```bash
+```sh
 vue create project-name
 ```
 
@@ -1367,7 +1384,7 @@ vue create project-name
 
 4. **启动项目**
 
-```bash
+```sh
 # 进入项目目录
 cd project-name
 # 启动开发服务器
@@ -1530,7 +1547,7 @@ graph TD
 
 整个应用最上层的组件，包裹所有的小组件（类似树的根节点）
 
-### 组件的三个组成部分
+### 🌟组件的三个组成部分
 
 1.  **\<template\>** ：组件的模板，定义组件的结构和内容
 
@@ -1590,7 +1607,7 @@ export default {
 
 **CSS 预处理器支持**：
 
-```bash
+```sh
 # 安装 Less
 yarn add less less-loader -D
 
@@ -1826,7 +1843,7 @@ Vue.component("BaseGoodsItem", BaseGoodsItem);
 
 #### 常用开发命令
 
-```bash
+```sh
 # 开发环境
 yarn serve          # 启动开发服务器
 yarn build          # 构建生产版本
@@ -2125,7 +2142,7 @@ export default {
 </style>
 ```
 
-#### $emit 子传父
+#### 🌟$emit 子传父
 
 **概念**：$emit 是 Vue 提供的实例方法，用于子组件向父组件发送消息。子组件通过触发**自定义事件**的方式，将数据传递给父组件。
 
@@ -2135,6 +2152,8 @@ export default {
 2. 如父组件的 handler 需要不来自子组件的额外参数，需要在模板中显式声明 $event，通过 $event 接收子组件数据，并传递额外参数给 handler
 3. 此时 $event 只能接收子组件传递的第一个参数
 4. 如果仍需传递多组数据，可以将数据封装成对象再传递
+
+_p.s. 方法事件处理器(外置 handler)会自动接收原生 DOM 事件并触发执行。即：通过传递 $event 特殊参数可以访问原生 DOM 事件，例如 e.target.tagName 等。参阅[Vue3官方文档](https://cn.vuejs.org/guide/essentials/event-handling.html)_
 
 **模板语法**：
 
@@ -2807,7 +2826,7 @@ export default {
 
 ### v-model 原理
 
-**概念**：v-model 是 Vue 提供的语法糖，本质上是属性绑定和事件监听的组合写法，实现双向数据绑定。
+**概念**：v-model 是 Vue 提供的语法糖，本质上是**属性绑定**和**事件监听**的组合写法，实现双向数据绑定。
 
 **本质原理**：
 
@@ -2815,6 +2834,8 @@ export default {
 - 对于**复选框**：`:checked` + `@change`
 - 对于**单选框**：`:checked` + `@change`
 - 对于**下拉选择**：`:value` + `@change`
+
+_关于 Vue 3的 v-model 实现，略有差异，参阅[[#defineModel() 宏函数]]_
 
 **模板语法**：
 
@@ -3899,7 +3920,7 @@ Vue Router是Vue.js官方的路由管理器，它让构建单页应用变得易�
 
 1. 安装 Vue Router（Vue2 → 3.x 版本）
 
-```bash
+```sh
 npm install vue-router@3
 ```
 
@@ -4962,7 +4983,7 @@ export default {
 
 #### 基本命令
 
-```bash
+```sh
 # 全局安装 Vue CLI
 npm install -g @vue/cli
 
@@ -4976,7 +4997,7 @@ vue create project-name
 
 **1. 功能选择**
 
-```bash
+```sh
 ? Check the features needed for your project:
  ◉ Babel              # ES6+ 语法转换
  ◯ TypeScript          # TypeScript 支持
@@ -4993,7 +5014,7 @@ vue create project-name
 
 **2. Vue 版本选择**
 
-```bash
+```sh
 ? Choose a version of Vue.js:
  ◉ 2.x  # Vue 2.x 版本（当前学习版本）
  ◯ 3.x  # Vue 3.x 版本（未来版本）
@@ -5001,7 +5022,7 @@ vue create project-name
 
 **3. 路由模式选择**
 
-```bash
+```sh
 ? Use history mode for router?
   Yes  # History 模式（推荐）
   No   # Hash 模式
@@ -5009,7 +5030,7 @@ vue create project-name
 
 **4. CSS 预处理器选择**
 
-```bash
+```sh
 ? Pick a CSS pre-processor:
  ◯ Sass/SCSS (with dart-sass)
  ◯ Sass/SCSS (with node-sass)
@@ -5019,7 +5040,7 @@ vue create project-name
 
 **5. 代码检查配置**
 
-```bash
+```sh
 ? Pick a linter / formatter config:
  ◯ ESLint with error prevention only
  ◉ ESLint + Standard config    # 推荐：无分号规范
@@ -5028,7 +5049,7 @@ vue create project-name
 
 **6. 检查时机**
 
-```bash
+```sh
 ? Pick additional lint features:
  ◉ Lint on save        # 保存时检查（推荐）
  ◯ Lint and fix on commit
@@ -5036,7 +5057,7 @@ vue create project-name
 
 **7. 配置文件存放**
 
-```bash
+```sh
 ? Where do you prefer placing config files?
  ◯ In package.json
  ◉ In dedicated config files  # 推荐：独立配置文件
@@ -5118,7 +5139,7 @@ project-name/
 
 ### 常用命令
 
-```bash
+```sh
 # 启动开发服务器
 npm run serve
 
@@ -5141,7 +5162,7 @@ vue add <plugin-name>
 - **Vue 2** → **Router 3** → **Vuex 3**
 - **Vue 3** → **Router 4** → **Vuex 4**
 
-```bash
+```sh
 # Vue 2.x 项目依赖版本
 "vue": "^2.x.x"
 "vue-router": "^3.x.x"
@@ -5170,7 +5191,7 @@ vue add <plugin-name>
 - 支持代码分割和懒加载
 - 内置了现代浏览器的优化配置
 
-## Vuex 状态管理
+## 🌟Vuex 状态管理
 
 ### Vuex 简介
 
@@ -5178,11 +5199,11 @@ vue add <plugin-name>
 
 **5大核心概念**：
 
-- **State**：存储应用的状态数据
-- **Mutations**：同步修改状态的方法
-- **Actions**：异步操作，提交 mutations
-- **Getters**：从 state 中派生出一些状态
-- **Modules**：将 store 分割成模块
+- **State**：存储应用的状态**数据**
+- **Mutations**：**同步**修改状态的**方法**
+- **Actions**：**异步**操作，提交 mutations
+- **Getters**：从 state 中**派生**出一些状态
+- **Modules**：将 store **分割**成模块
 
 **使用场景**：
 - 多个组件需要共享状态
@@ -5193,7 +5214,7 @@ vue add <plugin-name>
 
 **1. 安装 Vuex**
 
-```bash
+```sh
 # Vue 2.x 项目
 npm install vuex@3
 
@@ -5287,7 +5308,7 @@ new Vue({
 
 ### Vuex 5大核心概念详解
 
-#### 核心概念总览
+#### 🌟核心概念总览
 
 **Vuex 架构图**：
 
@@ -5339,7 +5360,7 @@ View ──dispatch──▶ Actions ──commit──▶ Mutations ──mutat
 
 ##### State 数据定义
 
-**概念**：State 是 Vuex 的核心，用于存储应用的状态数据，所有组件共享的数据都存储在这里。
+**概念**：State 是 Vuex 的核心，用于**存储应用的状态数据**，所有组件共享的数据都存储在这里。
 
 **模板代码**：
 
@@ -5366,11 +5387,11 @@ const store = new Vuex.Store({
 export default store
 ```
 
-##### 访问 State 数据
+##### 🌟访问 State 数据
 
 **方式一：直接访问**
 
-```vue
+```html
 <template>
   <div>
     <!-- 直接通过 $store.state 访问 -->
@@ -5399,9 +5420,9 @@ export default {
 </script>
 ```
 
-**方式二：mapState 辅助函数**
+**方式二：mapState() 辅助函数**
 
-```vue
+```html
 <template>
   <div>
     <!-- 直接使用映射后的计算属性 -->
@@ -5455,7 +5476,7 @@ this.$store.commit('addCount')
 ##### State 设计原则
 
 **状态归一化**：
-- 避免嵌套过深的对象结构
+- **避免嵌套过深**的对象结构
 - 使用扁平化的数据结构
 - 复杂关系用 ID 引用而非嵌套对象
 
@@ -5497,7 +5518,9 @@ state: {
 
 ##### Mutations 基本使用
 
-**概念**：Mutations 是修改 Vuex 状态的唯一方式，必须是同步函数，用于确保状态变化的可追踪性。
+**概念**：Mutations 是修改 Vuex 状态的唯一方式，**必须是同步函数**，用于确保状态变化的可追踪性。
+
+_**所有 mutations 对象内函数的第一个参数都是 state**_
 
 **核心特征**：
 
@@ -5506,9 +5529,9 @@ state: {
 | **同步执行** | 所有 mutation 必须是同步函数 | 确保状态变化的可预测性和可调试性 |
 | **纯函数** | 不应有副作用，相同输入产生相同输出 | 便于测试和调试 |
 | **原子操作** | 每个 mutation 应该是一个完整的状态变更 | 保证状态的一致性 |
-| **命名规范** | 使用大写常量命名 | 便于团队协作和维护 |
+| **命名规范** | 使用**大写常量**命名 | 便于团队协作和维护 |
 
-**Mutation 类型常量**：
+**Mutation 类型常量\***：
 
 ```javascript
 // mutation-types.js
@@ -5566,7 +5589,7 @@ const store = new Vuex.Store({
 
 **方式一：直接调用**
 
-```vue
+```html
 <template>
   <div>
     <p>计数器：{{ count }}</p>
@@ -5606,7 +5629,7 @@ export default {
 
 **方式二：mapMutations 辅助函数**
 
-```vue
+```html
 <template>
   <div>
     <p>计数器：{{ count }}</p>
@@ -5636,7 +5659,7 @@ export default {
 
 **输入框与 Vuex 数据实时同步**：
 
-```vue
+```html
 <template>
   <div>
     <h1>根组件 - {{ count }} - {{ title }}</h1>
@@ -5770,7 +5793,7 @@ const store = new Vuex.Store({
 
 **方式一：直接调用**
 
-```vue
+```html
 <template>
   <div>
     <p>计数器：{{ count }}</p>
@@ -5797,7 +5820,7 @@ export default {
 
 **方式二：mapActions 辅助函数**
 
-```vue
+```html
 <template>
   <div>
     <p>计数器：{{ count }}</p>
@@ -5824,7 +5847,7 @@ export default {
 
 ##### Getters 基本使用
 
-**概念**：Getters 是 Vuex 的计算属性，用于对 State 中的数据进行计算处理，具有缓存特性。
+**概念**：Getters 是 Vuex 的计算属性，用于对 State 中的数据进行计算处理，具有**缓存特性**。
 
 **Getters 特性对比**：
 
@@ -5840,19 +5863,22 @@ export default {
 ```javascript
 getters: {
   // 基础 getter
-  doneTodos: state => {
-    return state.todos.filter(todo => todo.done)
-  },
+  doneTodos: state => state.todos.filter(todo => todo.done),
   
-  // getter 依赖其他 getter
-  doneTodosCount: (state, getters) => {
-    return getters.doneTodos.length
-  },
+  // getter 依赖其他 getter, 在形参里传入 getters
+  doneTodosCount: (state, getters) => getters.doneTodos.length,
   
   // 返回函数的 getter（不会缓存）
   getTodoById: (state) => (id) => {
     return state.todos.find(todo => todo.id === id)
   },
+  
+  // 相当于
+  getTodoById: function (state) {
+    return function (id) {
+      return state.todos.find(todo => todo.id === id)
+    }
+  }
   
   // 复杂计算 getter
   expensiveCalculation: state => {
@@ -5900,11 +5926,11 @@ const store = new Vuex.Store({
 
 **方式一：直接访问**
 
-```vue
+```html
 <template>
   <div>
     <p>计数器：{{ $store.state.count }}</p>
-    <!-- 访问语法：$store.getters.方法名 -->
+    <!-- 访问语法：$store.getters.属性名 -->
     <p>数组大于5的部分: {{ $store.getters.filterList }}</p>
   </div>
 </template>
@@ -5918,7 +5944,7 @@ export default {
 
 **方式二：mapGetters 辅助函数**
 
-```vue
+```html
 <template>
   <div>
     <p>计数器：{{ count }}</p>
@@ -5939,9 +5965,9 @@ export default {
 </script>
 ```
 
-#### Modules 模块化
+#### 🌟Modules 模块化
 
-##### Modules 基本使用
+##### 基本概念
 
 **概念**：当应用变得复杂时，Vuex 允许将 store 分割成模块，每个模块拥有自己的 state、mutations、actions、getters。
 
@@ -5955,7 +5981,7 @@ export default {
 | **独立测试** | 每个模块可独立测试 | 单元测试覆盖 |
 | **团队协作** | 不同团队负责不同模块 | 大型团队开发 |
 
-##### **标准模块结构**
+##### **标准模块结构\***
 
 ```javascript
 // 标准模块结构
@@ -6003,14 +6029,7 @@ const moduleTemplate = {
 }
 ```
 
-**模块间通信策略**：
-
-| 通信方式 | 语法 | 适用场景 | 注意事项 |
-|---------|------|----------|----------|
-| **根级别调用** | `dispatch('action', null, { root: true })` | 调用根级别的 actions | 需要 root 参数 |
-| **其他模块调用** | `dispatch('module/action', payload, { root: true })` | 跨模块调用 | 需要完整路径 |
-| **根状态访问** | `rootState.module.data` | 访问其他模块状态 | 通过 rootState 参数 |
-| **事件总线** | `Vue.prototype.$bus` | 松耦合通信 | 需要手动管理事件 |
+##### 定义模块实例
 
 **模块文件结构**：
 
@@ -6023,89 +6042,6 @@ store/
 ```
 
 **模块定义**：
-
-```javascript
-// store/modules/user.js
-const state = {
-  userInfo: {
-    name: 'StelleRainn',
-    age: 18,
-    gender: 'male'
-  },
-  score: 100
-}
-
-const mutations = {}
-const actions = {}
-const getters = {}
-
-export default {
-  state,
-  mutations,
-  actions,
-  getters
-}
-```
-
-```javascript
-// store/modules/setting.js
-const state = {
-  theme: 'light',
-  desc: 'A test demo'
-}
-
-const mutations = {}
-const actions = {}
-const getters = {}
-
-export default {
-  state,
-  mutations,
-  actions,
-  getters
-}
-```
-
-**主 store 配置**：
-
-```javascript
-// store/index.js
-// 在主store导入并配置在modules中
-import Vue from 'vue'
-import Vuex from 'vuex'
-import user from './modules/user'
-import setting from './modules/setting'
-
-Vue.use(Vuex)
-
-const store = new Vuex.Store({
-  strict: true,
-  // 根级别的 state、mutations、actions、getters
-  state: {
-    count: 100,
-    title: '大标题'
-  },
-  mutations: {
-    addCount(state) {
-      state.count += 1
-    }
-  },
-  actions: {},
-  getters: {},
-  
-  // 核心概念5：modules
-  modules: {
-    user,
-    setting
-  }
-})
-
-export default store
-```
-
-##### Modules 进阶使用
-
-**开启命名空间**：
 
 ```javascript
 // store/modules/user.js
@@ -6174,11 +6110,53 @@ export default {
 }
 ```
 
+**主 store 配置**：
+
+```javascript
+// store/index.js
+// 在主store导入并配置在modules中
+import Vue from 'vue'
+import Vuex from 'vuex'
+import user from './modules/user'
+import setting from './modules/setting'
+
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
+  strict: true,
+  // 根级别的 state、mutations、actions、getters
+  state: {
+    count: 100,
+    title: '大标题'
+  },
+  mutations: {
+    addCount(state) {
+      state.count += 1
+    }
+  },
+  actions: {},
+  getters: {},
+  
+  // 核心概念5：modules
+  modules: {
+    user,
+    setting
+  }
+})
+
+export default store
+```
+
+
 ##### 访问模块数据
 
 **原生语法访问**：
 
-```vue
+- **state 通过点语法访问**
+- **getters 通过属性+路径访问**
+- **mutations 和 actions 都要提供子模块路径**
+
+```html
 <template>
   <div>
     <p>计数器：{{ $store.state.count }}</p>
@@ -6216,9 +6194,10 @@ export default {
 
 **辅助函数访问**：
 
-```vue
+```html
 <template>
   <div>
+	<!-- 根级别映射 -->
     <p>计数器：{{ count }}</p>
     <!-- 根映射示例 -->
     <p>{{ user.userInfo.name }}</p>
@@ -6242,12 +6221,12 @@ export default {
     // 根级别映射
     ...mapState(['count', 'title']),
     
-    // 根映射（访问整个模块）
-    ...mapState(['user']),
+    // 根映射（访问整个子模块）
+    ...mapState(['user']), // 可访问 user
     
     // 模块映射（访问模块内具体属性）
-    ...mapState('user', ['userInfo', 'score']),
-    ...mapState('setting', ['theme', 'desc']),
+    ...mapState('user', ['userInfo', 'score']), // 可直接访问 userInfo，score
+    ...mapState('setting', ['theme', 'desc']), // 可直接访问 theme，desc
     
     // 访问子模块 getters
     ...mapGetters('user', ['UpperCaseName'])
@@ -6386,7 +6365,7 @@ instance.interceptors.response.use(function (response) {
 
 在实现商品数量加/减时，需要控制不能出现负数。加减按钮使用同一个method，通过参数（信号量1和-1）控制。
 
-```vue
+```html
 <template>
   <div class="count-box">
     <button class="minus" @click="changeConsumeCount(-1)">-</button>
@@ -6432,7 +6411,7 @@ instance.interceptors.response.use(function (response) {
 
 在实现“加入购物车”功能时，需要验证token（存于localStorage，由Vuex读取），没有则需要登录。
 
-**问题：** 登录后跳转回商品页，选择“加入购物车”依旧显示没有token，需要登录。此时Application中可以看到已经有了userInfo，Vue Dev tools并没有看到userInfo数据。需要手动刷新页面，才会显示token已验证，Vuex加载数据。
+**问题：** 登录后跳转回商品页，选择“加入购物车”依旧显示没有token，需要登录。此时Application中可以看到已经有了userInfo，Vue Dev tools并没有看到userInfo数据。**需要手动刷新页面，才会显示token已验证，Vuex加载数据**。
 
 合理的解决办法：
 
@@ -6455,7 +6434,7 @@ const mutations = {
 }
 ```
 
-#### 返回逻辑优化&登录回跳
+#### 🌟返回逻辑优化&登录回跳
 
 **问题：** 还是加入购物车模块，第一，在用户登录完毕后，应当可以**跳转回**原商品页；第二，登录后回到商品页，此时如果返回，会返回到登录页，但我们期望的是返回到**商品列表**页。
 
@@ -6507,7 +6486,7 @@ async login() {
 }
 ```
 
-#### mixin混入或复用
+#### 🌟mixin混入或复用
 
 **优化：** 对于部分需要重复使用的函数，可以考虑独立封装并提取到`@/mixin/`下，然后，在对应的页面中调用。
 
@@ -6776,7 +6755,7 @@ mutations: {
 
 首先，我们通过动态设置其`value`值，实现了小选的全选状态对大选的影响。我们在`@/store/modules/cart`仓库中定义了一个`getters` → `isAllChecked`，它遍历数组来获取小选的选中状态，返回布尔值（数组every方法）。
 
-然后，我们通过方法`toggleAllChecked`实现大选对小选的影响，通过将取反后的自身的选中状态赋值给所有小选即可（数组forEach方法）。
+然后，我们通过方法`toggleAllChecked`实现大选对小选的影响，**通过将取反后的自身的选中状态赋值给所有小选即可**（数组forEach方法）。
 
 ```JSX
 // @/views/layout/cart
@@ -6805,7 +6784,7 @@ isAllChecked: state => state.cartList.every(item => item.isChecked)
 }
 ```
 
-#### 闭包的相关应用
+#### 🌟闭包的相关应用
 
 首先，简单回顾JS中的闭包：
 
@@ -6817,8 +6796,8 @@ isAllChecked: state => state.cartList.every(item => item.isChecked)
 
 在购物车`@/views/layout/cart`中，方法`updateCount`需要获取多个参数。然而通过自实现的 `v-model`中，`@input`所得到的第一个参数由子组件传递，那么其他参数要怎么获取呢？由此，提出了应用闭包的解决办法：
 
-```JSX
-// 在 v-for 中
+```html
+<!-- 在 v-for 中 -->
 <div v-for="item in cartList" :key="item.goods_id">
 <!-- 新技巧！既要取得原来的子传父形参（这里是goods_num）， -->
 <!-- 又要多获取id和sku_id → 封装一层函数 -->
@@ -6827,7 +6806,9 @@ isAllChecked: state => state.cartList.every(item => item.isChecked)
     @input="(value) => updateCount(value, item.goods_id, item.goods_sku_id)">
   </CountBox>
 </div>
+```
 
+```js
 updateCount (value, goodsId, goodsSkuId) {
   this.$store.dispatch('cart/updateCount', {
     goodsId,
@@ -6853,6 +6834,45 @@ const arrowFunction = (value) => updateCount(value, 101, 201);
 
 这样，`updateCount`除了能拿到`value`，还同时拿到了**每次循环中对应**的`item`里的某些数据。
 
+**总结分析：**
+
+- ✅ **闭包机制**：每个 CountBox 的箭头函数通过闭包"记住"了当前 `item` 的数据
+- ✅ **内联处理器**：箭头函数作为事件处理器，接收子组件传来的 `value` 参数
+- ✅ **直接调用**：箭头函数内部**直接调用**（而非 return）`updateCount` 方法
+- ✅ **参数组合**：将子组件数据（value）和闭包数据（goods_id、goods_sku_id）一起传给 `updateCount`
+
+**执行流程：**
+
+```javascript
+// ============ 父组件渲染时 ============
+v-for 循环 item = { goods_id: 101, goods_sku_id: 201, goods_num: 5 }
+    ↓
+创建箭头函数：(value) => updateCount(value, 101, 201)
+    ↓
+【闭包形成】箭头函数"捕获"了 101 和 201
+    ↓
+将箭头函数绑定到 @input 监听器
+
+
+// ============ 用户操作时 ============
+用户修改 CountBox 的值为 8
+    ↓
+子组件执行：this.$emit('input', 8)
+    ↓
+触发父组件的 @input 监听器
+    ↓
+执行箭头函数：(value) => updateCount(value, 101, 201)
+    ↓
+【参数传入】value = 8（来自子组件）
+    ↓
+【直接调用】updateCount(8, 101, 201)
+    ↓
+【最终执行】父组件方法收到完整参数：
+    - value: 8 (子组件传来的新数量)
+    - goodsId: 101 (闭包捕获的商品ID)
+    - goodsSkuId: 201 (闭包捕获的SKU ID)
+```
+
 更多可以查阅和`Claude`的聊天记录。
 
 # Vue 3
@@ -6874,21 +6894,19 @@ const arrowFunction = (value) => updateCount(value, 101, 201);
 
 ### 项目创建
 
-使用 `create-vue` 创建 Vue 3 项目：
-
-```bash
+```sh
 npm create vue@latest my-project
 ```
 
 ## 组合式 API 核心概念
 
-### setup 函数
+### setup() 函数
 
-**概念**：setup 是 Vue 3 组合式 API 的入口函数，用于组织组件的响应式数据、计算属性、方法等逻辑。
+**概念**：setup() 是 Vue 3 组合式 API 的入口函数，用于组织组件的响应式数据、计算属性、方法等逻辑。
 
 **特点**：
 1. **执行时机**：比 beforeCreate 更早执行
-2. **this 指向**：setup 中无法获取 this（返回 undefined）
+2. **this 指向**：**setup 中无法获取 this**（返回 undefined）
 3. **返回值**：数据和函数需要在最后 return，才能在模板中使用
 4. **语法糖**：可以使用 `<script setup>` 语法糖解决频繁 return 的问题
 
@@ -6913,7 +6931,7 @@ export default {
 
 **语法糖写法**：
 
-```vue
+```html
 <script setup>
 // 直接编写逻辑，无需 return
 const message = 'Hello'
@@ -6929,14 +6947,14 @@ const showMessage = () => {
 </template>
 ```
 
-### 响应式数据
+### 🌟响应式数据
 
-#### reactive 函数
+#### reactive() 函数
 
 **概念**：reactive 函数用于创建响应式的对象类型数据。
 
 **特点**：
-- 接收一个对象类型的数据，返回一个响应式的对象
+- 接收一个**对象类型的数据**，返回一个**响应式的对象**
 - 深层响应式，对象内部嵌套的属性也是响应式的
 - 只能用于对象类型（对象、数组等）
 
@@ -6952,7 +6970,7 @@ const 响应式对象 = reactive({
 
 **实例代码**：
 
-```vue
+```html
 <script setup>
 import { reactive } from 'vue'
 
@@ -6971,7 +6989,7 @@ const addCount = () => {
 </template>
 ```
 
-#### ref 函数
+#### ref() 函数
 
 **概念**：ref 函数用于创建响应式的数据，可以接收简单类型或对象类型的数据。
 
@@ -6979,7 +6997,7 @@ const addCount = () => {
 1. **数据类型**：接收简单类型或者对象类型的数据，返回一个响应式对象
 2. **实现原理**：本质上是在原有传入数据的基础上，外层包了一层对象，成为了复杂类型
 3. **底层机制**：包成复杂类型之后，再借助 reactive 实现响应式
-4. **访问方式**：
+4. **🌟访问方式**：
    - 脚本内访问数据，需要加 `.value`
    - 在 template 中访问数据，不需要加 `.value`
 
@@ -6999,7 +7017,7 @@ const 响应式数据 = ref(初始值)
 
 **实例代码**：
 
-```vue
+```html
 <script setup>
 import { ref } from 'vue'
 
@@ -7043,7 +7061,7 @@ const 计算属性名 = computed({
 
 **实例代码**：
 
-```vue
+```html
 <script setup>
 import { ref, computed } from 'vue'
 
@@ -7094,7 +7112,7 @@ watch([ref1, ref2, ...], (newValArray, oldValArray) => {
 })
 
 // 配置选项
-watch(ref对象, callback, {
+watch(ref对象, callbackFn, {
   immediate: true, // 立即执行
   deep: true      // 深度监听
 })
@@ -7102,7 +7120,7 @@ watch(ref对象, callback, {
 
 **基础用法**：
 
-```vue
+```html
 <script setup>
 import { ref, watch } from 'vue'
 
@@ -7152,7 +7170,7 @@ watch(() => userInfo.value.name, (newVal, oldVal) => {
 - **深度监听**：设置 `deep: true` 可以监听复杂数据类型中子属性的变化
 - **精确监听**：通过函数返回具体属性的方式，实现对特定属性的精确监听
 
-### 生命周期 API
+### 🌟生命周期 API
 
 **概念**：组合式 API 中的生命周期钩子函数，用于在组件的不同阶段执行特定逻辑。
 
@@ -7190,7 +7208,7 @@ onUnmounted(() => {
 
 **实例代码**：
 
-```vue
+```html
 <script setup>
 import { onMounted } from 'vue'
 
@@ -7223,7 +7241,7 @@ onMounted(() => {
 
 **概念**：组合式 API 中的父子组件通信，通过 props 和 emits 实现数据传递。
 
-#### 父传子（Props）
+#### 父传子 defineProps()
 
 **模板语法**：
 
@@ -7243,7 +7261,7 @@ props.属性名
 
 **实例代码**：
 
-```vue
+```html
 <!-- 父组件 -->
 <script setup>
 import SonComponent from '@/components/SonComponent.vue'
@@ -7262,7 +7280,7 @@ const addCount = () => {
 </template>
 ```
 
-```vue
+```html
 <!-- 子组件 -->
 <script setup>
 // 通过 defineProps 编译器宏接收数据
@@ -7282,12 +7300,12 @@ console.log(props.count, props.car)
 </template>
 ```
 
-#### 子传父（Emits）
+#### 子传父 defineEmits()
 
 **模板语法**：
 
 ```javascript
-// 子组件中定义和触发事件
+// 子组件中定义和触发事件(父组件监听此事件)
 const emit = defineEmits(['事件名'])
 
 // 触发事件并传递参数
@@ -7298,35 +7316,35 @@ const 处理函数 = () => {
 
 **实例代码**：
 
-```vue
+```html
 <!-- 子组件 -->
 <script setup>
 // 声明要触发的事件
-const emit = defineEmits(['consumeCount'])
+const emit = defineEmits(['customEvent'])
 
 // 触发事件，传递参数
-const consumeCountMsg = () => {
-  emit('consumeCount', 5)
+const handleClick = () => {
+  emit('customEvent', 5)
 }
 </script>
 
 <template>
-  <button @click="consumeCountMsg">消费</button>
+  <button @click="handleClick">消费</button>
 </template>
 ```
 
-```vue
+```html
 <!-- 父组件 -->
 <script setup>
 // 监听子组件事件，获取传递的参数
-const handleConsume = (val) => {
+const handler = (val) => {
   console.log('param from son compo:', val)
   count.value -= val
 }
 </script>
 
 <template>
-  <SonComponent @consumeCount="handleConsume" />
+  <SonComponent @handleClick="handler" />
 </template>
 ```
 
@@ -7334,28 +7352,32 @@ const handleConsume = (val) => {
 
 **概念**：通过 ref 标识获取真实的 DOM 对象或组件实例对象。
 
-**使用步骤**：
-1. 调用 ref 函数得到 ref 对象
-2. 通过 ref 标识绑定 ref 对象
-3. 通过 ref对象.value 访问到 DOM 对象或组件实例
+_只可以**在组件挂载后**才能访问模板引用。如果你想在模板中的表达式上访问 `input`，在初次渲染时会是 `null`。这是因为在初次渲染前这个元素还不存在._
 
-**模板语法**：
+#### 3.5-
 
-```javascript
-import { ref, onMounted } from 'vue'
-
-// 1. 创建 ref 对象
-const 引用名 = ref(null)
-
-// 3. 在合适的时机访问（通常在 onMounted 中）
-onMounted(() => {
-  console.log(引用名.value) // DOM 元素或组件实例
-})
+1. 调用 ref() 函数得到 **ref 响应式对象**
+2. 将 **ref 对象** 绑定到 DOM 对象或组件实例的 **ref 属性**上，例如
+```js
+const inp = ref(null)
+const child = ref(null)
 ```
+```html
+<!-- DOM 对象 -->
+<input ref="inp" type="text">
+<!-- 组件实例 -->
+<Child ref="child"></Child>  
+```
+3. 通过 **ref对象.value** 访问到 DOM 对象或组件实例
+```js
+console.log(inp.value)
+console.log(child.value)
+```
+
 
 **DOM 引用示例**：
 
-```vue
+```html
 <script setup>
 import { onMounted, ref } from 'vue'
 
@@ -7381,7 +7403,7 @@ const toFocus = () => {
 
 **组件引用示例**：
 
-```vue
+```html
 <script setup>
 import { ref } from 'vue'
 import TestCom from './components/TestCom.vue'
@@ -7402,7 +7424,29 @@ const callTest = () => {
 </template>
 ```
 
-#### defineExpose 宏函数
+#### 3.5\+
+
+引入了 `useTemplateRef()`
+
+```js
+<script setup>
+import { useTemplateRef, onMounted } from 'vue'
+
+// 第一个参数必须与模板中的 ref 值匹配
+const input = useTemplateRef('my-input')
+
+onMounted(() => {
+  input.value.focus()
+})
+</script>
+
+<template>
+  <input ref="my-input" />
+</template>
+```
+
+
+### defineExpose() 宏函数
 
 **概念**：默认情况下在 `<script setup>` 语法糖中，组件内部的属性和方法不开放给父组件访问，可以使用 defineExpose 编译宏指定哪些属性或方法可以开放给父组件。
 
@@ -7418,7 +7462,7 @@ defineExpose({
 
 **实例代码**：
 
-```vue
+```html
 <!-- 子组件 TestCom.vue -->
 <script setup>
 import { ref } from 'vue'
@@ -7452,7 +7496,9 @@ defineExpose({
 import { provide } from 'vue'
 
 provide('key', value)
+```
 
+```js
 // 底层组件 - 接收数据
 import { inject } from 'vue'
 
@@ -7461,7 +7507,7 @@ const data = inject('key')
 
 **实例代码**：
 
-```vue
+```html
 <!-- 顶层组件 -->
 <script setup>
 import { provide, ref } from 'vue'
@@ -7496,7 +7542,7 @@ provide('valueDel', (params) => {
 </template>
 ```
 
-```vue
+```html
 <!-- 底层组件 -->
 <script setup>
 import { inject } from 'vue'
@@ -7523,9 +7569,9 @@ const valueDel = inject('valueDel')
 2. **响应式数据**：传递可变的响应式数据
 3. **方法函数**：传递操作数据的方法，保持数据管理的统一性
 
-## 高级特性
+## 高级特性\*
 
-### defineOptions 宏函数
+### defineOptions() 宏函数
 
 **概念**：defineOptions 用于在 `<script setup>` 语法糖中定义组件选项，解决无法直接定义 name 等属性的问题。
 
@@ -7544,17 +7590,23 @@ defineOptions({
 })
 ```
 
-### defineModel 宏函数
+### 🌟defineModel() 宏函数
 
 **概念**：defineModel 是 Vue 3.4 新增的宏函数，用于简化自定义组件中 v-model 的实现。
 
-**Vue3 中传统 v-model 实现**：`:modeValue & @update:modelValue` **双边**
+#### 手动 v-model
+
+**Vue3 中传统 v-model 实现**：`:modeValue & @update:modelValue` **父、子组件都要拆**
+
+_基于 Vue 2 的 v-model 实现，参阅[[#🌟基于组件通信的 v-model 进阶]]_
+
 1. 定义一个名为 `modelValue` 的 prop
 2. 定义一个名为 `update:modelValue` 的 emit
 3. 在需要更新时触发该事件
 
 参考“大事件”中的v-model实现：
-```vue
+```html
+<!-- 父组件 -->
 <script setup>
 import channelSelect from './components/channelSelect.vue'
 
@@ -7579,7 +7631,8 @@ const params = ref({
 </template>
 ```
 
-```vue
+```html
+<!-- 子组件 -->
 <script setup> 
 // v-model 绑定
 const props = defineProps({
@@ -7605,10 +7658,12 @@ const emit = defineEmits(['update:modelValue'])
 </template>
 ```
 
+#### 使用 defineModel()
+
 **defineModel 优势**：
-1. 父组件可以直接通过 v-model 绑定数据
-2. 子组件通过 defineModel() 函数直接获取传递的数据
-3. 子组件可以直接"修改"该变量，无需手动 emit
+1. 父组件可以**直接通过 v-model 绑定数据**，无需再拆分`:modelValue`和`@update:modelValue`
+2. 子组件通过 defineModel() 函数直接**定义与获取**传递的数据
+3. 子组件可以**直接"修改"该变量**，无需手动 emit
 
 **模板语法**：
 
@@ -7623,7 +7678,7 @@ modelValue.value = '新值'
 
 **实例代码**：
 
-```vue
+```html
 <!-- 父组件 -->
 <script setup>
 import TestDefineModel from './components/TestDefineModel.vue'
@@ -7638,7 +7693,7 @@ const txt = ref('123456')
 </template>
 ```
 
-```vue
+```html
 <!-- 子组件 TestDefineModel.vue -->
 <script setup>
 // 可以直接获取传过来的 value，并且可以直接修改
@@ -7646,10 +7701,7 @@ const modelValue = defineModel()
 </script>
 
 <template>
-  <input 
-    type="text"
-    :value="modelValue"
-    @input="e => modelValue = e.target.value">
+  <input type="text" :value="modelValue" @input="e => modelValue = e.target.value"/>
 </template>
 ```
 
@@ -7688,7 +7740,7 @@ const modelValue = defineModel()
 
 **安装步骤**：
 
-```bash
+```sh
 # 安装 Pinia
 npm install pinia
 
@@ -7730,6 +7782,9 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 // 定义 store
+// defineStore() 的返回值命名建议：use + ID + Store
+// 第一个参数：store 的唯一 ID
+// 第二个参数：Setup 函数
 export const useStoreStore = defineStore('storeName', () => {
   // state → ref()
   const 状态变量 = ref(初始值)
@@ -7756,23 +7811,19 @@ export const useStoreStore = defineStore('storeName', () => {
 import { defineStore } from "pinia"
 import { computed, ref } from "vue"
 
-// defineStore() 的返回值命名建议：use开头 + Store结尾
-// 第一个参数：store 的唯一 ID
-// 第二个参数：组合式 API 函数
 export const useCounterStore = defineStore('counter', () => {
-  // state → ref()
   const countA = ref(100)
 
-  // actions → function()
   const add = () => countA.value += 1
   const sub = () => countA.value -= 1
 
-  // getters → computed()
   const doubleCountA = computed(() => countA.value * 2)
 
   return { countA, add, sub, doubleCountA }
 })
 ```
+
+_defineStore()的第二个参数，也可以选择传入 Option 配置对象，参阅[Pinia官方文档](https://pinia.vuejs.org/zh/core-concepts/)_
 
 #### Store 使用
 
@@ -7797,7 +7848,7 @@ store.计算属性名
 
 **实例代码**：
 
-```vue
+```html
 <!-- App.vue -->
 <script setup>
 import { useCounterStore } from './store/counter'
@@ -7865,7 +7916,7 @@ export const useChannelStore = defineStore('channel', () => {
 
 **组件中使用异步 actions**：
 
-```vue
+```html
 <script setup>
 import { useChannelStore } from './store/channel'
 
@@ -7884,9 +7935,9 @@ const channelStore = useChannelStore()
 </template>
 ```
 
-### storeToRefs 写法
+### storeToRefs() 写法
 
-**概念**：`storeToRefs()` 是 Pinia 提供的工具函数，用于将 store 中的响应式属性转换为 refs，保持响应式的同时支持解构赋值。
+**概念**：`storeToRefs()` 是 Pinia 提供的工具函数，用于将 store 中的**响应式属性**转换为 refs，保持响应式的同时支持解构赋值。
 
 **问题场景**：
 
@@ -7909,24 +7960,10 @@ const { countA, doubleCountA } = storeToRefs(store)
 const { add, sub } = store
 ```
 
-**模板语法**：
-
-```javascript
-import { storeToRefs } from 'pinia'
-import { useStoreStore } from '@/store/storeName'
-
-const store = useStoreStore()
-
-// 解构响应式属性（状态和计算属性）
-const { 状态变量, 计算属性 } = storeToRefs(store)
-
-// 解构方法
-const { 方法名1, 方法名2 } = store
-```
 
 **实例代码**：
 
-```vue
+```html
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useCounterStore } from './store/counter'
@@ -7960,7 +7997,7 @@ const { add, sub } = store
 
 **概念**：Pinia 持久化是通过插件实现的功能，可以将 store 中的状态自动保存到 localStorage 或 sessionStorage 中，页面刷新后状态不会丢失。
 
-持久化插件的安装，在前面 “手动添加 Pinia 到项目中”一节有展示。随版本更新可能会有所不同，以官网为准。
+持久化插件的安装，参阅[[#手动添加 Pinia 到项目]]。随版本更新可能会有所不同，以官网为准。
 
 #### 基础持久化
 
