@@ -6729,7 +6729,7 @@ instance.interceptors.request.use(function (config) {
 export default instance
 ```
 
-#### 典例之全选反选
+#### 🌟典例之全选反选
 
 首先是小选自身的切换，我们定义`toggleCheck`方法实现点击某购物车内商品，该商品的选中状态就切换（取反）
 
